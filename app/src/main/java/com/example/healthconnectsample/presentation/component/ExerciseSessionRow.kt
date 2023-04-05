@@ -16,24 +16,30 @@
 package com.example.healthconnectsample.presentation.component
 
 import android.graphics.drawable.Drawable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.Shapes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import com.example.healthconnectsample.R
 import com.example.healthconnectsample.presentation.theme.HealthConnectTheme
+import com.example.healthconnectsample.presentation.theme.Shapes
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -42,6 +48,7 @@ import java.util.UUID
  */
 @Composable
 fun ExerciseSessionRow(
+    exerciseType: Int,
     start: ZonedDateTime,
     end: ZonedDateTime,
     uid: String,
@@ -52,30 +59,48 @@ fun ExerciseSessionRow(
     onDeleteClick: (String) -> Unit = {},
     onDetailsClick: (String) -> Unit = {}
 ) {
-    Row(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 4.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .clickable { },
+        shape = RoundedCornerShape(2.dp),
+        elevation = 15.dp,
     ) {
-        ExerciseSessionInfoColumn(
-            start = start,
-            end = end,
-            uid = uid,
-            name = name,
-            steps = steps,
-            sourceAppName = sourceAppName,
-            sourceAppIcon = sourceAppIcon,
-            onClick = onDetailsClick
-        )
-        IconButton(
-            onClick = { onDeleteClick(uid) },
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(Icons.Default.Delete, stringResource(R.string.delete_button))
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(10.dp)
+            ) {
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_running),
+                    contentDescription = null,
+                )
+            }
+            ExerciseSessionInfoColumn(
+                modifier = Modifier.weight(5f),
+                exerciseType = exerciseType,
+                start = start,
+                end = end,
+                uid = uid,
+                name = name,
+                steps = steps,
+                sourceAppName = sourceAppName,
+                sourceAppIcon = sourceAppIcon,
+                onClick = onDetailsClick
+            )
         }
     }
 }
+
 
 @Preview
 @Composable
@@ -83,6 +108,7 @@ fun ExerciseSessionRowPreview() {
     val context = LocalContext.current
     HealthConnectTheme {
         ExerciseSessionRow(
+            1,
             ZonedDateTime.now().minusMinutes(30),
             ZonedDateTime.now(),
             UUID.randomUUID().toString(),

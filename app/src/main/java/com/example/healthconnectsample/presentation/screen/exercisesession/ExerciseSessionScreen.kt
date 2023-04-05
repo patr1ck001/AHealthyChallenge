@@ -48,6 +48,7 @@ import com.example.healthconnectsample.data.HealthConnectAppInfo
 import com.example.healthconnectsample.data.StepSession
 import com.example.healthconnectsample.presentation.component.ExerciseSessionRow
 import com.example.healthconnectsample.presentation.component.StepSessionRow
+import com.example.healthconnectsample.presentation.component.getExerciseType
 import com.example.healthconnectsample.presentation.theme.HealthConnectTheme
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import java.time.ZonedDateTime
@@ -125,6 +126,7 @@ fun ExerciseSessionScreen(
                 items(sessionsList) { session ->
                     val appInfo = session.sourceAppInfo
                     ExerciseSessionRow(
+                        exerciseType = 56,
                         start = session.startTime,
                         end = session.endTime,
                         uid = session.id,

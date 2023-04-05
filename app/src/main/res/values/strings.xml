@@ -133,4 +133,6 @@
     <string name="settings">Settings</string>
     <string name="manage">Manage Health Connect</string>
     <string name="disconnect">Disconnect Health Connect</string>
+
+
 </resources>

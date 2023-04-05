@@ -21,6 +21,7 @@ import java.time.ZonedDateTime
  * Represents an exercise session.
  */
 data class ExerciseSession(
+    val exerciseType: Int,
     val startTime: ZonedDateTime,
     val endTime: ZonedDateTime,
     val id: String,

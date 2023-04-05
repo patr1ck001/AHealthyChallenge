@@ -43,6 +43,8 @@ import java.util.UUID
 
 @Composable
 fun ExerciseSessionInfoColumn(
+    modifier: Modifier,
+    exerciseType: Int,
     start: ZonedDateTime,
     end: ZonedDateTime,
     uid: String,
@@ -53,7 +55,7 @@ fun ExerciseSessionInfoColumn(
     onClick: (String) -> Unit = {}
 ) {
     Column(
-        modifier = Modifier.clickable {
+        modifier = modifier.clickable {
             onClick(uid)
         }
     ) {
@@ -62,8 +64,7 @@ fun ExerciseSessionInfoColumn(
             text = "${start.toLocalDateTime()} - ${end.toLocalDateTime()}",
             style = MaterialTheme.typography.caption
         )
-        Text(name)
-        Text(steps)
+        Text(getExerciseType(exerciseType))
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -84,11 +85,24 @@ fun ExerciseSessionInfoColumn(
     }
 }
 
-@Preview
+fun getExerciseType(recordType: Int): String {
+    val exerciseType = when(recordType) {
+
+        56 -> "Running"
+        79 -> "Walking"
+        else -> "Cycling"
+    }
+    return exerciseType
+}
+
+
+/*@Preview
 @Composable
 fun ExerciseSessionInfoColumnPreview() {
     HealthConnectTheme {
         ExerciseSessionInfoColumn(
+            modifier = Modifier.weight(weight = 1f),
+            ExerciseSessionRecord.EXERCISE_TYPE_RUNNING,
             ZonedDateTime.now().minusMinutes(30),
             ZonedDateTime.now(),
             UUID.randomUUID().toString(),
@@ -98,4 +112,6 @@ fun ExerciseSessionInfoColumnPreview() {
             null
         )
     }
-}
+}*/
+
+

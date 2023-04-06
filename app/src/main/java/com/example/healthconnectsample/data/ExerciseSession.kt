@@ -15,6 +15,7 @@
  */
 package com.example.healthconnectsample.data
 
+import androidx.health.connect.client.units.Length
 import java.time.Duration
 import java.time.ZonedDateTime
 
@@ -26,6 +27,7 @@ data class ExerciseSession(
     val startTime: ZonedDateTime,
     val endTime: ZonedDateTime,
     val duration: Duration?,
+    val distance: Length?,
     val id: String,
     val title: String?,
     val sourceAppInfo: HealthConnectAppInfo?

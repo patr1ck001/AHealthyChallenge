@@ -30,15 +30,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.health.connect.client.units.Length
+import com.example.healthconnectsample.R
 import com.example.healthconnectsample.data.formatTime
-import com.example.healthconnectsample.presentation.theme.HealthConnectTheme
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import java.math.RoundingMode
 import java.time.Duration
 import java.time.ZonedDateTime
-import java.util.UUID
 
 /**
  * Displays summary information about the [ExerciseSessionRecord]
@@ -57,19 +57,14 @@ fun ExerciseSessionInfoColumn(
     steps: String,
     sourceAppName: String,
     sourceAppIcon: Drawable?,
-    onClick: (String) -> Unit = {}
+    onClick: (String) -> Unit = {},
+    distance: Length?
 ) {
-    Log.d(TAG, "start: ${start.toLocalTime()} \n end: ${end.toLocalTime()}")
     Column(
         modifier = modifier.clickable {
             onClick(uid)
         }
     ) {
-        Text(
-            color = MaterialTheme.colors.primary,
-            text = "${duration?.formatTime()}",
-            style = MaterialTheme.typography.caption
-        )
         Text(getExerciseType(exerciseType))
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -87,13 +82,28 @@ fun ExerciseSessionInfoColumn(
                 fontStyle = FontStyle.Italic
             )
         }
-        Text(uid)
+        // TODO: add unity of measurement
+        // TODO: add string resources for unity of measurement
+        // TODO: when distance = 0, it display null
+        // TODO: add separator element in the session summary component
+        // TODO: fix the clickable surface
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SessionSummary(labelId = R.string.duration, value = duration?.formatTime().toString())
+            SessionSummary(
+                labelId = R.string.distance,
+                value = distance?.inKilometers?.toBigDecimal()?.setScale(2, RoundingMode.UP)
+                    .toString()
+            )
+            SessionSummary(labelId = R.string.points, value = "2")
+        }
     }
 }
 
 fun getExerciseType(recordType: Int): String {
-    val exerciseType = when(recordType) {
-
+    val exerciseType = when (recordType) {
+//TODO: display the correct exercise session
         56 -> "Running"
         79 -> "Walking"
         else -> "Cycling"

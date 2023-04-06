@@ -118,11 +118,13 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             .readExerciseSessions(startOfDay.toInstant(), now)
             .map { record ->
                 val packageName = record.metadata.dataOrigin.packageName
+                val sessionData = healthConnectManager.readAssociatedSessionData(record.metadata.id)
                 ExerciseSession(
                     exerciseType = record.exerciseType,
                     startTime = dateTimeWithOffsetOrDefault(record.startTime, record.startZoneOffset),
                     endTime = dateTimeWithOffsetOrDefault(record.startTime, record.startZoneOffset),
-                    duration = healthConnectManager.readAssociatedSessionData(record.metadata.id).totalActiveTime,
+                    duration = sessionData.totalActiveTime,
+                    distance = sessionData.totalDistance,
                     id = record.metadata.id,
                     sourceAppInfo = healthConnectCompatibleApps[packageName],
                     title = record.title

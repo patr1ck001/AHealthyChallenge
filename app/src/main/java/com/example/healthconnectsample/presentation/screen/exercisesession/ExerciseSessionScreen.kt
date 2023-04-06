@@ -47,7 +47,6 @@ import com.example.healthconnectsample.R
 import com.example.healthconnectsample.data.*
 import com.example.healthconnectsample.presentation.component.ExerciseSessionRow
 import com.example.healthconnectsample.presentation.component.StepSessionRow
-import com.example.healthconnectsample.presentation.component.getExerciseType
 import com.example.healthconnectsample.presentation.theme.HealthConnectTheme
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import java.time.ZonedDateTime
@@ -131,9 +130,10 @@ fun ExerciseSessionScreen(
                         start = session.startTime,
                         end = session.endTime,
                         duration = session.duration,
+                        distance = session.distance,
                         uid = session.id,
                         name = session.title ?: stringResource(R.string.no_title),
-                        "0",
+                        steps = "0",
                         sourceAppName = appInfo?.appLabel ?: stringResource(R.string.unknown_app),
                         sourceAppIcon = appInfo?.icon,
                         onDeleteClick = { uid ->

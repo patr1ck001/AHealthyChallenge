@@ -21,25 +21,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Shapes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.health.connect.client.units.Length
 import com.example.healthconnectsample.R
 import com.example.healthconnectsample.presentation.theme.HealthConnectTheme
-import com.example.healthconnectsample.presentation.theme.Shapes
 import java.time.ZonedDateTime
 import java.util.UUID
 import java.time.Duration
@@ -59,7 +51,8 @@ fun ExerciseSessionRow(
     sourceAppName: String,
     sourceAppIcon: Drawable?,
     onDeleteClick: (String) -> Unit = {},
-    onDetailsClick: (String) -> Unit = {}
+    onDetailsClick: (String) -> Unit = {},
+    distance: Length?
 ) {
     Card(
         modifier = Modifier
@@ -93,6 +86,7 @@ fun ExerciseSessionRow(
                 start = start,
                 end = end,
                 duration = duration,
+                distance = distance,
                 uid = uid,
                 name = name,
                 steps = steps,
@@ -119,7 +113,8 @@ fun ExerciseSessionRowPreview() {
             "Running",
             "0",
             sourceAppName = "My Fitness app",
-            sourceAppIcon = context.getDrawable(R.drawable.ic_launcher_foreground)
+            sourceAppIcon = context.getDrawable(R.drawable.ic_launcher_foreground),
+            distance = Length.meters(100.0)
         )
     }
 }

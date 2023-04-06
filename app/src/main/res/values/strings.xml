@@ -70,6 +70,9 @@
     <string name="no_title">[No title]</string>
     <string name="unknown_app">[Unknown app]</string>
     <string name="delete_button">Delete</string>
+    <string name="duration">duration</string>
+    <string name="distance">distance</string>
+    <string name="points">points</string>
 
     <!-- Exercise Session detail screen -->
     <string name="total_active_duration">Total active duration</string>

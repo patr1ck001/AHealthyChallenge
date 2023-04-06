@@ -42,6 +42,7 @@ import com.example.healthconnectsample.presentation.theme.HealthConnectTheme
 import com.example.healthconnectsample.presentation.theme.Shapes
 import java.time.ZonedDateTime
 import java.util.UUID
+import java.time.Duration
 
 /**
  * Creates a row to represent an [ExerciseSessionRecord]
@@ -51,6 +52,7 @@ fun ExerciseSessionRow(
     exerciseType: Int,
     start: ZonedDateTime,
     end: ZonedDateTime,
+    duration: Duration?,
     uid: String,
     name: String,
     steps: String,
@@ -90,6 +92,7 @@ fun ExerciseSessionRow(
                 exerciseType = exerciseType,
                 start = start,
                 end = end,
+                duration = duration,
                 uid = uid,
                 name = name,
                 steps = steps,
@@ -111,6 +114,7 @@ fun ExerciseSessionRowPreview() {
             1,
             ZonedDateTime.now().minusMinutes(30),
             ZonedDateTime.now(),
+            Duration.ZERO,
             UUID.randomUUID().toString(),
             "Running",
             "0",

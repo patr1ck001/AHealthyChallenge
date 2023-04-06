@@ -15,6 +15,7 @@
  */
 package com.example.healthconnectsample.data
 
+import java.time.Duration
 import java.time.ZonedDateTime
 
 /**
@@ -24,6 +25,7 @@ data class ExerciseSession(
     val exerciseType: Int,
     val startTime: ZonedDateTime,
     val endTime: ZonedDateTime,
+    val duration: Duration?,
     val id: String,
     val title: String?,
     val sourceAppInfo: HealthConnectAppInfo?

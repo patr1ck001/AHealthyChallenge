@@ -16,6 +16,7 @@
 package com.example.healthconnectsample.presentation.component
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -32,14 +33,17 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import com.example.healthconnectsample.data.formatTime
 import com.example.healthconnectsample.presentation.theme.HealthConnectTheme
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.UUID
 
 /**
  * Displays summary information about the [ExerciseSessionRecord]
  */
+const val TAG = "ExerciseSessionInfoColumn"
 
 @Composable
 fun ExerciseSessionInfoColumn(
@@ -47,6 +51,7 @@ fun ExerciseSessionInfoColumn(
     exerciseType: Int,
     start: ZonedDateTime,
     end: ZonedDateTime,
+    duration: Duration?,
     uid: String,
     name: String,
     steps: String,
@@ -54,6 +59,7 @@ fun ExerciseSessionInfoColumn(
     sourceAppIcon: Drawable?,
     onClick: (String) -> Unit = {}
 ) {
+    Log.d(TAG, "start: ${start.toLocalTime()} \n end: ${end.toLocalTime()}")
     Column(
         modifier = modifier.clickable {
             onClick(uid)
@@ -61,7 +67,7 @@ fun ExerciseSessionInfoColumn(
     ) {
         Text(
             color = MaterialTheme.colors.primary,
-            text = "${start.toLocalDateTime()} - ${end.toLocalDateTime()}",
+            text = "${duration?.formatTime()}",
             style = MaterialTheme.typography.caption
         )
         Text(getExerciseType(exerciseType))

@@ -106,6 +106,10 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         }
     }
 
+    fun getUid(uid: String): String{
+        return uid;
+    }
+
     private suspend fun readExerciseSessions() {
         val startOfDay = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
         val now = Instant.now()
@@ -118,6 +122,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                     exerciseType = record.exerciseType,
                     startTime = dateTimeWithOffsetOrDefault(record.startTime, record.startZoneOffset),
                     endTime = dateTimeWithOffsetOrDefault(record.startTime, record.startZoneOffset),
+                    duration = healthConnectManager.readAssociatedSessionData(record.metadata.id).totalActiveTime,
                     id = record.metadata.id,
                     sourceAppInfo = healthConnectCompatibleApps[packageName],
                     title = record.title

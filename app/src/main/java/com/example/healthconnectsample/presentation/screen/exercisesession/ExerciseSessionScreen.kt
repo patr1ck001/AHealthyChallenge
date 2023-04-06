@@ -15,6 +15,7 @@
  */
 package com.example.healthconnectsample.presentation.screen.exercisesession
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -43,9 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import com.example.healthconnectsample.R
-import com.example.healthconnectsample.data.ExerciseSession
-import com.example.healthconnectsample.data.HealthConnectAppInfo
-import com.example.healthconnectsample.data.StepSession
+import com.example.healthconnectsample.data.*
 import com.example.healthconnectsample.presentation.component.ExerciseSessionRow
 import com.example.healthconnectsample.presentation.component.StepSessionRow
 import com.example.healthconnectsample.presentation.component.getExerciseType
@@ -57,6 +56,7 @@ import java.util.UUID
 /**
  * Shows a list of [ExerciseSessionRecord]s from today.
  */
+const val TAG = "ExerciseSessionScreen"
 @Composable
 fun ExerciseSessionScreen(
     permissions: Set<String>,
@@ -124,11 +124,13 @@ fun ExerciseSessionScreen(
                 }
 
                 items(sessionsList) { session ->
+                    Log.d(TAG, "${session.duration?.formatTime()}")
                     val appInfo = session.sourceAppInfo
                     ExerciseSessionRow(
                         exerciseType = 56,
                         start = session.startTime,
                         end = session.endTime,
+                        duration = session.duration,
                         uid = session.id,
                         name = session.title ?: stringResource(R.string.no_title),
                         "0",

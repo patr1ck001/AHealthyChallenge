@@ -87,39 +87,30 @@ fun ExerciseSessionInfoColumn(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center) {
-                SessionSummary(labelId = R.string.nothing, value = duration?.formatTime().toString())
-            }
+            SessionSummary(labelId = R.string.nothing, value = duration?.formatTime().toString())
             Icon(
                 painter = painterResource(id = R.drawable.ic_vertical_line),
-                tint = Color.DarkGray,
+                tint = Color.LightGray,
                 contentDescription = null,
             )
-            Box(modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center) {
-                SessionSummary(
-                    value = distance?.inKilometers?.toBigDecimal()?.setScale(2, RoundingMode.UP)
-                        .toString(),
-                    labelId = R.string.Kilometers
-                )
-            }
+            SessionSummary(
+                value = distance?.inKilometers?.toBigDecimal()?.setScale(2, RoundingMode.UP)
+                    .toString(),
+                labelId = R.string.Kilometers
+            )
             Icon(
                 painter = painterResource(id = R.drawable.ic_vertical_line),
-                tint = Color.DarkGray,
+                tint = Color.LightGray,
                 contentDescription = null,
             )
-            Box(modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center) {
-                 SessionSummary(labelId = R.string.points, value = "2")
-            }
+            SessionSummary(labelId = R.string.points, value = "2")
+
         }
 
-        // TODO: add unity of measurement
-        // TODO: add string resources for unity of measurement
+        // TODO: figure out the theme situation
         // TODO: when distance = 0, it display null
-        // TODO: add separator element in the session summary component
         // TODO: fix the clickable surface
+        // TODO: add loading animation for the exercise session
     }
 }
 

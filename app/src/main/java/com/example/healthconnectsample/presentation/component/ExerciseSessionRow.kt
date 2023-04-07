@@ -16,14 +16,20 @@
 package com.example.healthconnectsample.presentation.component
 
 import android.graphics.drawable.Drawable
+import android.icu.text.ListFormatter
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,47 +60,38 @@ fun ExerciseSessionRow(
     onDetailsClick: (String) -> Unit = {},
     distance: Length?
 ) {
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { },
-        shape = RoundedCornerShape(2.dp),
-        elevation = 15.dp,
+            .padding(horizontal = 4.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .weight(1f)
+                .padding(10.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(10.dp)
-            ) {
 
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_running),
-                    contentDescription = null,
-                )
-            }
-            ExerciseSessionInfoColumn(
-                modifier = Modifier.weight(5f),
-                exerciseType = exerciseType,
-                start = start,
-                end = end,
-                duration = duration,
-                distance = distance,
-                uid = uid,
-                name = name,
-                steps = steps,
-                sourceAppName = sourceAppName,
-                sourceAppIcon = sourceAppIcon,
-                onClick = onDetailsClick
+            Icon(
+                painter = painterResource(id = R.drawable.ic_running),
+                contentDescription = null,
             )
         }
+        ExerciseSessionInfoColumn(
+            modifier = Modifier.weight(5f),
+            exerciseType = exerciseType,
+            start = start,
+            end = end,
+            duration = duration,
+            distance = distance,
+            uid = uid,
+            name = name,
+            steps = steps,
+            sourceAppName = sourceAppName,
+            sourceAppIcon = sourceAppIcon,
+            onClick = onDetailsClick
+        )
     }
 }
 

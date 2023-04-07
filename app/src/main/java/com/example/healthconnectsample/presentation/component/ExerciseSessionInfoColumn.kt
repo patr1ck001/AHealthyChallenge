@@ -19,16 +19,15 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.health.connect.client.records.ExerciseSessionRecord
@@ -63,7 +62,8 @@ fun ExerciseSessionInfoColumn(
     Column(
         modifier = modifier.clickable {
             onClick(uid)
-        }
+        },
+        verticalArrangement = Arrangement.Center
     ) {
         Text(getExerciseType(exerciseType))
         Row(
@@ -82,22 +82,44 @@ fun ExerciseSessionInfoColumn(
                 fontStyle = FontStyle.Italic
             )
         }
+
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.Center) {
+                SessionSummary(labelId = R.string.nothing, value = duration?.formatTime().toString())
+            }
+            Icon(
+                painter = painterResource(id = R.drawable.ic_vertical_line),
+                tint = Color.DarkGray,
+                contentDescription = null,
+            )
+            Box(modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center) {
+                SessionSummary(
+                    value = distance?.inKilometers?.toBigDecimal()?.setScale(2, RoundingMode.UP)
+                        .toString(),
+                    labelId = R.string.Kilometers
+                )
+            }
+            Icon(
+                painter = painterResource(id = R.drawable.ic_vertical_line),
+                tint = Color.DarkGray,
+                contentDescription = null,
+            )
+            Box(modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center) {
+                 SessionSummary(labelId = R.string.points, value = "2")
+            }
+        }
+
         // TODO: add unity of measurement
         // TODO: add string resources for unity of measurement
         // TODO: when distance = 0, it display null
         // TODO: add separator element in the session summary component
         // TODO: fix the clickable surface
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SessionSummary(labelId = R.string.duration, value = duration?.formatTime().toString())
-            SessionSummary(
-                labelId = R.string.distance,
-                value = distance?.inKilometers?.toBigDecimal()?.setScale(2, RoundingMode.UP)
-                    .toString()
-            )
-            SessionSummary(labelId = R.string.points, value = "2")
-        }
     }
 }
 

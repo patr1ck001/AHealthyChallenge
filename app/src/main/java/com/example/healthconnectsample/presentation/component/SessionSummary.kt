@@ -21,9 +21,9 @@ fun SessionSummary (
         style = MaterialTheme.typography.caption,
 
         text = stringResource(
-            R.string.label_and_value,
+            R.string.summary_layout,
+            value ?: "N/A",
             stringResource(labelId),
-            value ?: "N/A"
         )
     )
 }

@@ -71,8 +71,11 @@
     <string name="unknown_app">[Unknown app]</string>
     <string name="delete_button">Delete</string>
     <string name="duration">duration</string>
-    <string name="distance">distance</string>
+    <string name="distance">distance in Km</string>
     <string name="points">points</string>
+    <string name="Kilometers">Km</string>
+    <string name="summary_layout">%1$s %2$s</string>
+    <string name="nothing" />
 
     <!-- Exercise Session detail screen -->
     <string name="total_active_duration">Total active duration</string>

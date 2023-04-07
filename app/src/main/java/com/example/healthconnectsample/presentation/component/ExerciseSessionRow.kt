@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -72,11 +73,11 @@ fun ExerciseSessionRow(
                 .weight(1f)
                 .padding(10.dp)
         ) {
-
-            Icon(
-                painter = painterResource(id = R.drawable.ic_running),
-                contentDescription = null,
-            )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_running),
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.primary
+                )
         }
         ExerciseSessionInfoColumn(
             modifier = Modifier.weight(5f),

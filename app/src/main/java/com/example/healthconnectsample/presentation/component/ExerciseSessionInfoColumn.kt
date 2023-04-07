@@ -88,6 +88,7 @@ fun ExerciseSessionInfoColumn(
             verticalAlignment = Alignment.CenterVertically
         ) {
             SessionSummary(labelId = R.string.nothing, value = duration?.formatTime().toString())
+            // TODO: change hardcoded color to theme changing color
             Icon(
                 painter = painterResource(id = R.drawable.ic_vertical_line),
                 tint = Color.LightGray,
@@ -98,6 +99,7 @@ fun ExerciseSessionInfoColumn(
                     .toString(),
                 labelId = R.string.Kilometers
             )
+            // TODO: change hardcoded color to theme changing color
             Icon(
                 painter = painterResource(id = R.drawable.ic_vertical_line),
                 tint = Color.LightGray,

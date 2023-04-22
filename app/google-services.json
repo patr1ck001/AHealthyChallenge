@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "24205868906",
+    "project_id": "ahealthychallenge-89a7e",
+    "storage_bucket": "ahealthychallenge-89a7e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:24205868906:android:29e52d9707b5ae2bb82f13",
+        "android_client_info": {
+          "package_name": "com.example.ahealthychallenge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "24205868906-k5tsvja2rc97de531mt9qpg7lnthbi10.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArvJIN1CWU4OpKaBtUc9Z8zRuXZyOAiRI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "24205868906-k5tsvja2rc97de531mt9qpg7lnthbi10.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

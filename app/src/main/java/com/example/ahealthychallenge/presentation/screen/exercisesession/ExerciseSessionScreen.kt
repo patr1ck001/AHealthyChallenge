@@ -123,14 +123,14 @@ fun ExerciseSessionScreen(
                 }
 
                 items(sessionsList) { session ->
-                    Log.d(TAG, "${session.duration?.formatTime()}")
+                    Log.d(TAG, "${session.sessionData.totalActiveTime?.formatTime()}")
                     val appInfo = session.sourceAppInfo
                     ExerciseSessionRow(
                         exerciseType = session.exerciseType,
                         start = session.startTime,
                         end = session.endTime,
-                        duration = session.duration,
-                        distance = session.distance,
+                        duration = session.sessionData.totalActiveTime,
+                        distance = session.sessionData.totalDistance,
                         uid = session.id,
                         name = session.title ?: stringResource(R.string.no_title),
                         steps = "0",

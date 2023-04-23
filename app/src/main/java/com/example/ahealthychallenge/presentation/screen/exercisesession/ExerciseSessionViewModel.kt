@@ -16,6 +16,7 @@
 package com.example.ahealthychallenge.presentation.screen.exercisesession
 
 import android.os.RemoteException
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,10 +31,10 @@ import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.ahealthychallenge.data.ExerciseSession
-import com.example.ahealthychallenge.data.HealthConnectManager
-import com.example.ahealthychallenge.data.StepSession
-import com.example.ahealthychallenge.data.dateTimeWithOffsetOrDefault
+import com.example.ahealthychallenge.data.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import java.io.IOException
 import java.time.Duration
 import java.time.Instant
@@ -46,7 +47,9 @@ import kotlinx.coroutines.launch
 class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectManager) :
     ViewModel() {
     private val healthConnectCompatibleApps = healthConnectManager.healthConnectCompatibleApps
-
+    private lateinit var database: DatabaseReference
+    val TAG = "ExerciseSessionViewModel"
+    // TODO: manage permissions that we need
     val permissions = setOf(
         HealthPermission.getWritePermission(ExerciseSessionRecord::class),
         HealthPermission.getReadPermission(ExerciseSessionRecord::class),
@@ -54,7 +57,12 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         HealthPermission.getWritePermission(SpeedRecord::class),
         HealthPermission.getWritePermission(DistanceRecord::class),
         HealthPermission.getWritePermission(TotalCaloriesBurnedRecord::class),
-        HealthPermission.getWritePermission(HeartRateRecord::class)
+        HealthPermission.getWritePermission(HeartRateRecord::class),
+        HealthPermission.getReadPermission(DistanceRecord::class),
+        HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class),
+        HealthPermission.getReadPermission(HeartRateRecord::class),
+        HealthPermission.getReadPermission(SpeedRecord::class),
+        HealthPermission.getReadPermission(StepsRecord::class),
     )
 
     var permissionsGranted = mutableStateOf(false)
@@ -106,15 +114,14 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         }
     }
 
-    fun getUid(uid: String): String{
+    fun getUid(uid: String): String {
         return uid;
     }
 
     private suspend fun readExerciseSessions() {
         val startOfDay = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
         val now = Instant.now()
-
-        sessionsList.value = healthConnectManager
+        val sessions = healthConnectManager
             .readExerciseSessions(startOfDay.toInstant(), now)
             .map { record ->
                 val packageName = record.metadata.dataOrigin.packageName
@@ -122,15 +129,24 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                 // TODO: pass the entire session data: add sessionData property in ExerciseSession
                 ExerciseSession(
                     exerciseType = record.exerciseType,
-                    startTime = dateTimeWithOffsetOrDefault(record.startTime, record.startZoneOffset),
+                    sessionData = sessionData, // retrieve duration and distance
+                    startTime = dateTimeWithOffsetOrDefault(
+                        record.startTime,
+                        record.startZoneOffset
+                    ),
                     endTime = dateTimeWithOffsetOrDefault(record.startTime, record.startZoneOffset),
-                    duration = sessionData.totalActiveTime,
-                    distance = sessionData.totalDistance,
                     id = record.metadata.id,
                     sourceAppInfo = healthConnectCompatibleApps[packageName],
                     title = record.title
                 )
             }
+        sessionsList.value = sessions
+
+        // write in the realtime database
+        database = Firebase.database.reference
+        database.child("exerciseSessions").child("Matelot_P4tr1ck001").setValue("sessions")
+        Log.d(TAG, "DATABASE")
+
         val sevenDays = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(31)
         stepsList.value = healthConnectManager.readStepSession(sevenDays.toInstant())
     }

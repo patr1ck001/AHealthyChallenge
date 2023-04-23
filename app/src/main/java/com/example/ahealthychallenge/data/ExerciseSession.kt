@@ -23,11 +23,10 @@ import java.time.ZonedDateTime
  * Represents an exercise session.
  */
 data class ExerciseSession(
+    val sessionData: ExerciseSessionData,
     val exerciseType: Int,
     val startTime: ZonedDateTime,
     val endTime: ZonedDateTime,
-    val duration: Duration?,
-    val distance: Length?,
     val id: String,
     val title: String?,
     val sourceAppInfo: HealthConnectAppInfo?

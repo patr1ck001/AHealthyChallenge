@@ -114,6 +114,7 @@ fun ExerciseSessionInfoColumn(
         // TODO: when distance = 0, it display null
         // TODO: fix the clickable surface
         // TODO: add loading animation for the exercise session
+        // TODO: sleep session hade data for more time. check how and apply it to esercise sessions
     }
 }
 

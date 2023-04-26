@@ -78,6 +78,12 @@ class HealthConnectManager(private val context: Context) {
             } catch(e: NotFoundException) {
                 null
             }
+
+            /*val icon = when(it.activityInfo.packageName){
+                "com.sec.android.app.shealth" -> ResourcesCompat.getDrawable(Resources.getSystem(), R.drawable.ic_google_fit_logo, null)
+                "com.google.android.apps.fitness" -> ResourcesCompat.getDrawable(Resources.getSystem(), R.drawable.ic_google_fit_logo, null)
+                else -> ResourcesCompat.getDrawable(Resources.getSystem(), R.drawable.ic_samsung_health_logo, null)
+            }*/
             val label = context.packageManager.getApplicationLabel(it.activityInfo.applicationInfo)
                 .toString()
             it.activityInfo.packageName to

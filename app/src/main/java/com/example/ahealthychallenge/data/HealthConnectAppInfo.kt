@@ -16,12 +16,16 @@
 package com.example.ahealthychallenge.data
 
 import android.graphics.drawable.Drawable
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 /**
  * Information about an app that can be used for displaying attribution.
  */
+@Serializable
 data class HealthConnectAppInfo(
     val packageName: String,
     val appLabel: String,
-    val icon: Drawable?
+    @Transient
+    val icon: Drawable? = null
 )

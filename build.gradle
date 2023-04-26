@@ -41,6 +41,7 @@ buildscript {
 
 plugins {
     id "com.diffplug.spotless" version "5.0.0"
+    id "org.jetbrains.kotlin.plugin.serialization" version "1.8.0"
 }
 
 subprojects {

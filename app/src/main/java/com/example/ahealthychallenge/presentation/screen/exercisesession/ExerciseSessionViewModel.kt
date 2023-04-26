@@ -32,8 +32,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.ahealthychallenge.data.*
+import com.example.ahealthychallenge.data.serializables.ExerciseSessionSerializable
+import com.example.ahealthychallenge.data.serializables.SerializableFactory
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import java.io.IOException
 import java.time.Duration
@@ -43,12 +49,16 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 import kotlin.random.Random
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
 
 class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectManager) :
     ViewModel() {
     private val healthConnectCompatibleApps = healthConnectManager.healthConnectCompatibleApps
     private lateinit var database: DatabaseReference
     val TAG = "ExerciseSessionViewModel"
+
     // TODO: manage permissions that we need
     val permissions = setOf(
         HealthPermission.getWritePermission(ExerciseSessionRecord::class),
@@ -125,6 +135,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             .readExerciseSessions(startOfDay.toInstant(), now)
             .map { record ->
                 val packageName = record.metadata.dataOrigin.packageName
+                //Log.d(TAG,  "the package name is: $packageName")
                 val sessionData = healthConnectManager.readAssociatedSessionData(record.metadata.id)
                 // TODO: pass the entire session data: add sessionData property in ExerciseSession
                 ExerciseSession(
@@ -142,10 +153,43 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             }
         sessionsList.value = sessions
 
+        val sessionsSerializable = sessions.map { session ->
+            SerializableFactory.getExerciseSessionSerializable(session)
+        }
         // write in the realtime database
         database = Firebase.database.reference
-        database.child("exerciseSessions").child("Matelot_P4tr1ck001").setValue("sessions")
-        Log.d(TAG, "DATABASE")
+        database.child("exerciseSessions")
+            .child("Matelot_P4tr1ck001")
+            .setValue(
+                Json.encodeToString(
+                    sessionsSerializable[0]
+                )
+            )
+
+        val sessionListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val exerciseSession = dataSnapshot.getValue<String>()
+                if (exerciseSession != null) {
+                    val json = Json {
+                        prettyPrint = true
+                    }
+                    Log.d(TAG, "FROM DB: $exerciseSession")
+                    val jsonSessionElement = json.parseToJsonElement(exerciseSession)
+                    val sessionDeserializable = json.decodeFromJsonElement<ExerciseSessionSerializable>(jsonSessionElement)
+                    val finalSession = SerializableFactory.getExerciseSession(sessionDeserializable)
+                    Log.d(TAG, "CLASS DESERIALIZED: $finalSession")
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+
+        val Session = database.child("exerciseSessions")
+            .child("Matelot_P4tr1ck001").addValueEventListener(sessionListener)
 
         val sevenDays = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(31)
         stepsList.value = healthConnectManager.readStepSession(sevenDays.toInstant())

@@ -32,6 +32,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.ahealthychallenge.data.*
+import com.example.ahealthychallenge.data.serializables.DurationSerializable
 import com.example.ahealthychallenge.data.serializables.ExerciseSessionSerializable
 import com.example.ahealthychallenge.data.serializables.SerializableFactory
 import com.google.firebase.database.DataSnapshot
@@ -49,9 +50,6 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 import kotlin.random.Random
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
 
 class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectManager) :
     ViewModel() {
@@ -151,35 +149,31 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                     title = record.title
                 )
             }
-        sessionsList.value = sessions
 
         val sessionsSerializable = sessions.map { session ->
             SerializableFactory.getExerciseSessionSerializable(session)
         }
         // write in the realtime database
+        //TODO: add a loading animation when the data is retrieved
         database = Firebase.database.reference
-        database.child("exerciseSessions")
+        database
+            .child("exerciseSessions")
             .child("Matelot_P4tr1ck001")
-            .setValue(
-                Json.encodeToString(
-                    sessionsSerializable[0]
-                )
-            )
+            .setValue(sessionsSerializable)
 
+        var sessionsDb: List<ExerciseSession>
         val sessionListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val exerciseSession = dataSnapshot.getValue<String>()
-                if (exerciseSession != null) {
-                    val json = Json {
-                        prettyPrint = true
+                val dbExerciseSessionsSerializable =
+                    dataSnapshot.getValue<List<ExerciseSessionSerializable>>()
+                if (dbExerciseSessionsSerializable != null) {
+                    sessionsDb = dbExerciseSessionsSerializable.map { session ->
+                        SerializableFactory.getExerciseSession(session)
                     }
-                    Log.d(TAG, "FROM DB: $exerciseSession")
-                    val jsonSessionElement = json.parseToJsonElement(exerciseSession)
-                    val sessionDeserializable = json.decodeFromJsonElement<ExerciseSessionSerializable>(jsonSessionElement)
-                    val finalSession = SerializableFactory.getExerciseSession(sessionDeserializable)
-                    Log.d(TAG, "CLASS DESERIALIZED: $finalSession")
+                    sessionsList.value = sessionsDb
+                } else {
+                    Log.d(TAG, "The list is null, isn't it?")
                 }
-
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -187,10 +181,10 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-
-        val Session = database.child("exerciseSessions")
-            .child("Matelot_P4tr1ck001").addValueEventListener(sessionListener)
-
+        database
+            .child("exerciseSessions")
+            .child("Matelot_P4tr1ck001")
+            .addValueEventListener(sessionListener)
         val sevenDays = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(31)
         stepsList.value = healthConnectManager.readStepSession(sevenDays.toInstant())
     }

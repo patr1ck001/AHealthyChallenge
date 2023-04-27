@@ -7,6 +7,7 @@ import androidx.health.connect.client.units.Length
 import androidx.health.connect.client.units.Velocity
 import com.example.ahealthychallenge.data.ExerciseSession
 import com.example.ahealthychallenge.data.ExerciseSessionData
+import com.example.ahealthychallenge.data.HealthConnectAppInfo
 import com.example.ahealthychallenge.data.serializables.SerializableFactory.getExerciseSessionData
 import java.time.Duration
 import java.time.Instant
@@ -16,7 +17,7 @@ import java.time.ZonedDateTime
 
 object SerializableFactory {
     fun getDuration(durationSerializable: DurationSerializable): Duration {
-        return Duration.ofSeconds(durationSerializable.DurationInSeconds)
+        return Duration.ofSeconds(durationSerializable.durationInSeconds)
     }
 
     fun getDurationSerializable(duration: Duration?): DurationSerializable? {
@@ -265,7 +266,13 @@ object SerializableFactory {
             getZoneDataTimeSerializable(exerciseSession.endTime),
             exerciseSession.id,
             exerciseSession.title,
-            exerciseSession.sourceAppInfo
+            exerciseSession.sourceAppInfo?.let {
+                HealthConnectAppInfo(
+                    it.packageName,
+                    exerciseSession.sourceAppInfo.appLabel,
+                    null
+                )
+            }
         )
     }
 

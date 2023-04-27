@@ -3,5 +3,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DurationSerializable (
-    val DurationInSeconds: Long
+    val durationInSeconds: Long = 0
     )

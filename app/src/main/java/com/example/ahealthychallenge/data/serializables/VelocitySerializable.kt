@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VelocitySerializable(
-    val value: Double,
-    val type: String
+    val value: Double = 0.0,
+    val type: String = "KILOMETERS_PER_HOUR"
 )

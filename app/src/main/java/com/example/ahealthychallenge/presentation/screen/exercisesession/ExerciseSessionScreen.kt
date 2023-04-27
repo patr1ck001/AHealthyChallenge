@@ -15,7 +15,10 @@
  */
 package com.example.ahealthychallenge.presentation.screen.exercisesession
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.Log
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -42,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.res.TypedArrayUtils.getText
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.*
@@ -135,7 +139,7 @@ fun ExerciseSessionScreen(
                         name = session.title ?: stringResource(R.string.no_title),
                         steps = "0",
                         sourceAppName = appInfo?.appLabel ?: stringResource(R.string.unknown_app),
-                        sourceAppIcon = appInfo?.icon,
+                        sourceAppIcon =  getIcon(appInfo?.packageName, LocalContext.current),
                         onDeleteClick = { uid ->
                             onDeleteClick(uid)
                         },
@@ -196,6 +200,15 @@ fun ExerciseSessionScreen(
                 }
             }
         }
+    }
+}
+
+fun getIcon(packageName: String?, context: Context): Drawable? {
+
+    return when(packageName){
+        "com.sec.android.app.shealth" -> AppCompatResources.getDrawable(context, R.drawable.ic_samsung_health_logo)
+        "com.google.android.apps.fitness" -> AppCompatResources.getDrawable(context, R.drawable.ic_google_fit_logo)
+        else -> AppCompatResources.getDrawable(context, R.drawable.ic_samsung_health_logo)
     }
 }
 

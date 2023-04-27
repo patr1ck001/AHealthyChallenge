@@ -140,5 +140,7 @@
     <string name="manage">Manage Health Connect</string>
     <string name="disconnect">Disconnect Health Connect</string>
 
-
+    <!-- Package name -->
+    <string name="samsungHealth">com.sec.android.app.shealth</string>
+    <string name="googleFit">com.google.android.apps.fitness</string>
 </resources>

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ExerciseSessionDataSerializable(
-    val uid: String,
+    val uid: String = "null_uid",
     val totalActiveTime: DurationSerializable? = null,
     val totalSteps: Long? = null,
     val totalDistance: LengthSerializable? = null,

@@ -24,8 +24,8 @@ import kotlinx.serialization.Transient
  */
 @Serializable
 data class HealthConnectAppInfo(
-    val packageName: String,
-    val appLabel: String,
+    val packageName: String = "null_package_name",
+    val appLabel: String = "app_label",
     @Transient
     val icon: Drawable? = null
 )

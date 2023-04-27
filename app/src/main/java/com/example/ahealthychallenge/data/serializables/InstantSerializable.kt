@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class InstantSerializable(
-    val epochSecond: Long
+    val epochSecond: Long = 0
 )

@@ -6,5 +6,5 @@ import java.time.Instant
 @Serializable
 data class HRSampleSerializable(
     val time: InstantSerializable = SerializableFactory.getInstantSerializable(Instant.now()),
-    @androidx.annotation.IntRange(from = 1, to = 300) val beatsPerMinute: Long
+    @androidx.annotation.IntRange(from = 1, to = 300) val beatsPerMinute: Long = 1
 )

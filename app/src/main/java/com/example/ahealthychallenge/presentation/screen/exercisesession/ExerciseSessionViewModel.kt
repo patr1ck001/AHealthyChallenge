@@ -32,7 +32,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.ahealthychallenge.data.*
-import com.example.ahealthychallenge.data.serializables.DurationSerializable
+import com.example.ahealthychallenge.data.serializables.DailySessionsListSerializable
 import com.example.ahealthychallenge.data.serializables.ExerciseSessionSerializable
 import com.example.ahealthychallenge.data.serializables.SerializableFactory
 import com.google.firebase.database.DataSnapshot
@@ -78,6 +78,10 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
     var sessionsList: MutableState<List<ExerciseSession>> = mutableStateOf(listOf())
         private set
+
+    var dailySessionsList: MutableState<DailySessionsList> = mutableStateOf(DailySessionsList())
+        private set
+
     var stepsList: MutableState<List<StepSession>> = mutableStateOf(listOf())
         private set
 
@@ -129,9 +133,8 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
     private suspend fun readExerciseSessions() {
         val startOfDay = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
         val now = Instant.now()
-        val sessions = healthConnectManager
-            .readExerciseSessions(startOfDay.toInstant(), now)
-            .map { record ->
+        val sessions =
+            healthConnectManager.readExerciseSessions(startOfDay.toInstant(), now).map { record ->
                 val packageName = record.metadata.dataOrigin.packageName
                 //Log.d(TAG,  "the package name is: $packageName")
                 val sessionData = healthConnectManager.readAssociatedSessionData(record.metadata.id)
@@ -140,19 +143,33 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                     exerciseType = record.exerciseType,
                     sessionData = sessionData, // retrieve duration and distance
                     startTime = dateTimeWithOffsetOrDefault(
-                        record.startTime,
-                        record.startZoneOffset
+                        record.startTime, record.startZoneOffset
                     ),
-                    endTime = dateTimeWithOffsetOrDefault(record.startTime, record.startZoneOffset),
+                    endTime = dateTimeWithOffsetOrDefault(
+                        record.startTime, record.startZoneOffset
+                    ),
                     id = record.metadata.id,
                     sourceAppInfo = healthConnectCompatibleApps[packageName],
                     title = record.title
                 )
             }
+        var dailyDuration = Duration.ofSeconds(0)
+        sessions.forEach {
+            dailyDuration = dailyDuration.plus(it.sessionData.totalActiveTime)
+        }
+
+        val dailySessionsSummary = DailySessionsSummary(
+            startOfDay.dayOfWeek, startOfDay.month, startOfDay.dayOfMonth, dailyDuration
+        )
+        val todaySessionsList = DailySessionsList(dailySessionsSummary, sessions)
+        dailySessionsList.value = todaySessionsList
 
         val sessionsSerializable = sessions.map { session ->
             SerializableFactory.getExerciseSessionSerializable(session)
         }
+
+        val sessionsListSerializable = SerializableFactory.getDailySessionsListSerializable(todaySessionsList)
+
         // write in the realtime database
         //TODO: add a loading animation when the data is retrieved
         database = Firebase.database.reference
@@ -170,6 +187,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                     sessionsDb = dbExerciseSessionsSerializable.map { session ->
                         SerializableFactory.getExerciseSession(session)
                     }
+                    Log.d(TAG, "The date is the following: ${sessionsDb[0].startTime}")
                     sessionsList.value = sessionsDb
                 } else {
                     Log.d(TAG, "The list is null, isn't it?")
@@ -181,9 +199,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        database
-            .child("exerciseSessions")
-            .child("Matelot_P4tr1ck001")
+        database.child("exerciseSessions").child("Matelot_P4tr1ck001")
             .addValueEventListener(sessionListener)
         val sevenDays = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(31)
         stepsList.value = healthConnectManager.readStepSession(sevenDays.toInstant())
@@ -232,8 +248,7 @@ class ExerciseSessionViewModelFactory(
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ExerciseSessionViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ExerciseSessionViewModel(
+            @Suppress("UNCHECKED_CAST") return ExerciseSessionViewModel(
                 healthConnectManager = healthConnectManager
             ) as T
         }

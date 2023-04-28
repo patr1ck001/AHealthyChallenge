@@ -5,10 +5,7 @@ import androidx.health.connect.client.records.SpeedRecord
 import androidx.health.connect.client.units.Energy
 import androidx.health.connect.client.units.Length
 import androidx.health.connect.client.units.Velocity
-import com.example.ahealthychallenge.data.ExerciseSession
-import com.example.ahealthychallenge.data.ExerciseSessionData
-import com.example.ahealthychallenge.data.HealthConnectAppInfo
-import com.example.ahealthychallenge.data.serializables.SerializableFactory.getExerciseSessionData
+import com.example.ahealthychallenge.data.*
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
@@ -275,5 +272,42 @@ object SerializableFactory {
             }
         )
     }
+
+    fun getDailySessionSummarySerializable(dailySessionsSummary: DailySessionsSummary): DailySessionSummarySerializable {
+        return DailySessionSummarySerializable(
+            dailySessionsSummary.dayOfWeek,
+            dailySessionsSummary.month,
+            dailySessionsSummary.dayOfMonth,
+            getDurationSerializable(dailySessionsSummary.totalActiveTime)
+        )
+    }
+
+    fun getDailySessionSummary(dailySessionSummarySerializable: DailySessionSummarySerializable): DailySessionsSummary {
+        return DailySessionsSummary(
+            dailySessionSummarySerializable.dayOfWeek,
+            dailySessionSummarySerializable.month,
+            dailySessionSummarySerializable.dayOfMonth,
+            dailySessionSummarySerializable.totalActiveTime?.let { getDuration(it) }
+        )
+    }
+
+    fun getDailySessionsListSerializable(dailySessionsList: DailySessionsList): DailySessionsListSerializable{
+        return DailySessionsListSerializable(
+            getDailySessionSummarySerializable(dailySessionsList.dailySessionsSummary),
+            dailySessionsList.exerciseSessions.map {
+                session -> getExerciseSessionSerializable(session)
+            }
+        )
+    }
+
+    fun getDailySessionsList(dailySessionsListSerializable: DailySessionsListSerializable): DailySessionsList{
+        return DailySessionsList(
+            getDailySessionSummary(dailySessionsListSerializable.dailySessionsSummary),
+            dailySessionsListSerializable.exerciseSessions.map {
+                    session -> getExerciseSession(session)
+            }
+        )
+    }
+
 
 }

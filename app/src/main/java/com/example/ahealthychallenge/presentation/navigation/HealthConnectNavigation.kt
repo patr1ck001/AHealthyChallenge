@@ -88,6 +88,7 @@ fun HealthConnectNavigation(
             )
             val permissionsGranted by viewModel.permissionsGranted
             val sessionsList by viewModel.sessionsList
+            val dailySessionsList by viewModel.dailySessionsList
             val stepsList by viewModel.stepsList
             val permissions = viewModel.permissions
             val onPermissionsResult = {viewModel.initialLoad()}
@@ -98,6 +99,7 @@ fun HealthConnectNavigation(
                 permissionsGranted = permissionsGranted,
                 permissions = permissions,
                 sessionsList = sessionsList,
+                dailySessionsList = dailySessionsList,
                 stepsList = stepsList,
                 uiState = viewModel.uiState,
                 onInsertClick = {

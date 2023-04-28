@@ -65,6 +65,7 @@ fun ExerciseSessionScreen(
     permissions: Set<String>,
     permissionsGranted: Boolean,
     sessionsList: List<ExerciseSession>,
+    dailySessionsList: DailySessionsList,
     stepsList: List<StepSession>,
     uiState: ExerciseSessionViewModel.UiState,
     onInsertClick: () -> Unit = {},
@@ -247,6 +248,7 @@ fun ExerciseSessionScreenPreview() {
 //                    sourceAppInfo = appInfo
 //                )
             ),
+            dailySessionsList = DailySessionsList(),
             uiState = ExerciseSessionViewModel.UiState.Done,
             stepsList = listOf(
                 StepSession(

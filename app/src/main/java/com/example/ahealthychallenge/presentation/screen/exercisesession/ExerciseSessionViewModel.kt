@@ -131,10 +131,10 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
     }
 
     private suspend fun readExerciseSessions() {
-        val startOfDay = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
+        val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
         val now = Instant.now()
         val sessions =
-            healthConnectManager.readExerciseSessions(startOfDay.toInstant(), now).map { record ->
+            healthConnectManager.readExerciseSessions(today.toInstant(), now).map { record ->
                 val packageName = record.metadata.dataOrigin.packageName
                 //Log.d(TAG,  "the package name is: $packageName")
                 val sessionData = healthConnectManager.readAssociatedSessionData(record.metadata.id)
@@ -158,11 +158,9 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             dailyDuration = dailyDuration.plus(it.sessionData.totalActiveTime)
         }
 
-        val dailySessionsSummary = DailySessionsSummary(
-            startOfDay.dayOfWeek, startOfDay.month, startOfDay.dayOfMonth, dailyDuration
-        )
+        val dailySessionsSummary = DailySessionsSummary(today,dailyDuration)
         val todaySessionsList = DailySessionsList(dailySessionsSummary, sessions)
-        dailySessionsList.value = todaySessionsList
+        //dailySessionsList.value = todaySessionsList
 
         val sessionsSerializable = sessions.map { session ->
             SerializableFactory.getExerciseSessionSerializable(session)
@@ -173,27 +171,21 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         // write in the realtime database
         //TODO: add a loading animation when the data is retrieved
         database = Firebase.database.reference
+        //TODO: update the database with the sessionsList of today at the position of a list of
+        // DailySessionsList, and then retrieve from the database a list of DailySessionsList
         database
             .child("exerciseSessions")
             .child("Matelot_P4tr1ck001")
-            .setValue(sessionsSerializable)
-
-        database
-            .child("exerciseSessions")
-            .child("sessionList")
             .setValue(sessionsListSerializable)
 
-        var sessionsDb: List<ExerciseSession>
+        var sessionsDb: DailySessionsList
         val sessionListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val dbExerciseSessionsSerializable =
-                    dataSnapshot.getValue<List<ExerciseSessionSerializable>>()
+                    dataSnapshot.getValue<DailySessionsListSerializable>()
                 if (dbExerciseSessionsSerializable != null) {
-                    sessionsDb = dbExerciseSessionsSerializable.map { session ->
-                        SerializableFactory.getExerciseSession(session)
-                    }
-                    Log.d(TAG, "The date is the following: ${sessionsDb[0].startTime}")
-                    sessionsList.value = sessionsDb
+                    sessionsDb = SerializableFactory.getDailySessionsList(dbExerciseSessionsSerializable)
+                    dailySessionsList.value = sessionsDb
                 } else {
                     Log.d(TAG, "The list is null, isn't it?")
                 }
@@ -204,7 +196,9 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        database.child("exerciseSessions").child("Matelot_P4tr1ck001")
+        database
+            .child("exerciseSessions")
+            .child("Matelot_P4tr1ck001")
             .addValueEventListener(sessionListener)
         val sevenDays = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(31)
         stepsList.value = healthConnectManager.readStepSession(sevenDays.toInstant())

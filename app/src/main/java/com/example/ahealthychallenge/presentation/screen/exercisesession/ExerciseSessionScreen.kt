@@ -79,7 +79,8 @@ fun ExerciseSessionScreen(
     // Remember the last error ID, such that it is possible to avoid re-launching the error
     // notification for the same error when the screen is recomposed, or configuration changes etc.
     val errorId = rememberSaveable { mutableStateOf(UUID.randomUUID()) }
-
+    lateinit var currentDate: ZonedDateTime
+    var isCurrentDatePrinted = false
     LaunchedEffect(uiState) {
         // If the initial data load has not taken place, attempt to load the data.
         if (uiState is ExerciseSessionViewModel.UiState.Uninitialized) {
@@ -112,7 +113,7 @@ fun ExerciseSessionScreen(
                         Text(text = stringResource(R.string.permissions_button_label))
                     }
                 }
-            } else if (sessionsList.isNotEmpty()) {
+            } else if (dailySessionsList.exerciseSessions.isNotEmpty()) {
                 item {
                     Button(
                         modifier = Modifier
@@ -127,9 +128,13 @@ fun ExerciseSessionScreen(
                     }
                 }
 
-                items(sessionsList) { session ->
+                items(dailySessionsList.exerciseSessions) { session ->
                     Log.d(TAG, "${session.sessionData.totalActiveTime?.formatTime()}")
                     val appInfo = session.sourceAppInfo
+                    if(!isCurrentDatePrinted){
+                        ExerciseSessionSeparator(dailySessionsSummary = dailySessionsList.dailySessionsSummary)
+                        isCurrentDatePrinted = !isCurrentDatePrinted
+                    }
                     ExerciseSessionRow(
                         exerciseType = session.exerciseType,
                         start = session.startTime,

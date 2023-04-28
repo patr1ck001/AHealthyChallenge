@@ -275,18 +275,14 @@ object SerializableFactory {
 
     fun getDailySessionSummarySerializable(dailySessionsSummary: DailySessionsSummary): DailySessionSummarySerializable {
         return DailySessionSummarySerializable(
-            dailySessionsSummary.dayOfWeek,
-            dailySessionsSummary.month,
-            dailySessionsSummary.dayOfMonth,
+            getZoneDataTimeSerializable(dailySessionsSummary.date),
             getDurationSerializable(dailySessionsSummary.totalActiveTime)
         )
     }
 
     fun getDailySessionSummary(dailySessionSummarySerializable: DailySessionSummarySerializable): DailySessionsSummary {
         return DailySessionsSummary(
-            dailySessionSummarySerializable.dayOfWeek,
-            dailySessionSummarySerializable.month,
-            dailySessionSummarySerializable.dayOfMonth,
+            getZoneDataTime(dailySessionSummarySerializable.date),
             dailySessionSummarySerializable.totalActiveTime?.let { getDuration(it) }
         )
     }

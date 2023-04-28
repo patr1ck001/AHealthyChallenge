@@ -1,0 +1,132 @@
+package com.example.ahealthychallenge.presentation.screen.exercisesession
+
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.ahealthychallenge.R
+import com.example.ahealthychallenge.data.DailySessionsSummary
+import com.example.ahealthychallenge.data.formatTime
+import java.time.DayOfWeek
+import java.time.Duration
+import java.time.Month
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
+
+@Composable
+fun ExerciseSessionSeparator(
+    dailySessionsSummary: DailySessionsSummary
+) {
+    val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
+    Column(
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            if (
+                dailySessionsSummary.date.year == today.year &&
+                dailySessionsSummary.date.month == today.month &&
+                dailySessionsSummary.date.dayOfMonth == today.dayOfMonth
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colors.primary,
+                    style = MaterialTheme.typography.caption,
+                    text = stringResource(R.string.today)
+                )
+            } else if (
+                dailySessionsSummary.date.year == today.year &&
+                dailySessionsSummary.date.month == today.month &&
+                dailySessionsSummary.date.dayOfMonth == today.dayOfMonth.minus(1)
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colors.primary,
+                    style = MaterialTheme.typography.caption,
+                    text = stringResource(R.string.yesterday)
+                )
+            } else {
+                Text(
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colors.primary,
+                    style = MaterialTheme.typography.caption,
+                    text = stringResource(
+                        R.string.session_summary_layout,
+                        getDayOfWeek(dailySessionsSummary.date.dayOfWeek),
+                        getMonth(dailySessionsSummary.date.month),
+                        dailySessionsSummary.date.dayOfMonth.toString()
+                    )
+                )
+            }
+            Text(
+                modifier = Modifier.weight(
+                    1f,
+                    false
+                ), // to align the element to the bottom of the row
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.primary,
+                style = MaterialTheme.typography.caption,
+                text = dailySessionsSummary.totalActiveTime?.formatTime().toString()
+            )
+        }
+        /*Icon(
+            painter = painterResource(id = R.drawable.ic_horizontal_line),
+            tint = Color.LightGray,
+            contentDescription = null,
+        )*/
+    }
+}
+
+fun getMonth(month: Month): String {
+    return when (month) {
+        Month.JANUARY -> "Jan"
+        Month.FEBRUARY -> "Feb"
+        Month.MARCH -> "Mar"
+        Month.APRIL -> "Apr"
+        Month.MAY -> "May"
+        Month.JUNE -> "Jun"
+        Month.JULY -> "Jul"
+        Month.AUGUST -> "Aug"
+        Month.SEPTEMBER -> "Sep"
+        Month.OCTOBER -> "Oct"
+        Month.NOVEMBER -> "Nov"
+        Month.DECEMBER -> "Dec"
+    }
+}
+
+fun getDayOfWeek(dayOfWeek: DayOfWeek): String {
+    return when (dayOfWeek) {
+        DayOfWeek.MONDAY -> "Mon"
+        DayOfWeek.TUESDAY -> "Tue"
+        DayOfWeek.WEDNESDAY -> "Wed"
+        DayOfWeek.THURSDAY -> "Thu"
+        DayOfWeek.FRIDAY -> "Fri"
+        DayOfWeek.SATURDAY -> "Sat"
+        DayOfWeek.SUNDAY -> "Sun"
+    }
+}
+
+@Preview
+@Composable
+fun ExerciseSessionSeparatorPreview() {
+    ExerciseSessionSeparator(
+        dailySessionsSummary = DailySessionsSummary(
+            ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS),
+            Duration.ofSeconds(2000)
+        )
+    )
+}

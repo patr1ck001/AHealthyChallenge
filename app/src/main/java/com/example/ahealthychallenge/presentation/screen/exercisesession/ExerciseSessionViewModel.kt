@@ -178,6 +178,11 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             .child("Matelot_P4tr1ck001")
             .setValue(sessionsSerializable)
 
+        database
+            .child("exerciseSessions")
+            .child("sessionList")
+            .setValue(sessionsListSerializable)
+
         var sessionsDb: List<ExerciseSession>
         val sessionListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {

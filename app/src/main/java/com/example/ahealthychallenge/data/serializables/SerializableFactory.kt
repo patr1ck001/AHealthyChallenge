@@ -305,5 +305,19 @@ object SerializableFactory {
         )
     }
 
+    fun getDailyExerciseSessionKeySerializable(dailyExerciseSessionKey: DailyExerciseSessionKey) : DailyExerciseSessionKeySerializable{
+        return DailyExerciseSessionKeySerializable(
+            getZoneDataTimeSerializable(dailyExerciseSessionKey.date),
+            dailyExerciseSessionKey.key
+        )
+    }
+
+    fun getDailyExerciseSessionKey(dailyExerciseSessionKeySerializable: DailyExerciseSessionKeySerializable) : DailyExerciseSessionKey{
+        return DailyExerciseSessionKey(
+            getZoneDataTime(dailyExerciseSessionKeySerializable.date),
+            dailyExerciseSessionKeySerializable.key
+        )
+    }
+
 
 }

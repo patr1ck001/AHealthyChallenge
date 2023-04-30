@@ -60,12 +60,14 @@ import java.util.UUID
  * Shows a list of [ExerciseSessionRecord]s from today.
  */
 const val TAG = "ExerciseSessionScreen"
+
 @Composable
 fun ExerciseSessionScreen(
     permissions: Set<String>,
     permissionsGranted: Boolean,
     sessionsList: List<ExerciseSession>,
     dailySessionsList: DailySessionsList,
+    allSessions: List<DailySessionsList>,
     stepsList: List<StepSession>,
     uiState: ExerciseSessionViewModel.UiState,
     onInsertClick: () -> Unit = {},
@@ -128,31 +130,34 @@ fun ExerciseSessionScreen(
                     }
                 }
 
-                items(dailySessionsList.exerciseSessions) { session ->
-                    Log.d(TAG, "${session.sessionData.totalActiveTime?.formatTime()}")
-                    val appInfo = session.sourceAppInfo
-                    if(!isCurrentDatePrinted){
+                allSessions.forEach { dailySessionsList ->
+                    item {
                         ExerciseSessionSeparator(dailySessionsSummary = dailySessionsList.dailySessionsSummary)
-                        isCurrentDatePrinted = !isCurrentDatePrinted
                     }
-                    ExerciseSessionRow(
-                        exerciseType = session.exerciseType,
-                        start = session.startTime,
-                        end = session.endTime,
-                        duration = session.sessionData.totalActiveTime,
-                        distance = session.sessionData.totalDistance,
-                        uid = session.id,
-                        name = session.title ?: stringResource(R.string.no_title),
-                        steps = "0",
-                        sourceAppName = appInfo?.appLabel ?: stringResource(R.string.unknown_app),
-                        sourceAppIcon =  getIcon(appInfo?.packageName, LocalContext.current),
-                        onDeleteClick = { uid ->
-                            onDeleteClick(uid)
-                        },
-                        onDetailsClick = { uid ->
-                            onDetailsClick(uid)
-                        }
-                    )
+                    items(dailySessionsList.exerciseSessions) { session ->
+                        Log.d(TAG, "${session.sessionData.totalActiveTime?.formatTime()}")
+                        val appInfo = session.sourceAppInfo
+                        ExerciseSessionRow(
+                            exerciseType = session.exerciseType,
+                            start = session.startTime,
+                            end = session.endTime,
+                            duration = session.sessionData.totalActiveTime,
+                            distance = session.sessionData.totalDistance,
+                            uid = session.id,
+                            name = session.title ?: stringResource(R.string.no_title),
+                            steps = "0",
+                            sourceAppName = appInfo?.appLabel
+                                ?: stringResource(R.string.unknown_app),
+                            sourceAppIcon = getIcon(appInfo?.packageName, LocalContext.current),
+                            onDeleteClick = { uid ->
+                                onDeleteClick(uid)
+                            },
+                            onDetailsClick = { uid ->
+                                onDetailsClick(uid)
+                            }
+                        )
+                    }
+
                 }
             }
         }
@@ -211,9 +216,15 @@ fun ExerciseSessionScreen(
 
 fun getIcon(packageName: String?, context: Context): Drawable? {
 
-    return when(packageName){
-        "com.sec.android.app.shealth" -> AppCompatResources.getDrawable(context, R.drawable.ic_samsung_health_logo)
-        "com.google.android.apps.fitness" -> AppCompatResources.getDrawable(context, R.drawable.ic_google_fit_logo)
+    return when (packageName) {
+        "com.sec.android.app.shealth" -> AppCompatResources.getDrawable(
+            context,
+            R.drawable.ic_samsung_health_logo
+        )
+        "com.google.android.apps.fitness" -> AppCompatResources.getDrawable(
+            context,
+            R.drawable.ic_google_fit_logo
+        )
         else -> AppCompatResources.getDrawable(context, R.drawable.ic_samsung_health_logo)
     }
 }
@@ -254,6 +265,7 @@ fun ExerciseSessionScreenPreview() {
 //                )
             ),
             dailySessionsList = DailySessionsList(),
+            allSessions = listOf(DailySessionsList()),
             uiState = ExerciseSessionViewModel.UiState.Done,
             stepsList = listOf(
                 StepSession(

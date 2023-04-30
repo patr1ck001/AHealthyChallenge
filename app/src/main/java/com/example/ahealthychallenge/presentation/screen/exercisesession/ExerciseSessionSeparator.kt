@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -16,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.DailySessionsSummary
 import com.example.ahealthychallenge.data.formatTime
@@ -83,11 +85,7 @@ fun ExerciseSessionSeparator(
                 text = dailySessionsSummary.totalActiveTime?.formatTime().toString()
             )
         }
-        /*Icon(
-            painter = painterResource(id = R.drawable.ic_horizontal_line),
-            tint = Color.LightGray,
-            contentDescription = null,
-        )*/
+        Divider(color = Color.LightGray, thickness = 2.dp)
     }
 }
 

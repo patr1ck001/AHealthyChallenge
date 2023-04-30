@@ -47,6 +47,8 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 import kotlin.random.Random
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectManager) :
     ViewModel() {
@@ -77,6 +79,9 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         private set
 
     var dailySessionsList: MutableState<DailySessionsList> = mutableStateOf(DailySessionsList())
+        private set
+
+    var allSessions: MutableState<List<DailySessionsList>> = mutableStateOf(listOf( DailySessionsList()))
         private set
 
     var stepsList: MutableState<List<StepSession>> = mutableStateOf(listOf())
@@ -195,6 +200,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             .child("keys")
             .get().addOnCompleteListener {
                 if (it.isSuccessful) {
+                    Log.d(TAG, "1")
                     val gti = object :
                         GenericTypeIndicator<MutableList<DailyExerciseSessionKeySerializable>>() {}
                     val dbKeys = it.result.getValue(gti)
@@ -271,15 +277,29 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             .child("Matelot_P4tr1ck001")
             .setValue(todaySessionsListSerializable)*/
 
-        var sessionsDb: DailySessionsList
+        var myMap : Map<String, DailySessionsListSerializable>?
+        var sessionsDb: List<DailySessionsList>?
         val sessionListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val dbExerciseSessionsSerializable =
-                    dataSnapshot.getValue<DailySessionsListSerializable>()
+                /*val dbExerciseSessionsSerializable =
+                    dataSnapshot.getValue<List<DailySessionsListSerializable>>()
                 if (dbExerciseSessionsSerializable != null) {
                     sessionsDb =
-                        SerializableFactory.getDailySessionsList(dbExerciseSessionsSerializable)
-                    dailySessionsList.value = sessionsDb
+                        dbExerciseSessionsSerializable.map {
+                            SerializableFactory.getDailySessionsList(it)
+                        }
+                    allSessions.value = sessionsDb
+                } else {
+                    Log.d(TAG, "The list is null, isn't it?")
+                }*/
+                myMap = dataSnapshot.getValue<Map<String, DailySessionsListSerializable>?>()
+                sessionsDb = myMap?.values?.toList()?.map {
+                    SerializableFactory.getDailySessionsList(it)
+                }
+                allSessions.value = sessionsDb!!
+                dailySessionsList.value = sessionsDb?.get(3)!!
+                if (myMap != null) {
+                   Log.d(TAG, "this is the thing: $sessionsDb")
                 } else {
                     Log.d(TAG, "The list is null, isn't it?")
                 }
@@ -293,7 +313,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         database.child("exerciseSessions")
             .child("userID")
             .child("exerciseSessions")
-            .child("my_best_key")
             .addValueEventListener(sessionListener)
         /*database
             .child("exerciseSessions")

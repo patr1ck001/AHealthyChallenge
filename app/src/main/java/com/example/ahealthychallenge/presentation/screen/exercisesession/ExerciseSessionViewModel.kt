@@ -84,6 +84,9 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
     var allSessions: MutableState<List<DailySessionsList>> = mutableStateOf(listOf( DailySessionsList()))
         private set
 
+    var loading: MutableState<Boolean> = mutableStateOf(false)
+        private set
+
     var stepsList: MutableState<List<StepSession>> = mutableStateOf(listOf())
         private set
 
@@ -139,6 +142,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         lateinit var todaySessionKey: String
         val sessions =
             healthConnectManager.readExerciseSessions(today.toInstant(), now).map { record ->
+                loading.value = true
                 val packageName = record.metadata.dataOrigin.packageName
                 //Log.d(TAG,  "the package name is: $packageName")
                 val sessionData = healthConnectManager.readAssociatedSessionData(record.metadata.id)
@@ -164,162 +168,195 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
         val dailySessionsSummary = DailySessionsSummary(today, dailyDuration)
         val todaySessionsList = DailySessionsList(dailySessionsSummary, sessions)
-        //dailySessionsList.value = todaySessionsList
 
 
-        val todaySessionsListSerializable = SerializableFactory.getDailySessionsListSerializable(todaySessionsList)
+        val todaySessionsListSerializable =
+            SerializableFactory.getDailySessionsListSerializable(todaySessionsList)
         // write in the realtime database
         //TODO: add a loading animation when the data is retrieved
         database = Firebase.database.reference
         //TODO: update the database with the sessionsList of today at the position of a list of
         // DailySessionsList, and then retrieve from the database a list of DailySessionsList
 
-        /*// add a key
-        val theKeys = listOf(
-            DailyExerciseSessionKey(today.minusDays(2), "my_best_key"),
-            DailyExerciseSessionKey(today, "my_best_key_2")
-        )
+        // set the database for the first time
+        /*// we need to have a list of key, so we push at least 2 sessions
+        // first session
+        val dailySessionsSummary1 = DailySessionsSummary(today.minusDays(2), dailyDuration)
+        val todaySessionsList1 = DailySessionsList(dailySessionsSummary1, sessions)
+        val todaySessionsListSerializable1 =
+            SerializableFactory.getDailySessionsListSerializable(todaySessionsList1)
 
-        // serial versions
-        val serialKeys =
-            theKeys.map { key -> SerializableFactory.getDailyExerciseSessionKeySerializable(key) }
-
-        database.child("exerciseSessions")
+        // push
+        val ref = database.child("exerciseSessions")
             .child("userID")
             .child("exerciseSessions")
-            .child("my_best_key")
-            .setValue(serialSessions)
 
-        database.child("exerciseSessions")
-            .child("userID")
-            .child("keys")
-            .setValue(serialKeys)*/
+        val newChildRef1 = ref.push()
+        val newKey1 = newChildRef1.key
+        Log.d(TAG, "the brand new key is: $newKey1")
+        if (newKey1 != null) {
+            // push today sessions
+            newChildRef1.setValue(todaySessionsListSerializable1)
 
-        database.child("exerciseSessions")
-            .child("userID")
-            .child("keys")
-            .get().addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.d(TAG, "1")
-                    val gti = object :
-                        GenericTypeIndicator<MutableList<DailyExerciseSessionKeySerializable>>() {}
-                    val dbKeys = it.result.getValue(gti)
-                    val keys: List<DailyExerciseSessionKey>
-                    if (dbKeys != null) {
-                        //Deserialize
-                        keys = dbKeys.map { key ->
-                            SerializableFactory.getDailyExerciseSessionKey(key)
-                        }
-                        // verify if we already pushed a key today
-                        val todaySKey = keys.filter {
-                            it.date == today
-                        }
-                        Log.d(TAG, "this is the list: $todaySKey")
-                        if (todaySKey.size == 1) {
-                            isTodaySessionPushed = true
-                            todaySessionKey = todaySKey[0].key
-                            Log.d(TAG, "era uguale a 1")
-                            Log.d(TAG, "the boolean is: $isTodaySessionPushed")
-                            Log.d(TAG, "the key is: $todaySessionKey")
-                        }
-
-                        //retrieve the session with the corresponding key
-                        val ref = database.child("exerciseSessions")
-                            .child("userID")
-                            .child("exerciseSessions")
-
-                        if (isTodaySessionPushed) {
-
-                            ref.child(todaySessionKey)
-                                .get().addOnSuccessListener {
-                                    //we check is the list of session on the database is up to date
-                                    val dbTodaySession = it.getValue<DailySessionsListSerializable>()
-                                    if (dbTodaySession != null) {
-                                        Log.d(TAG, "db list size: ${dbTodaySession.exerciseSessions.size}")
-                                        Log.d(TAG, "today list size: ${todaySessionsListSerializable.exerciseSessions.size}")
-                                        if(dbTodaySession.exerciseSessions.size < todaySessionsListSerializable.exerciseSessions.size){
-                                            // update the db with the new session list
-                                            ref.child(todaySessionKey).setValue(todaySessionsListSerializable)
-                                            Log.d(TAG, "that is what I thought")
-                                        }
-                                    }
-                                }.addOnFailureListener {
-                                    Log.e(TAG, "Error getting data", it)
-                                }
-                        } else {
-                            val newChildRef = ref.push()
-                            val newKey = newChildRef.key
-                            Log.d(TAG, "the brand new key is: $newKey")
-                            if (newKey != null) {
-                                // push today sessions
-                                newChildRef.setValue(todaySessionsListSerializable)
-
-                                // update the list of keys
-                                val newDailyExerciseSessionKey = DailyExerciseSessionKey(today, newKey)
-                                val newDailyExerciseSessionKeySerializable = SerializableFactory.getDailyExerciseSessionKeySerializable(newDailyExerciseSessionKey)
-                                dbKeys.add(newDailyExerciseSessionKeySerializable)
-                                database.child("exerciseSessions")
-                                    .child("userID")
-                                    .child("keys")
-                                    .setValue(dbKeys)
-
-                            }
-                        }
-                    }
-                } else {
-                    Log.d(TAG, it.exception?.message.toString())
-                }
-            }
-
-
-        /*database
-            .child("exerciseSessions")
-            .child("Matelot_P4tr1ck001")
-            .setValue(todaySessionsListSerializable)*/
-
-        var myMap : Map<String, DailySessionsListSerializable>?
-        var sessionsDb: List<DailySessionsList>?
-        val sessionListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                /*val dbExerciseSessionsSerializable =
-                    dataSnapshot.getValue<List<DailySessionsListSerializable>>()
-                if (dbExerciseSessionsSerializable != null) {
-                    sessionsDb =
-                        dbExerciseSessionsSerializable.map {
-                            SerializableFactory.getDailySessionsList(it)
-                        }
-                    allSessions.value = sessionsDb
-                } else {
-                    Log.d(TAG, "The list is null, isn't it?")
-                }*/
-                myMap = dataSnapshot.getValue<Map<String, DailySessionsListSerializable>?>()
-                sessionsDb = myMap?.values?.toList()?.map {
-                    SerializableFactory.getDailySessionsList(it)
-                }
-                allSessions.value = sessionsDb!!
-                dailySessionsList.value = sessionsDb?.get(3)!!
-                if (myMap != null) {
-                   Log.d(TAG, "this is the thing: $sessionsDb")
-                } else {
-                    Log.d(TAG, "The list is null, isn't it?")
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-            }
+            // add the list of keys
+            val newDailyExerciseSessionKey1 = DailyExerciseSessionKey(today.minusDays(2), newKey1)
+            val newDailyExerciseSessionKeySerializable1 =
+                SerializableFactory.getDailyExerciseSessionKeySerializable(
+                    newDailyExerciseSessionKey1
+                )
+            database.child("exerciseSessions")
+                .child("userID")
+                .child("keys")
+                .child("0")
+                .setValue(newDailyExerciseSessionKeySerializable1)
         }
-        database.child("exerciseSessions")
-            .child("userID")
-            .child("exerciseSessions")
-            .addValueEventListener(sessionListener)
-        /*database
-            .child("exerciseSessions")
-            .child("Matelot_P4tr1ck001")
-            .addValueEventListener(sessionListener)*/
-        val sevenDays = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(31)
-        stepsList.value = healthConnectManager.readStepSession(sevenDays.toInstant())
+
+        // second session
+        val dailySessionsSummary2 = DailySessionsSummary(today.minusDays(1), dailyDuration)
+        val todaySessionsList2 = DailySessionsList(dailySessionsSummary2, sessions)
+        val todaySessionsListSerializable2 =
+            SerializableFactory.getDailySessionsListSerializable(todaySessionsList2)
+
+
+        val newChildRef2 = ref.push()
+        val newKey2 = newChildRef2.key
+        Log.d(TAG, "the brand new key is: $newKey2")
+        if (newKey2 != null) {
+            // push today sessions
+            newChildRef2.setValue(todaySessionsListSerializable2)
+
+            // add the list of keys
+            val newDailyExerciseSessionKey2 = DailyExerciseSessionKey(today.minusDays(1), newKey2)
+            val newDailyExerciseSessionKeySerializable2 =
+                SerializableFactory.getDailyExerciseSessionKeySerializable(
+                    newDailyExerciseSessionKey2
+                )
+            database.child("exerciseSessions")
+                .child("userID")
+                .child("keys")
+                .child("1")
+                .setValue(newDailyExerciseSessionKeySerializable2)
+        }*/
+
+
+        // set the database when data already exist
+         database.child("exerciseSessions")
+             .child("userID")
+             .child("keys")
+             .get().addOnCompleteListener {
+                 if (it.isSuccessful) {
+                     val gti = object :
+                         GenericTypeIndicator<MutableList<DailyExerciseSessionKeySerializable>>() {}
+                     val dbKeys = it.result.getValue(gti)
+                     val keys: List<DailyExerciseSessionKey>
+                     if (dbKeys != null) {
+                         //Deserialize
+                         keys = dbKeys.map { key ->
+                             SerializableFactory.getDailyExerciseSessionKey(key)
+                         }
+                         // verify if we already pushed a key today
+                         val todaySKey = keys.filter {
+                             it.date == today
+                         }
+                         Log.d(TAG, "this is the list: $todaySKey")
+                         if (todaySKey.size == 1) {
+                             isTodaySessionPushed = true
+                             todaySessionKey = todaySKey[0].key
+                             Log.d(TAG, "the boolean is: $isTodaySessionPushed")
+                             Log.d(TAG, "the key is: $todaySessionKey")
+                         }
+
+                         //retrieve the session with the corresponding key
+                         val ref = database.child("exerciseSessions")
+                             .child("userID")
+                             .child("exerciseSessions")
+
+                         if (isTodaySessionPushed) {
+
+                             ref.child(todaySessionKey)
+                                 .get().addOnSuccessListener {
+                                     //we check is the list of session on the database is up to date
+                                     val dbTodaySession =
+                                         it.getValue<DailySessionsListSerializable>()
+                                     if (dbTodaySession != null) {
+                                         Log.d(
+                                             TAG,
+                                             "db list size: ${dbTodaySession.exerciseSessions.size}"
+                                         )
+                                         Log.d(
+                                             TAG,
+                                             "today list size: ${todaySessionsListSerializable.exerciseSessions.size}"
+                                         )
+                                         if (dbTodaySession.exerciseSessions.size < todaySessionsListSerializable.exerciseSessions.size) {
+                                             // update the db with the new session list
+                                             ref.child(todaySessionKey)
+                                                 .setValue(todaySessionsListSerializable)
+                                             Log.d(TAG, "that is what I thought")
+                                         }
+                                     }
+                                 }.addOnFailureListener {
+                                     Log.e(TAG, "Error getting data", it)
+                                 }
+                         } else {
+                             val newChildRef = ref.push()
+                             val newKey = newChildRef.key
+                             Log.d(TAG, "the brand new key is: $newKey")
+                             if (newKey != null) {
+                                 // push today sessions
+                                 newChildRef.setValue(todaySessionsListSerializable)
+
+                                 // update the list of keys
+                                 val newDailyExerciseSessionKey =
+                                     DailyExerciseSessionKey(today, newKey)
+                                 val newDailyExerciseSessionKeySerializable =
+                                     SerializableFactory.getDailyExerciseSessionKeySerializable(
+                                         newDailyExerciseSessionKey
+                                     )
+                                 dbKeys.add(newDailyExerciseSessionKeySerializable)
+                                 database.child("exerciseSessions")
+                                     .child("userID")
+                                     .child("keys")
+                                     .setValue(dbKeys)
+
+                             }
+                         }
+                     }
+                 } else {
+                     Log.d(TAG, it.exception?.message.toString())
+                 }
+             }
+
+
+         var myMap: Map<String, DailySessionsListSerializable>?
+         var sessionsDb: List<DailySessionsList>?
+         val sessionListener = object : ValueEventListener {
+             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                 myMap = dataSnapshot.getValue<Map<String, DailySessionsListSerializable>?>()
+                 sessionsDb = myMap?.values?.toList()?.map {
+                     SerializableFactory.getDailySessionsList(it)
+                 }
+                 allSessions.value = sessionsDb!!.sortedByDescending { it.dailySessionsSummary.date }
+                 loading.value = false
+                 //dailySessionsList.value = sessionsDb!![0]
+                 //sessionsList.value = sessionsDb!![0].exerciseSessions
+                 if (myMap != null) {
+                     Log.d(TAG, "this is the thing: ${sessionsDb!![0]}")
+                 } else {
+                     Log.d(TAG, "The list is null, isn't it?")
+                 }
+             }
+
+             override fun onCancelled(databaseError: DatabaseError) {
+                 // Getting Post failed, log a message
+                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+             }
+         }
+         database.child("exerciseSessions")
+             .child("userID")
+             .child("exerciseSessions")
+             .addValueEventListener(sessionListener)
+         val sevenDays = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(31)
+         stepsList.value = healthConnectManager.readStepSession(sevenDays.toInstant())
     }
 
     /**

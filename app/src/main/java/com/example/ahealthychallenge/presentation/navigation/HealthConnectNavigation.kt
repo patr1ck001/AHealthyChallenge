@@ -92,6 +92,7 @@ fun HealthConnectNavigation(
             val allSessions by viewModel.allSessions
             val stepsList by viewModel.stepsList
             val permissions = viewModel.permissions
+            val loading by viewModel.loading
             val onPermissionsResult = {viewModel.initialLoad()}
             val permissionsLauncher =
                 rememberLauncherForActivityResult(viewModel.permissionsLauncher) {
@@ -102,6 +103,7 @@ fun HealthConnectNavigation(
                 sessionsList = sessionsList,
                 dailySessionsList = dailySessionsList,
                 allSessions = allSessions,
+                loading = loading,
                 stepsList = stepsList,
                 uiState = viewModel.uiState,
                 onInsertClick = {

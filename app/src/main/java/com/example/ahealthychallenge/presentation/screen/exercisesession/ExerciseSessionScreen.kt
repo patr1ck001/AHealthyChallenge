@@ -20,13 +20,7 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -49,6 +43,7 @@ import androidx.core.content.res.TypedArrayUtils.getText
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.*
+import com.example.ahealthychallenge.presentation.component.CircularProgressBar
 import com.example.ahealthychallenge.presentation.component.ExerciseSessionRow
 import com.example.ahealthychallenge.presentation.component.StepSessionRow
 import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
@@ -67,6 +62,7 @@ fun ExerciseSessionScreen(
     permissionsGranted: Boolean,
     sessionsList: List<ExerciseSession>,
     dailySessionsList: DailySessionsList,
+    loading: Boolean,
     allSessions: List<DailySessionsList>,
     stepsList: List<StepSession>,
     uiState: ExerciseSessionViewModel.UiState,
@@ -81,8 +77,6 @@ fun ExerciseSessionScreen(
     // Remember the last error ID, such that it is possible to avoid re-launching the error
     // notification for the same error when the screen is recomposed, or configuration changes etc.
     val errorId = rememberSaveable { mutableStateOf(UUID.randomUUID()) }
-    lateinit var currentDate: ZonedDateTime
-    var isCurrentDatePrinted = false
     LaunchedEffect(uiState) {
         // If the initial data load has not taken place, attempt to load the data.
         if (uiState is ExerciseSessionViewModel.UiState.Uninitialized) {
@@ -100,41 +94,42 @@ fun ExerciseSessionScreen(
     }
 
     if (uiState != ExerciseSessionViewModel.UiState.Uninitialized) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (!permissionsGranted) {
-                item {
-                    Button(
-                        onClick = {
-                            onPermissionsLaunch(permissions)
-                        }
-                    ) {
-                        Text(text = stringResource(R.string.permissions_button_label))
-                    }
-                }
-            } else if (dailySessionsList.exerciseSessions.isNotEmpty()) {
-                item {
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp)
-                            .padding(4.dp),
-                        onClick = {
-                            onInsertClick()
-                        }
-                    ) {
-                        Text(stringResource(id = R.string.insert_exercise_session))
-                    }
-                }
 
-                allSessions.forEach { dailySessionsList ->
+        Box(
+            modifier = Modifier.fillMaxSize()
+        )
+        {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (!permissionsGranted) {
                     item {
-                        ExerciseSessionSeparator(dailySessionsSummary = dailySessionsList.dailySessionsSummary)
+                        Button(
+                            onClick = {
+                                onPermissionsLaunch(permissions)
+                            }
+                        ) {
+                            Text(text = stringResource(R.string.permissions_button_label))
+                        }
                     }
-                    items(dailySessionsList.exerciseSessions) { session ->
+                } else if (!loading && allSessions.isNotEmpty()) { // } else if (dailySessionsList.exerciseSessions.isNotEmpty()) { // } else if (sessionsList.isNotEmpty()) {
+                    item {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                                .padding(4.dp),
+                            onClick = {
+                                onInsertClick()
+                            }
+                        ) {
+                            Text(stringResource(id = R.string.insert_exercise_session))
+                        }
+                    }
+
+                    /*items(sessionsList) { session ->
                         Log.d(TAG, "${session.sessionData.totalActiveTime?.formatTime()}")
                         val appInfo = session.sourceAppInfo
                         ExerciseSessionRow(
@@ -156,60 +151,65 @@ fun ExerciseSessionScreen(
                                 onDetailsClick(uid)
                             }
                         )
-                    }
-
-                }
-            }
-        }
-        if (stepsList.isNotEmpty()) {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 160.dp)
-            ) {
-                val appInfo = stepsList.first().sourceAppInfo
-                appInfo?.let {
-                    item {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                modifier = Modifier
-                                    .padding(4.dp, 2.dp)
-                                    .height(16.dp)
-                                    .width(16.dp),
-                                painter = rememberDrawablePainter(drawable = it.icon),
-                                contentDescription = "App Icon"
-                            )
-                            Text(
-                                text = it.appLabel,
-                                fontStyle = FontStyle.Italic
+                    }*/
+                    /*items(dailySessionsList.exerciseSessions) { session ->
+                        Log.d(TAG, "${session.sessionData.totalActiveTime?.formatTime()}")
+                        val appInfo = session.sourceAppInfo
+                        ExerciseSessionRow(
+                            exerciseType = session.exerciseType,
+                            start = session.startTime,
+                            end = session.endTime,
+                            duration = session.sessionData.totalActiveTime,
+                            distance = session.sessionData.totalDistance,
+                            uid = session.id,
+                            name = session.title ?: stringResource(R.string.no_title),
+                            steps = "0",
+                            sourceAppName = appInfo?.appLabel
+                                ?: stringResource(R.string.unknown_app),
+                            sourceAppIcon = getIcon(appInfo?.packageName, LocalContext.current),
+                            onDeleteClick = { uid ->
+                                onDeleteClick(uid)
+                            },
+                            onDetailsClick = { uid ->
+                                onDetailsClick(uid)
+                            }
+                        )
+                    }*/
+                    allSessions.forEach { dailySessionsList ->
+                        item {
+                            ExerciseSessionSeparator(dailySessionsSummary = dailySessionsList.dailySessionsSummary)
+                        }
+                        items(dailySessionsList.exerciseSessions) { session ->
+                            Log.d(TAG, "${session.sessionData.totalActiveTime?.formatTime()}")
+                            val appInfo = session.sourceAppInfo
+                            ExerciseSessionRow(
+                                exerciseType = session.exerciseType,
+                                start = session.startTime,
+                                end = session.endTime,
+                                duration = session.sessionData.totalActiveTime,
+                                distance = session.sessionData.totalDistance,
+                                uid = session.id,
+                                name = session.title ?: stringResource(R.string.no_title),
+                                steps = "0",
+                                sourceAppName = appInfo?.appLabel
+                                    ?: stringResource(R.string.unknown_app),
+                                sourceAppIcon = getIcon(appInfo?.packageName, LocalContext.current),
+                                onDeleteClick = { uid ->
+                                    onDeleteClick(uid)
+                                },
+                                onDetailsClick = { uid ->
+                                    onDetailsClick(uid)
+                                }
                             )
                         }
-                    }
-                    item {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            val sum = stepsList.sumOf { it.count.toInt() }
-                            Text(
-                                text = String.format("%,d steps", sum),
-                                fontStyle = FontStyle.Italic
-                            )
-                        }
-                    }
-                }
 
-                items(items = stepsList) { steps ->
-                    steps.sourceAppInfo
-                    StepSessionRow(
-                        time = steps.endTime,
-                        uid = steps.id,
-                        "Walking",
-                        steps.count
-                    ) { uid ->
-                        onDetailsClick(uid)
                     }
                 }
             }
+            CircularProgressBar(
+                isDisplayed = loading,
+                Modifier.size(60.dp)
+            )
         }
     }
 }
@@ -266,6 +266,7 @@ fun ExerciseSessionScreenPreview() {
             ),
             dailySessionsList = DailySessionsList(),
             allSessions = listOf(DailySessionsList()),
+            loading = false,
             uiState = ExerciseSessionViewModel.UiState.Done,
             stepsList = listOf(
                 StepSession(

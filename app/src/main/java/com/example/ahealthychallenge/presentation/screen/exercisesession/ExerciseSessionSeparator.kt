@@ -1,5 +1,6 @@
 package com.example.ahealthychallenge.presentation.screen.exercisesession
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ fun ExerciseSessionSeparator(
     dailySessionsSummary: DailySessionsSummary
 ) {
     val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
+    val yesterday = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(1)
     Column(
     ) {
         Row(
@@ -51,9 +53,9 @@ fun ExerciseSessionSeparator(
                     text = stringResource(R.string.today)
                 )
             } else if (
-                dailySessionsSummary.date.year == today.year &&
-                dailySessionsSummary.date.month == today.month &&
-                dailySessionsSummary.date.dayOfMonth == today.dayOfMonth.minus(1)
+                dailySessionsSummary.date.year == yesterday.year &&
+                dailySessionsSummary.date.month == yesterday.month &&
+                dailySessionsSummary.date.dayOfMonth == yesterday.dayOfMonth
             ) {
                 Text(
                     textAlign = TextAlign.Center,

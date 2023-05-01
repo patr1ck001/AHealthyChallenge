@@ -28,6 +28,7 @@ import java.time.temporal.ChronoUnit
 @Composable
 fun ExerciseSessionSeparator(
     dailySessionsSummary: DailySessionsSummary,
+    points: Int,
     modifier: Modifier
 ) {
     val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
@@ -74,6 +75,19 @@ fun ExerciseSessionSeparator(
                     )
                 )
             }
+
+            Text(
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.primary,
+                style = MaterialTheme.typography.caption,
+
+                text = stringResource(
+                    R.string.summary_layout,
+                    points.toString() ?: "N/A",
+                    stringResource(R.string.points),
+                )
+            )
+
             Text(
                 modifier = Modifier.weight(
                     1f,
@@ -126,12 +140,13 @@ fun getDayOfWeek(dayOfWeek: DayOfWeek): String {
 @Composable
 fun ExerciseSessionSeparatorPreview() {
     ExerciseSessionSeparator(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 10.dp),
         dailySessionsSummary = DailySessionsSummary(
             ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS),
             Duration.ofSeconds(2000)
-        )
+        ),
+        points = 2,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp),
     )
 }

@@ -179,6 +179,7 @@ fun ExerciseSessionScreen(
                         item {
                             ExerciseSessionSeparator(
                                 dailySessionsSummary = dailySessionsList.dailySessionsSummary,
+                                points = 2, //TODO: hardcoded points
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 20.dp)

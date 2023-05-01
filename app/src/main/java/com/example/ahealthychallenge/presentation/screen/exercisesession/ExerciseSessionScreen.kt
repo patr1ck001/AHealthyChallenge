@@ -177,7 +177,13 @@ fun ExerciseSessionScreen(
                     }*/
                     allSessions.forEach { dailySessionsList ->
                         item {
-                            ExerciseSessionSeparator(dailySessionsSummary = dailySessionsList.dailySessionsSummary)
+                            ExerciseSessionSeparator(
+                                dailySessionsSummary = dailySessionsList.dailySessionsSummary,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 20.dp)
+                                    .padding(end = 20.dp)
+                            )
                         }
                         items(dailySessionsList.exerciseSessions) { session ->
                             Log.d(TAG, "${session.sessionData.totalActiveTime?.formatTime()}")

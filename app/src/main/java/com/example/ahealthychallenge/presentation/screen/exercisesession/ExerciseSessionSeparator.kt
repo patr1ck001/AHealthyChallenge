@@ -2,10 +2,7 @@ package com.example.ahealthychallenge.presentation.screen.exercisesession
 
 import android.util.Log
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -30,16 +27,17 @@ import java.time.temporal.ChronoUnit
 
 @Composable
 fun ExerciseSessionSeparator(
-    dailySessionsSummary: DailySessionsSummary
+    dailySessionsSummary: DailySessionsSummary,
+    modifier: Modifier
 ) {
     val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
     val yesterday = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(1)
     Column(
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             if (
                 dailySessionsSummary.date.year == today.year &&
@@ -87,7 +85,11 @@ fun ExerciseSessionSeparator(
                 text = dailySessionsSummary.totalActiveTime?.formatTime().toString()
             )
         }
-        Divider(color = Color.LightGray, thickness = 2.dp)
+        Divider(
+            color = Color.LightGray,
+            thickness = 1.dp,
+            modifier = modifier
+        )
     }
 }
 
@@ -124,6 +126,9 @@ fun getDayOfWeek(dayOfWeek: DayOfWeek): String {
 @Composable
 fun ExerciseSessionSeparatorPreview() {
     ExerciseSessionSeparator(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp),
         dailySessionsSummary = DailySessionsSummary(
             ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS),
             Duration.ofSeconds(2000)

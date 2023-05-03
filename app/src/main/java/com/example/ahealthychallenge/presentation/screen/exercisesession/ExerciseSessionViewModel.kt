@@ -39,6 +39,7 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import java.io.IOException
 import java.time.Duration
 import java.time.Instant
@@ -85,7 +86,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         private set
 
     var loading: MutableState<Boolean> = mutableStateOf(false)
-        private set
 
     var stepsList: MutableState<List<StepSession>> = mutableStateOf(listOf())
         private set
@@ -140,6 +140,8 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         val now = Instant.now()
         var isTodaySessionPushed = false
         lateinit var todaySessionKey: String
+        //TODO: the loading animation does not appear when there are no activities for the day
+        // TODO: when there are no activities for the day the separator appear for that day
         val sessions =
             healthConnectManager.readExerciseSessions(today.toInstant(), now).map { record ->
                 loading.value = true

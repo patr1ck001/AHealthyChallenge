@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.TypedArrayUtils.getText
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.*
 import com.example.ahealthychallenge.presentation.component.CircularProgressBar
@@ -48,6 +49,7 @@ import com.example.ahealthychallenge.presentation.component.ExerciseSessionRow
 import com.example.ahealthychallenge.presentation.component.StepSessionRow
 import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -97,8 +99,7 @@ fun ExerciseSessionScreen(
 
         Box(
             modifier = Modifier.fillMaxSize()
-        )
-        {
+        ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
@@ -106,29 +107,24 @@ fun ExerciseSessionScreen(
             ) {
                 if (!permissionsGranted) {
                     item {
-                        Button(
-                            onClick = {
-                                onPermissionsLaunch(permissions)
-                            }
-                        ) {
+                        Button(onClick = {
+                            onPermissionsLaunch(permissions)
+                        }) {
                             Text(text = stringResource(R.string.permissions_button_label))
                         }
                     }
                 } else if (!loading && allSessions.isNotEmpty()) { // } else if (dailySessionsList.exerciseSessions.isNotEmpty()) { // } else if (sessionsList.isNotEmpty()) {
                     item {
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp)
-                                .padding(4.dp),
+                        Button(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                            .padding(4.dp),
                             onClick = {
                                 onInsertClick()
-                            }
-                        ) {
+                            }) {
                             Text(stringResource(id = R.string.insert_exercise_session))
                         }
                     }
-
                     /*items(sessionsList) { session ->
                         Log.d(TAG, "${session.sessionData.totalActiveTime?.formatTime()}")
                         val appInfo = session.sourceAppInfo
@@ -176,46 +172,50 @@ fun ExerciseSessionScreen(
                         )
                     }*/
                     allSessions.forEach { dailySessionsList ->
-                        item {
-                            ExerciseSessionSeparator(
-                                dailySessionsSummary = dailySessionsList.dailySessionsSummary,
-                                points = 2, //TODO: hardcoded points
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 20.dp)
-                                    .padding(end = 20.dp)
+                        if (dailySessionsList.dailySessionsSummary.totalActiveTime != Duration.ZERO && dailySessionsList.dailySessionsSummary.totalActiveTime != null) {
+                            Log.d(
+                                TAG,
+                                "${dailySessionsList.dailySessionsSummary.date}: ${dailySessionsList.dailySessionsSummary.totalActiveTime}"
                             )
+                            item {
+                                ExerciseSessionSeparator(
+                                    dailySessionsSummary = dailySessionsList.dailySessionsSummary,
+                                    points = 2, //TODO: hardcoded points
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 20.dp)
+                                        .padding(end = 20.dp)
+                                )
+                            }
+                            items(dailySessionsList.exerciseSessions) { session ->
+                                //Log.d(TAG, "${session.startTime}: ${session.sessionData.totalActiveTime?.formatTime()}")
+                                val appInfo = session.sourceAppInfo
+                                ExerciseSessionRow(exerciseType = session.exerciseType,
+                                    start = session.startTime,
+                                    end = session.endTime,
+                                    duration = session.sessionData.totalActiveTime,
+                                    distance = session.sessionData.totalDistance,
+                                    uid = session.id,
+                                    name = session.title ?: stringResource(R.string.no_title),
+                                    steps = "0",
+                                    sourceAppName = appInfo?.appLabel
+                                        ?: stringResource(R.string.unknown_app),
+                                    sourceAppIcon = getIcon(
+                                        appInfo?.packageName, LocalContext.current
+                                    ),
+                                    onDeleteClick = { uid ->
+                                        onDeleteClick(uid)
+                                    },
+                                    onDetailsClick = { uid ->
+                                        onDetailsClick(uid)
+                                    })
+                            }
                         }
-                        items(dailySessionsList.exerciseSessions) { session ->
-                            Log.d(TAG, "${session.sessionData.totalActiveTime?.formatTime()}")
-                            val appInfo = session.sourceAppInfo
-                            ExerciseSessionRow(
-                                exerciseType = session.exerciseType,
-                                start = session.startTime,
-                                end = session.endTime,
-                                duration = session.sessionData.totalActiveTime,
-                                distance = session.sessionData.totalDistance,
-                                uid = session.id,
-                                name = session.title ?: stringResource(R.string.no_title),
-                                steps = "0",
-                                sourceAppName = appInfo?.appLabel
-                                    ?: stringResource(R.string.unknown_app),
-                                sourceAppIcon = getIcon(appInfo?.packageName, LocalContext.current),
-                                onDeleteClick = { uid ->
-                                    onDeleteClick(uid)
-                                },
-                                onDetailsClick = { uid ->
-                                    onDetailsClick(uid)
-                                }
-                            )
-                        }
-
                     }
                 }
             }
             CircularProgressBar(
-                isDisplayed = loading,
-                Modifier.size(60.dp)
+                isDisplayed = loading, Modifier.size(60.dp)
             )
         }
     }
@@ -225,12 +225,10 @@ fun getIcon(packageName: String?, context: Context): Drawable? {
 
     return when (packageName) {
         "com.sec.android.app.shealth" -> AppCompatResources.getDrawable(
-            context,
-            R.drawable.ic_samsung_health_logo
+            context, R.drawable.ic_samsung_health_logo
         )
         "com.google.android.apps.fitness" -> AppCompatResources.getDrawable(
-            context,
-            R.drawable.ic_google_fit_logo
+            context, R.drawable.ic_google_fit_logo
         )
         else -> AppCompatResources.getDrawable(context, R.drawable.ic_samsung_health_logo)
     }
@@ -283,8 +281,7 @@ fun ExerciseSessionScreenPreview() {
                     id = UUID.randomUUID().toString(),
                     count = "3000",
                     sourceAppInfo = appInfo
-                ),
-                StepSession(
+                ), StepSession(
                     title = "Walking",
                     startTime = walkingStartTime,
                     endTime = walkingEndTime,

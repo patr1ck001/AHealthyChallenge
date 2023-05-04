@@ -7,7 +7,8 @@ import java.time.ZonedDateTime
 
 data class DailySessionsSummary(
     val date: ZonedDateTime = ZonedDateTime.now(),
-    val totalActiveTime: Duration? = null
+    val totalActiveTime: Duration? = null,
+    val totalPoints: Int = 0
 )
 
 

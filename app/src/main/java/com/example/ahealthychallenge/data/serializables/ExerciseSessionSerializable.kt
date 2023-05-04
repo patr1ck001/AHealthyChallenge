@@ -14,5 +14,6 @@ data class ExerciseSessionSerializable (
     val endTime: ZoneDataTimeSerializable = SerializableFactory.getZoneDataTimeSerializable(ZonedDateTime.now()),
     val id: String = "null_id",
     val title: String? = null,
-    val sourceAppInfo: HealthConnectAppInfo? = null
+    val sourceAppInfo: HealthConnectAppInfo? = null,
+    val points: Int = 0
 )

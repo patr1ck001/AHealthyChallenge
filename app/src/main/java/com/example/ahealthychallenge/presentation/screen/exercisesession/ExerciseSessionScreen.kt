@@ -180,7 +180,7 @@ fun ExerciseSessionScreen(
                             item {
                                 ExerciseSessionSeparator(
                                     dailySessionsSummary = dailySessionsList.dailySessionsSummary,
-                                    points = 2, //TODO: hardcoded points
+                                    points = dailySessionsList.dailySessionsSummary.totalPoints, //TODO: hardcoded points
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(start = 20.dp)
@@ -195,6 +195,7 @@ fun ExerciseSessionScreen(
                                     end = session.endTime,
                                     duration = session.sessionData.totalActiveTime,
                                     distance = session.sessionData.totalDistance,
+                                    points = session.points,
                                     uid = session.id,
                                     name = session.title ?: stringResource(R.string.no_title),
                                     steps = "0",

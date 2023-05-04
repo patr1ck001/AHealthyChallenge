@@ -251,7 +251,8 @@ object SerializableFactory {
             getZoneDataTime(exerciseSessionSerializable.endTime),
             exerciseSessionSerializable.id,
             exerciseSessionSerializable.title,
-            exerciseSessionSerializable.sourceAppInfo
+            exerciseSessionSerializable.sourceAppInfo,
+            exerciseSessionSerializable.points,
         )
     }
 
@@ -269,21 +270,24 @@ object SerializableFactory {
                     exerciseSession.sourceAppInfo.appLabel,
                     null
                 )
-            }
+            },
+            exerciseSession.points
         )
     }
 
     fun getDailySessionSummarySerializable(dailySessionsSummary: DailySessionsSummary): DailySessionSummarySerializable {
         return DailySessionSummarySerializable(
             getZoneDataTimeSerializable(dailySessionsSummary.date),
-            getDurationSerializable(dailySessionsSummary.totalActiveTime)
+            getDurationSerializable(dailySessionsSummary.totalActiveTime),
+            dailySessionsSummary.totalPoints
         )
     }
 
     fun getDailySessionSummary(dailySessionSummarySerializable: DailySessionSummarySerializable): DailySessionsSummary {
         return DailySessionsSummary(
             getZoneDataTime(dailySessionSummarySerializable.date),
-            dailySessionSummarySerializable.totalActiveTime?.let { getDuration(it) }
+            dailySessionSummarySerializable.totalActiveTime?.let { getDuration(it) },
+            dailySessionSummarySerializable.totalPoints
         )
     }
 

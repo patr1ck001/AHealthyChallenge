@@ -50,6 +50,7 @@ fun ExerciseSessionInfoColumn(
     start: ZonedDateTime,
     end: ZonedDateTime,
     duration: Duration?,
+    points: Int,
     uid: String,
     name: String,
     steps: String,
@@ -90,23 +91,27 @@ fun ExerciseSessionInfoColumn(
         ) {
             SessionSummary(labelId = R.string.nothing, value = duration?.formatTime().toString())
             // TODO: change hardcoded color to theme changing color
-            Icon(
-                painter = painterResource(id = R.drawable.ic_vertical_line),
-                tint = Color.LightGray,
-                contentDescription = null,
-            )
-            SessionSummary(
-                value = distance?.inKilometers?.toBigDecimal()?.setScale(2, RoundingMode.UP)
-                    .toString(),
-                labelId = R.string.Kilometers
-            )
+
+            if(distance != null){
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_vertical_line),
+                    tint = Color.LightGray,
+                    contentDescription = null,
+                )
+                SessionSummary(
+                    value = distance.inKilometers.toBigDecimal().setScale(2, RoundingMode.UP)
+                        .toString(),
+                    labelId = R.string.Kilometers
+                )
+
+            }
             // TODO: change hardcoded color to theme changing color
             Icon(
                 painter = painterResource(id = R.drawable.ic_vertical_line),
                 tint = Color.LightGray,
                 contentDescription = null,
             )
-            SessionSummary(labelId = R.string.points, value = "2")
+            SessionSummary(labelId = R.string.points, value = points.toString())
 
         }
 

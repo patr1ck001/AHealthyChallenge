@@ -186,7 +186,8 @@ fun main() {
         HealthConnectAppInfo(
             "name",
             "appLabel"
-        )
+        ),
+        2
     )
     //println("this is the session: $exerciseSession")
 

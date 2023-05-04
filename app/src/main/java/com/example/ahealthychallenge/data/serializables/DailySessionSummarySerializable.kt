@@ -8,5 +8,6 @@ import java.time.ZonedDateTime
 @Serializable
 data class DailySessionSummarySerializable (
     val date: ZoneDataTimeSerializable = SerializableFactory.getZoneDataTimeSerializable(ZonedDateTime.now()),
-    val totalActiveTime: DurationSerializable? = null
+    val totalActiveTime: DurationSerializable? = null,
+    val totalPoints: Int = 0,
 )

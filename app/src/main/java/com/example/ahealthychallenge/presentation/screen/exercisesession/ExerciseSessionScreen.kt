@@ -27,7 +27,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +63,7 @@ import java.util.UUID
  */
 const val TAG = "ExerciseSessionScreen"
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExerciseSessionScreen(
     permissions: Set<String>,
@@ -73,7 +79,9 @@ fun ExerciseSessionScreen(
     onDeleteClick: (String) -> Unit = {},
     onError: (Throwable?) -> Unit = {},
     onPermissionsResult: () -> Unit = {},
-    onPermissionsLaunch: (Set<String>) -> Unit = {}
+    onPermissionsLaunch: (Set<String>) -> Unit = {},
+    pullRefreshState: PullRefreshState,
+    refreshing: Boolean
 ) {
 
     // Remember the last error ID, such that it is possible to avoid re-launching the error
@@ -99,6 +107,7 @@ fun ExerciseSessionScreen(
 
         Box(
             modifier = Modifier.fillMaxSize()
+                .pullRefresh(pullRefreshState)
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -218,6 +227,11 @@ fun ExerciseSessionScreen(
             CircularProgressBar(
                 isDisplayed = loading, Modifier.size(60.dp)
             )
+            PullRefreshIndicator(
+                refreshing = refreshing,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
         }
     }
 }
@@ -235,6 +249,7 @@ fun getIcon(packageName: String?, context: Context): Drawable? {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun ExerciseSessionScreenPreview() {
@@ -251,6 +266,7 @@ fun ExerciseSessionScreenPreview() {
             icon = context.getDrawable(R.drawable.ic_launcher_foreground)!!
         )
 
+        val refreshing = false
         ExerciseSessionScreen(
             permissions = setOf(),
             permissionsGranted = true,
@@ -290,7 +306,9 @@ fun ExerciseSessionScreenPreview() {
                     count = "5000",
                     sourceAppInfo = appInfo
                 )
-            )
+            ),
+            pullRefreshState = rememberPullRefreshState(refreshing, {}) ,
+            refreshing = refreshing
         )
     }
 }

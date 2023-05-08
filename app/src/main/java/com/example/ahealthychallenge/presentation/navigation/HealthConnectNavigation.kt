@@ -16,8 +16,11 @@
 package com.example.ahealthychallenge.presentation.navigation
 
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -53,6 +56,7 @@ import kotlinx.coroutines.launch
 /**
  * Provides the navigation in the app.
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HealthConnectNavigation(
     navController: NavHostController,
@@ -100,6 +104,10 @@ fun HealthConnectNavigation(
             val permissionsLauncher =
                 rememberLauncherForActivityResult(viewModel.permissionsLauncher) {
                 onPermissionsResult()}
+
+            val refreshing by viewModel.refreshing
+            val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.initialLoad() })
+
             ExerciseSessionScreen(
                 permissionsGranted = permissionsGranted,
                 permissions = permissions,
@@ -125,8 +133,11 @@ fun HealthConnectNavigation(
                     viewModel.initialLoad()
                 },
                 onPermissionsLaunch = { values ->
-                    permissionsLauncher.launch(values)}
+                    permissionsLauncher.launch(values)},
+                pullRefreshState = pullRefreshState,
+                refreshing = refreshing
             )
+
         }
 
         composable(Screen.PointScreen.route) {
@@ -137,7 +148,9 @@ fun HealthConnectNavigation(
             )
 
             val pieData by viewModel.pieData
-            PointStatScreen(pieData)
+            val refreshing by viewModel.refreshing
+            val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.readPieChartData() })
+            PointStatScreen(pieData, pullRefreshState, refreshing)
         }
 
         composable(Screen.ExerciseSessionDetail.route + "/{$UID_NAV_ARGUMENT}") {

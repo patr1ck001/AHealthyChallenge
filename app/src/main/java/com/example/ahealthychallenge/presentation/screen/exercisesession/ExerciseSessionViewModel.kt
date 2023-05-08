@@ -86,6 +86,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         private set
 
     var loading: MutableState<Boolean> = mutableStateOf(false)
+    var refreshing: MutableState<Boolean> = mutableStateOf(false)
 
     var stepsList: MutableState<List<StepSession>> = mutableStateOf(listOf())
         private set
@@ -122,7 +123,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         }
     }
 
-    //TODO: swipe down to refresh: because when a new exercise is added by
+    //TODO: fix bug of the refreshing indicator not disappearing after the refresh
     fun deleteExerciseSession(uid: String) {
         viewModelScope.launch {
             tryWithPermissionsCheck {
@@ -366,6 +367,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                 Log.d("map", "the map is $dbMap")
             }
         }*/
+        refreshing.value = false
     }
 
     /**

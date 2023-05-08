@@ -13,6 +13,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.himanshoe.charty.pie.config.PieData
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class PointStatScreenViewModel(private val healthConnectManager: HealthConnectManager) :
@@ -26,11 +29,12 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
     )
         private set
 
-     init {
-        viewModelScope.launch {
-                readPieChartData()
-        }
+    var refreshing: MutableState<Boolean> = mutableStateOf(false)
+
+    init {
+        readPieChartData()
     }
+
     fun readPieChartData() {
         val database = Firebase.database.reference
         var walkingPoints: Int
@@ -60,6 +64,7 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
                 )
             }
         }
+        refreshing.value = false
     }
 }
 

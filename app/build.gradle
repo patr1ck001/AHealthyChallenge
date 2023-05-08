@@ -62,15 +62,22 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
 
+    implementation "com.google.firebase:firebase-core:21.1.1"
     implementation 'com.google.firebase:firebase-database-ktx:20.2.0'
     implementation 'com.google.firebase:firebase-auth-ktx:21.3.0'
     implementation 'androidx.appcompat:appcompat-resources:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     def composeBom = platform('androidx.compose:compose-bom:2022.10.00')
     implementation(composeBom)
+
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
 
     // For Health Connect
     implementation "androidx.health.connect:connect-client:$health_connect_version"
@@ -99,3 +106,4 @@ dependencies {
 
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:1.2.2"
 }
+apply plugin: "com.google.gms.google-services"

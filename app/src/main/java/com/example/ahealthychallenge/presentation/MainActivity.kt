@@ -18,6 +18,7 @@ package com.example.ahealthychallenge.presentation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -39,15 +40,16 @@ import com.google.firebase.auth.GoogleAuthProvider
  */
 class MainActivity : ComponentActivity() {
 
-    companion object {
-        fun getLaunchIntent(from: Context) = Intent(from, SignInActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        }
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
 
+    override fun onStart() {
+        super.onStart()
+        val intent = Intent(this, SignInActivity::class.java)
+        startActivity(intent)
     }
 }
 

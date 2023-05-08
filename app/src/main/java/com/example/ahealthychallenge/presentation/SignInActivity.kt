@@ -3,12 +3,12 @@ package com.example.ahealthychallenge.presentation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.ahealthychallenge.R
-import com.example.ahealthychallenge.presentation.MainActivity.Companion.getLaunchIntent
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -21,7 +21,6 @@ import com.google.firebase.auth.GoogleAuthProvider
 
 class SignInActivity:  ComponentActivity() {
 
-    val button: SignInButton = findViewById(R.id.google_button)
 
     val RC_SIGN_IN: Int = 1
     lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -29,25 +28,20 @@ class SignInActivity:  ComponentActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
 
+    lateinit var button: SignInButton
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
         firebaseAuth = FirebaseAuth.getInstance()
+         button = findViewById(R.id.google_button)
 
-        fun configureGoogleSignIn() {
-            mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
-            mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
-        }
+        configureGoogleSignIn()
 
-        fun setupUI() {
-            button.setOnClickListener {
-                signIn()
-            }
-        }
+        setupUI()
+
     }
 
     override fun onStart() {
@@ -57,6 +51,20 @@ class SignInActivity:  ComponentActivity() {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()
+        }
+    }
+
+    private fun configureGoogleSignIn() {
+        mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
+    }
+
+    private fun setupUI() {
+        button.setOnClickListener {
+            signIn()
         }
     }
 

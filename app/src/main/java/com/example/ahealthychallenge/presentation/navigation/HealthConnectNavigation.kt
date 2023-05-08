@@ -40,6 +40,9 @@ import com.example.ahealthychallenge.presentation.screen.exercisesessiondetail.E
 import com.example.ahealthychallenge.presentation.screen.inputreadings.InputReadingsScreen
 import com.example.ahealthychallenge.presentation.screen.inputreadings.InputReadingsViewModel
 import com.example.ahealthychallenge.presentation.screen.inputreadings.InputReadingsViewModelFactory
+import com.example.ahealthychallenge.presentation.screen.points.PointStatScreen
+import com.example.ahealthychallenge.presentation.screen.points.PointStatScreenViewModel
+import com.example.ahealthychallenge.presentation.screen.points.PointStatScreenViewModelFactory
 import com.example.ahealthychallenge.presentation.screen.privacypolicy.PrivacyPolicyScreen
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionScreen
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionViewModel
@@ -258,6 +261,15 @@ fun HealthConnectNavigation(
             ) { values ->
                 permissionsLauncher.launch(values)
             }
+        }
+
+        composable(Screen.PointScreen.route) {
+            val viewModel: PointStatScreenViewModel = viewModel(
+                factory = PointStatScreenViewModelFactory(
+                    healthConnectManager = healthConnectManager
+                )
+            )
+            PointStatScreen()
         }
     }
 }

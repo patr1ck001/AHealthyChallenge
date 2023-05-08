@@ -128,6 +128,18 @@ fun HealthConnectNavigation(
                     permissionsLauncher.launch(values)}
             )
         }
+
+        composable(Screen.PointScreen.route) {
+            val viewModel: PointStatScreenViewModel = viewModel(
+                factory = PointStatScreenViewModelFactory(
+                    healthConnectManager = healthConnectManager
+                )
+            )
+
+            val pieData by viewModel.pieData
+            PointStatScreen(pieData)
+        }
+
         composable(Screen.ExerciseSessionDetail.route + "/{$UID_NAV_ARGUMENT}") {
             val uid = it.arguments?.getString(UID_NAV_ARGUMENT)!!
             val viewModel: ExerciseSessionDetailViewModel = viewModel(
@@ -263,13 +275,5 @@ fun HealthConnectNavigation(
             }
         }
 
-        composable(Screen.PointScreen.route) {
-            val viewModel: PointStatScreenViewModel = viewModel(
-                factory = PointStatScreenViewModelFactory(
-                    healthConnectManager = healthConnectManager
-                )
-            )
-            PointStatScreen()
-        }
     }
 }

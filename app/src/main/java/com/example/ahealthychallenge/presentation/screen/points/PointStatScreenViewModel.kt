@@ -1,12 +1,66 @@
 package com.example.ahealthychallenge.presentation.screen.points
 
+import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.example.ahealthychallenge.data.ExerciseSession
 import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.presentation.screen.exercisesessiondetail.ExerciseSessionDetailViewModel
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
+import com.himanshoe.charty.pie.config.PieData
+import kotlinx.coroutines.launch
 
-class PointStatScreenViewModel(private val healthConnectManager: HealthConnectManager): ViewModel() {
+class PointStatScreenViewModel(private val healthConnectManager: HealthConnectManager) :
+    ViewModel() {
+    var pieData: MutableState<List<PieData>> = mutableStateOf(
+        listOf(
+            PieData(3F),
+            PieData(1F),
+            PieData(1F),
+        )
+    )
+        private set
 
+     init {
+        viewModelScope.launch {
+                readPieChartData()
+        }
+    }
+    fun readPieChartData() {
+        val database = Firebase.database.reference
+        var walkingPoints: Int
+        var runningPoints: Int
+        var cyclingPoints: Int
+        var workoutPoints: Int
+
+        val ref = database.child("pointStats")
+            .child("userID")
+            .child("pieChart")
+
+        ref.get().addOnSuccessListener {
+            //we check is the list of session on the database is up to date
+            val dbMap = it.getValue<Map<String, Int>>()
+            if (dbMap != null) {
+                Log.d("map", "the map is $dbMap")
+                walkingPoints = dbMap["walking"]!!
+                runningPoints = dbMap["running"]!!
+                cyclingPoints = dbMap["cycling"]!!
+                workoutPoints = dbMap["workout"]!!
+                pieData.value = listOf(
+                    PieData(walkingPoints.toFloat()),
+                    PieData(runningPoints.toFloat()),
+                    PieData(cyclingPoints.toFloat()),
+                    PieData(workoutPoints.toFloat())
+
+                )
+            }
+        }
+    }
 }
 
 class PointStatScreenViewModelFactory(

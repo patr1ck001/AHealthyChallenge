@@ -122,6 +122,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         }
     }
 
+    //TODO: swipe down to refresh: because when a new exercise is added by
     fun deleteExerciseSession(uid: String) {
         viewModelScope.launch {
             tryWithPermissionsCheck {
@@ -146,7 +147,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             healthConnectManager.readExerciseSessions(today.toInstant(), now).map { record ->
                 loading.value = true
                 val packageName = record.metadata.dataOrigin.packageName
-                //Log.d(TAG,  "the package name is: $packageName")
                 val sessionData = healthConnectManager.readAssociatedSessionData(record.metadata.id)
                 // TODO: pass the entire session data: add sessionData property in ExerciseSession
                 ExerciseSession(
@@ -173,12 +173,11 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
         val dailySessionsSummary = DailySessionsSummary(today, dailyDuration, dailyPoints)
         val todaySessionsList = DailySessionsList(dailySessionsSummary, sessions)
-        Log.d("daily", "this is the total number of points today is: ${todaySessionsList.dailySessionsSummary.totalPoints}")
+
 
 
         val todaySessionsListSerializable =
             SerializableFactory.getDailySessionsListSerializable(todaySessionsList)
-        Log.d("daily", "this is the total number of points serialized today is: ${todaySessionsListSerializable.dailySessionsSummary.totalPoints}")
         // write in the realtime database
         //TODO: add a loading animation when the data is retrieved
         database = Firebase.database.reference
@@ -200,7 +199,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
         val newChildRef1 = ref.push()
         val newKey1 = newChildRef1.key
-        Log.d(TAG, "the brand new key is: $newKey1")
         if (newKey1 != null) {
             // push today sessions
             newChildRef1.setValue(todaySessionsListSerializable1)
@@ -227,7 +225,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
         val newChildRef2 = ref.push()
         val newKey2 = newChildRef2.key
-        Log.d(TAG, "the brand new key is: $newKey2")
         if (newKey2 != null) {
             // push today sessions
             newChildRef2.setValue(todaySessionsListSerializable2)
@@ -266,12 +263,9 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                         val todaySKey = keys.filter {
                             it.date == today
                         }
-                        Log.d(TAG, "this is the list: $todaySKey")
                         if (todaySKey.size == 1) {
                             isTodaySessionPushed = true
                             todaySessionKey = todaySKey[0].key
-                            Log.d(TAG, "the boolean is: $isTodaySessionPushed")
-                            Log.d(TAG, "the key is: $todaySessionKey")
                         }
 
                         //retrieve the session with the corresponding key
@@ -287,19 +281,11 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                                     val dbTodaySession =
                                         it.getValue<DailySessionsListSerializable>()
                                     if (dbTodaySession != null) {
-                                        Log.d(
-                                            TAG,
-                                            "db list size: ${dbTodaySession.exerciseSessions.size}"
-                                        )
-                                        Log.d(
-                                            TAG,
-                                            "today list size: ${todaySessionsListSerializable.exerciseSessions.size}"
-                                        )
+
                                         if (dbTodaySession.exerciseSessions.size < todaySessionsListSerializable.exerciseSessions.size) {
                                             // update the db with the new session list
                                             ref.child(todaySessionKey)
                                                 .setValue(todaySessionsListSerializable)
-                                            Log.d(TAG, "that is what I thought")
                                         }
                                     }
                                 }.addOnFailureListener {
@@ -308,7 +294,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                         } else {
                             val newChildRef = ref.push()
                             val newKey = newChildRef.key
-                            Log.d(TAG, "the brand new key is: $newKey")
                             if (newKey != null) {
                                 // push today sessions
                                 newChildRef.setValue(todaySessionsListSerializable)
@@ -368,6 +353,19 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             .addValueEventListener(sessionListener)
         val sevenDays = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(31)
         stepsList.value = healthConnectManager.readStepSession(sevenDays.toInstant())
+
+
+        /*val ref2 = database.child("pointStats")
+            .child("userID")
+            .child("pieChart")
+
+        ref2.get().addOnSuccessListener {
+            //we check is the list of session on the database is up to date
+            val dbMap = it.getValue<Map<String, Int>>()
+            if (dbMap != null) {
+                Log.d("map", "the map is $dbMap")
+            }
+        }*/
     }
 
     /**

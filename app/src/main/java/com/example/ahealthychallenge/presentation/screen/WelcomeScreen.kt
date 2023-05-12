@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -41,6 +42,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.HealthConnectAvailability
+import com.example.ahealthychallenge.presentation.MainActivity
 import com.example.ahealthychallenge.presentation.component.InstalledMessage
 import com.example.ahealthychallenge.presentation.component.NotInstalledMessage
 import com.example.ahealthychallenge.presentation.component.NotSupportedMessage
@@ -56,6 +58,7 @@ fun WelcomeScreen(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     val currentOnAvailabilityCheck by rememberUpdatedState(onResumeAvailabilityCheck)
+    val mainActivity = MainActivity()
 
     // Add a listener to re-check whether Health Connect has been installed each time the Welcome
     // screen is resumed: This ensures that if the user has been redirected to the Play store and
@@ -100,6 +103,10 @@ fun WelcomeScreen(
             HealthConnectAvailability.INSTALLED -> InstalledMessage()
             HealthConnectAvailability.NOT_INSTALLED -> NotInstalledMessage()
             HealthConnectAvailability.NOT_SUPPORTED -> NotSupportedMessage()
+        }
+        Spacer(modifier = Modifier.height(32.dp))
+        OutlinedButton(onClick = { mainActivity.signOut() }) {
+            Text("SignOut")
         }
     }
 }

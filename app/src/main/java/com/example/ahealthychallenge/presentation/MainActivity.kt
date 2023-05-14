@@ -19,7 +19,7 @@ package com.example.ahealthychallenge.presentation
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import com.google.firebase.auth.FirebaseAuth
+import com.example.ahealthychallenge.presentation.utils.FirebaseUtils.firebaseAuth
 
 
 /**
@@ -40,9 +40,9 @@ class MainActivity : ComponentActivity() {
     }
 
     fun signOut(){
+        firebaseAuth.signOut()
         val intent = Intent(this, SignInActivity::class.java)
         startActivity(intent)
-        FirebaseAuth.getInstance().signOut();
     }
 }
 

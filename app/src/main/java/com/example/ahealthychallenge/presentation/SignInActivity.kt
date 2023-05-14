@@ -1,14 +1,13 @@
 package com.example.ahealthychallenge.presentation
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import com.example.ahealthychallenge.R
+import com.example.ahealthychallenge.databinding.ActivitySignInBinding
+import com.example.ahealthychallenge.presentation.utils.FirebaseUtils.firebaseAuth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -16,8 +15,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+
+
 
 class SignInActivity:  ComponentActivity() {
 
@@ -26,30 +26,75 @@ class SignInActivity:  ComponentActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var mGoogleSignInOptions: GoogleSignInOptions
 
-    private lateinit var firebaseAuth: FirebaseAuth
+    lateinit var signInEmail: String
+    lateinit var signInPassword: String
+    lateinit var signInInputsArray: Array<EditText>
 
-    lateinit var button: SignInButton
+    private lateinit var email: EditText
+    private lateinit var password: EditText
+    private lateinit var button: SignInButton
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in)
+        val binding = ActivitySignInBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        firebaseAuth = FirebaseAuth.getInstance()
-         button = findViewById(R.id.google_button)
+        button = binding.googleButton
 
         configureGoogleSignIn()
 
         setupUI()
 
+        email = binding.etSignInEmail
+        password = binding.etSignInPassword
+
+        signInInputsArray = arrayOf(email, password)
+        binding.btnCreateAccount2.setOnClickListener {
+            startActivity(Intent(this, CreateAccountActivity::class.java))
+            finish()
+        }
+
+        binding.btnSignIn.setOnClickListener {
+            signInUser()
+        }
+
     }
 
+    private fun signInUser() {
+        signInEmail = email.text.toString().trim()
+        signInPassword = password.text.toString().trim()
+
+        if (notEmpty()) {
+            firebaseAuth.signInWithEmailAndPassword(signInEmail, signInPassword)
+                .addOnCompleteListener { signIn ->
+                    if (signIn.isSuccessful) {
+                        startActivity(Intent(this, HomeActivity::class.java))
+                        Toast.makeText(this, "signed in successfully", Toast.LENGTH_LONG).show()
+                        finish()
+                    } else {
+                        Toast.makeText(this, "sign in failed", Toast.LENGTH_LONG).show()
+                    }
+                }
+        } else {
+            signInInputsArray.forEach { input ->
+                if (input.text.toString().trim().isEmpty()) {
+                    input.error = "${input.hint} is required"
+                }
+            }
+        }
+    }
+
+    private fun notEmpty(): Boolean = signInEmail.isNotEmpty() && signInPassword.isNotEmpty()
+
+    /* check if there's a signed-in user*/
     override fun onStart() {
         super.onStart()
-        val user = FirebaseAuth.getInstance().currentUser
+        val user = firebaseAuth.currentUser
         if (user != null) {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
+            Toast.makeText(this, "welcome back", Toast.LENGTH_LONG).show()
             finish()
         }
     }

@@ -9,10 +9,15 @@ import com.example.ahealthychallenge.data.serializables.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
+import java.time.Clock
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 
 fun main() {
@@ -193,11 +198,16 @@ fun main() {
 
     val exerciseSessionSerializable = SerializableFactory.getExerciseSessionSerializable(exerciseSession)
     val jsonSessionString = json.encodeToString(exerciseSessionSerializable)
-   //println("ENCODED: $jsonSessionString")
+   println("ENCODED: $jsonSessionString")
 
     val jsonSessionElement = json.parseToJsonElement(jsonSessionString)
     val sessionDeserializable = json.decodeFromJsonElement<ExerciseSessionSerializable>(jsonSessionElement)
     val finalSession = SerializableFactory.getExerciseSession(sessionDeserializable)
    //println("DECODED: $finalSession")
+
+    val  today = LocalDate.now()
+    val midnight = LocalTime.MIDNIGHT
+    val todayMidnight = LocalDateTime.of(today, midnight)
+    //println("this it today instant: ${ZonedDateTime.now()} and midnight $todayMidnight")
 }
 

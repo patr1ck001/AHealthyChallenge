@@ -189,7 +189,7 @@ fun ExerciseSessionScreen(
                             item {
                                 ExerciseSessionSeparator(
                                     dailySessionsSummary = dailySessionsList.dailySessionsSummary,
-                                    points = dailySessionsList.dailySessionsSummary.totalPoints, //TODO: hardcoded points
+                                    points = dailySessionsList.dailySessionsSummary.totalPoints,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(start = 20.dp)

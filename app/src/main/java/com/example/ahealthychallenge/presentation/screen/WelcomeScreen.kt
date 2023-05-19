@@ -15,6 +15,8 @@
  */
 package com.example.ahealthychallenge.presentation.screen
 
+import com.example.ahealthychallenge.presentation.utils.FirebaseUtils.firebaseAuth
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -31,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,10 +45,12 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.HealthConnectAvailability
+import com.example.ahealthychallenge.presentation.SignInActivity
 import com.example.ahealthychallenge.presentation.component.InstalledMessage
 import com.example.ahealthychallenge.presentation.component.NotInstalledMessage
 import com.example.ahealthychallenge.presentation.component.NotSupportedMessage
 import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
+
 
 /**
  * Welcome screen shown when the app is first launched.
@@ -56,6 +62,7 @@ fun WelcomeScreen(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     val currentOnAvailabilityCheck by rememberUpdatedState(onResumeAvailabilityCheck)
+    val context = LocalContext.current
 
     // Add a listener to re-check whether Health Connect has been installed each time the Welcome
     // screen is resumed: This ensures that if the user has been redirected to the Play store and
@@ -100,6 +107,14 @@ fun WelcomeScreen(
             HealthConnectAvailability.INSTALLED -> InstalledMessage()
             HealthConnectAvailability.NOT_INSTALLED -> NotInstalledMessage()
             HealthConnectAvailability.NOT_SUPPORTED -> NotSupportedMessage()
+        }
+        Spacer(modifier = Modifier.height(32.dp))
+        OutlinedButton(onClick = {
+            firebaseAuth.signOut()
+            val intent = Intent(context, SignInActivity::class.java)
+            context.startActivity(intent)
+             }) {
+            Text("SignOut")
         }
     }
 }

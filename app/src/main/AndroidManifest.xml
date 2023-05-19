@@ -28,6 +28,8 @@
     <uses-permission android:name="android.permission.health.WRITE_TOTAL_CALORIES_BURNED"/>
     <uses-permission android:name="android.permission.health.READ_WEIGHT"/>
     <uses-permission android:name="android.permission.health.WRITE_WEIGHT"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -36,6 +38,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthConnect">
+        <activity
+            android:name=".presentation.CreateAccountActivity"
+            android:parentActivityName=".presentation.SignInActivity"></activity>
+        <activity
+            android:name=".presentation.HomeActivity"
+            android:parentActivityName=".presentation.SignInActivity"></activity>
+        <activity
+            android:name=".presentation.SignInActivity"
+            android:parentActivityName=".presentation.MainActivity" ></activity>
         <activity
             android:name="com.example.ahealthychallenge.presentation.MainActivity"
             android:exported="true"

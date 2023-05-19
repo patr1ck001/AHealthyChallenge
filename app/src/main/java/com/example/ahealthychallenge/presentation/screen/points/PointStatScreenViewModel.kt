@@ -5,21 +5,21 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import com.example.ahealthychallenge.data.ExerciseSession
 import com.example.ahealthychallenge.data.HealthConnectManager
-import com.example.ahealthychallenge.presentation.screen.exercisesessiondetail.ExerciseSessionDetailViewModel
+import com.example.ahealthychallenge.data.serializables.LineDataSerializable
+import com.example.ahealthychallenge.data.serializables.SerializableFactory
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import com.himanshoe.charty.line.model.LineData
 import com.himanshoe.charty.pie.config.PieData
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import java.time.Instant
 
 class PointStatScreenViewModel(private val healthConnectManager: HealthConnectManager) :
     ViewModel() {
+    private lateinit var database: DatabaseReference
     var pieData: MutableState<List<PieData>> = mutableStateOf(
         listOf(
             PieData(3F),
@@ -29,10 +29,26 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
     )
         private set
 
+    var curveLineData: MutableState<List<LineData>> = mutableStateOf(
+        listOf(
+            LineData(1, 3F),
+            LineData(2, 15F),
+            LineData(3, 9F),
+            LineData(4, 3F),
+            LineData(5, 7F)
+        )
+    )
+        private set
     var refreshing: MutableState<Boolean> = mutableStateOf(false)
 
     init {
         readPieChartData()
+        readCurveLineData()
+    }
+
+    fun refreshing() {
+        readPieChartData()
+        readCurveLineData()
     }
 
     fun readPieChartData() {
@@ -45,7 +61,8 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
         val ref = database.child("pointStats")
             .child("userID")
             .child("pieChart")
-
+            .child("pieChartData")
+        Log.d("map", "before refer")
         ref.get().addOnSuccessListener {
             //we check is the list of session on the database is up to date
             val dbMap = it.getValue<Map<String, Int>>()
@@ -66,6 +83,56 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
         }
         refreshing.value = false
     }
+
+    fun readCurveLineData() {
+        database = Firebase.database.reference
+        val refer = database.child("pointStats")
+            .child("userID")
+            .child("curveLine")
+            .child("curveLineData")
+
+        Log.d("curve", "refer $refer")
+        refer.get().addOnSuccessListener {
+            val curveLineDataDb = it.getValue<List<LineDataSerializable>>()
+            Log.d("curve", "deserialized: $curveLineDataDb")
+            if (curveLineDataDb != null) {
+                val curveLineList = curveLineDataDb.map { lineData ->
+                    SerializableFactory.getLineData(lineData)
+                }
+                Log.d("curve", "deserialized2: $curveLineList")
+                curveLineData.value = curveLineList
+            }
+        }
+
+        Log.d("curve", "before")
+    }
+    /*fun readCurveLineData() {
+        database = Firebase.database.reference
+        val refer = database.child("pointStats")
+            .child("userID")
+            .child("curveLine")
+            .child("curveLineData")
+
+
+        refer.get().addOnCompleteListener {
+            Log.d("curve", "enter in reference")
+            if (it.isSuccessful) {
+                Log.d("curve", "it is successful")
+
+                val gti = object :
+                    GenericTypeIndicator<MutableList<LineDataSerializable>>() {}
+                val curveLineDataDb = it.result.getValue(gti)
+                if (curveLineDataDb != null) {
+                    /*val curveLineList = curveLineDataDb.map { lineData ->
+                                    SerializableFactory.getLineData(lineData)
+                                }
+                                Log.d("curve", "deserialized2: $curveLineList")
+                                curveLineData.value = curveLineList*/
+                    Log.d("curve", "Jesus is my Lord!")
+                }
+            }
+        }
+    }*/
 }
 
 class PointStatScreenViewModelFactory(

@@ -15,11 +15,13 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ahealthychallenge.presentation.theme.HealthConnectBlue
 import com.example.ahealthychallenge.presentation.theme.HealthConnectGreen
+import com.himanshoe.charty.common.axis.AxisConfig
 import com.himanshoe.charty.line.CurveLineChart
 import com.himanshoe.charty.line.LineChart
 import com.himanshoe.charty.line.config.CurveLineConfig
@@ -33,6 +35,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 fun PointStatScreen(
     pieData: List<PieData>,
+    curveLineData: List<LineData>,
     pullRefreshState: PullRefreshState,
     isRefreshing: Boolean
 
@@ -49,7 +52,8 @@ fun PointStatScreen(
     )
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .pullRefresh(pullRefreshState)
     ) {
         LazyColumn(
@@ -87,8 +91,17 @@ fun PointStatScreen(
                         .height(height = 300.dp),
                     chartColors = listOf(HealthConnectBlue, HealthConnectGreen),
                     lineColors = listOf(HealthConnectBlue, HealthConnectGreen),
-                    lineData = lineChartData,
-                    curveLineConfig = CurveLineConfig(false)
+                    lineData = curveLineData,
+                    curveLineConfig = CurveLineConfig(true),
+                    axisConfig = AxisConfig(
+                        showAxis = true,
+                        showUnitLabels = true,
+                        isAxisDashed = true,
+                        showXLabels = true,
+                        textColor = HealthConnectBlue,
+                        xAxisColor = HealthConnectBlue,
+                        yAxisColor = HealthConnectGreen
+                    )
                 )
             }
 
@@ -109,7 +122,16 @@ fun PointStatScreen(
                         .fillMaxWidth()
                         .height(300.dp),
                     color = HealthConnectBlue,
-                    lineData = lineChartData
+                    lineData = curveLineData,
+                    axisConfig = AxisConfig(
+                        showAxis = true,
+                        showUnitLabels = true,
+                        isAxisDashed = true,
+                        showXLabels = true,
+                        textColor = HealthConnectBlue,
+                        xAxisColor = HealthConnectBlue,
+                        yAxisColor = HealthConnectGreen
+                    )
                 )
             }
 

@@ -9,7 +9,6 @@ import com.example.ahealthychallenge.data.serializables.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
-import java.time.Clock
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
@@ -17,7 +16,6 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 
 
 fun main() {
@@ -100,7 +98,8 @@ fun main() {
     val heartRateRecord =
         HeartRateRecord(instant, zoneOffset, instant, zoneOffset, listOf(sample, sample))
     //println("This is the original duration: $heartRateRecord")
-    val heartRateRecordSerializable = SerializableFactory.getHeartRateRecordSerializable(heartRateRecord)
+    val heartRateRecordSerializable =
+        SerializableFactory.getHeartRateRecordSerializable(heartRateRecord)
     val jsonHRString = json.encodeToString(heartRateRecordSerializable)
     //println("ENCODED: $jsonHRString")
     val jsonHRElement = json.parseToJsonElement(jsonHRString)
@@ -152,11 +151,13 @@ fun main() {
     )
 
     //println("This is the original session data:\n $exerciseSessionData")
-    val exerciseSessionDataSerializable = SerializableFactory.getExerciseSessionDataSerializable(exerciseSessionData)
+    val exerciseSessionDataSerializable =
+        SerializableFactory.getExerciseSessionDataSerializable(exerciseSessionData)
     val jsonESString = json.encodeToString(exerciseSessionDataSerializable)
     //println("ENCODED: $jsonESString")
     val jsonSEElement = json.parseToJsonElement(jsonESString)
-    val sEDeserializable = json.decodeFromJsonElement<ExerciseSessionDataSerializable>(jsonSEElement)
+    val sEDeserializable =
+        json.decodeFromJsonElement<ExerciseSessionDataSerializable>(jsonSEElement)
     val finalSE = SerializableFactory.getExerciseSessionData(sEDeserializable)
     //println("DECODED: $finalSE")
 
@@ -196,18 +197,54 @@ fun main() {
     )
     //println("this is the session: $exerciseSession")
 
-    val exerciseSessionSerializable = SerializableFactory.getExerciseSessionSerializable(exerciseSession)
+    val exerciseSessionSerializable =
+        SerializableFactory.getExerciseSessionSerializable(exerciseSession)
     val jsonSessionString = json.encodeToString(exerciseSessionSerializable)
-   println("ENCODED: $jsonSessionString")
+    //println("ENCODED: $jsonSessionString")
 
     val jsonSessionElement = json.parseToJsonElement(jsonSessionString)
-    val sessionDeserializable = json.decodeFromJsonElement<ExerciseSessionSerializable>(jsonSessionElement)
+    val sessionDeserializable =
+        json.decodeFromJsonElement<ExerciseSessionSerializable>(jsonSessionElement)
     val finalSession = SerializableFactory.getExerciseSession(sessionDeserializable)
-   //println("DECODED: $finalSession")
+    //println("DECODED: $finalSession")
 
-    val  today = LocalDate.now()
+    val today = LocalDate.now()
     val midnight = LocalTime.MIDNIGHT
     val todayMidnight = LocalDateTime.of(today, midnight)
     //println("this it today instant: ${ZonedDateTime.now()} and midnight $todayMidnight")
+
+    var curveLineData = mutableListOf(
+        LineDataSerializable(1, 3F),
+        LineDataSerializable(2, 15F),
+        LineDataSerializable(3, 9F),
+        LineDataSerializable(4, 3F),
+        LineDataSerializable(5, 7F)
+    )
+
+    var jsonLineDataString = json.encodeToString(curveLineData)
+    println("before: $jsonLineDataString")
+    curveLineData =  writeCurveLineDataOnTheDb(curveLineData, 7)
+    jsonLineDataString = json.encodeToString(curveLineData)
+    println("after: $jsonLineDataString")
+}
+
+
+fun writeCurveLineDataOnTheDb(curveLineDataDb: MutableList<LineDataSerializable>, newPoints: Int): MutableList<LineDataSerializable> {
+    val dayOfMonth = 2
+    var isTodayPresent = false
+    curveLineDataDb.map { lineData ->
+        if (lineData.xvalue == dayOfMonth) {
+            isTodayPresent = true
+            lineData.yvalue= lineData.yvalue + newPoints.toFloat()
+            //println("here the code arrives ${LineData(lineData.xValue, lineData.yValue.plus(newPoints.toFloat()))}")
+        } else {
+            lineData
+        }
+    }
+    if (!isTodayPresent) {
+        curveLineDataDb.add(LineDataSerializable(dayOfMonth, newPoints.toFloat()))
+    }
+
+    return curveLineDataDb
 }
 

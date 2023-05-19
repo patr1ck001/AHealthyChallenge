@@ -148,9 +148,10 @@ fun HealthConnectNavigation(
             )
 
             val pieData by viewModel.pieData
+            val curveLineData by viewModel.curveLineData
             val refreshing by viewModel.refreshing
-            val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.readPieChartData() })
-            PointStatScreen(pieData, pullRefreshState, refreshing)
+            val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.refreshing()})
+            PointStatScreen(pieData, curveLineData, pullRefreshState, refreshing)
         }
 
         composable(Screen.ExerciseSessionDetail.route + "/{$UID_NAV_ARGUMENT}") {

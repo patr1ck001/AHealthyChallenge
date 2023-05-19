@@ -6,6 +6,7 @@ import androidx.health.connect.client.units.Energy
 import androidx.health.connect.client.units.Length
 import androidx.health.connect.client.units.Velocity
 import com.example.ahealthychallenge.data.*
+import com.himanshoe.charty.line.model.LineData
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
@@ -323,5 +324,11 @@ object SerializableFactory {
         )
     }
 
+    fun getLineDataSerializable(lineData: LineData): LineDataSerializable{
+        return LineDataSerializable(lineData.xValue as Int, lineData.yValue)
+    }
 
+    fun getLineData(lineDataSerializable: LineDataSerializable): LineData{
+        return LineData(lineDataSerializable.xvalue, lineDataSerializable.yvalue)
+    }
 }

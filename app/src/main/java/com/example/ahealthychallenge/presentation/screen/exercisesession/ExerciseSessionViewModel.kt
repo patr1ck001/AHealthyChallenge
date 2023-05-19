@@ -28,27 +28,28 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.SpeedRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
-import androidx.health.connect.client.units.Length
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.ahealthychallenge.data.*
 import com.example.ahealthychallenge.data.serializables.DailyExerciseSessionKeySerializable
 import com.example.ahealthychallenge.data.serializables.DailySessionsListSerializable
+import com.example.ahealthychallenge.data.serializables.InstantSerializable
+import com.example.ahealthychallenge.data.serializables.LineDataSerializable
 import com.example.ahealthychallenge.data.serializables.SerializableFactory
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.time.Duration
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import kotlin.random.Random
-import kotlinx.coroutines.launch
 import kotlin.math.floor
+import kotlin.random.Random
 
 class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectManager) :
     ViewModel() {
@@ -86,10 +87,14 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         private set
 
     var loading: MutableState<Boolean> = mutableStateOf(false)
+    var refreshing: MutableState<Boolean> = mutableStateOf(false)
 
     var stepsList: MutableState<List<StepSession>> = mutableStateOf(listOf())
         private set
 
+    var lastInstantRead: MutableState<Instant> =
+        mutableStateOf(Instant.EPOCH)
+        private set
     var uiState: UiState by mutableStateOf(UiState.Uninitialized)
         private set
 
@@ -98,6 +103,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
     fun initialLoad() {
         viewModelScope.launch {
             tryWithPermissionsCheck {
+                readLastInstantInDb()
                 readExerciseSessions()
             }
         }
@@ -122,6 +128,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         }
     }
 
+    //TODO: fix bug of the refreshing indicator not disappearing after the refresh
     fun deleteExerciseSession(uid: String) {
         viewModelScope.launch {
             tryWithPermissionsCheck {
@@ -136,6 +143,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
     }
 
     private suspend fun readExerciseSessions() {
+        database = Firebase.database.reference
         val today = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
         val now = Instant.now()
         var isTodaySessionPushed = false
@@ -146,11 +154,12 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             healthConnectManager.readExerciseSessions(today.toInstant(), now).map { record ->
                 loading.value = true
                 val packageName = record.metadata.dataOrigin.packageName
-                //Log.d(TAG,  "the package name is: $packageName")
                 val sessionData = healthConnectManager.readAssociatedSessionData(record.metadata.id)
+                val newPoints = getPoints(sessionData)
+                val exerciseType = record.exerciseType
                 // TODO: pass the entire session data: add sessionData property in ExerciseSession
                 ExerciseSession(
-                    exerciseType = record.exerciseType,
+                    exerciseType = exerciseType,
                     sessionData = sessionData, // retrieve duration and distance
                     startTime = dateTimeWithOffsetOrDefault(
                         record.startTime, record.startZoneOffset
@@ -161,9 +170,71 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                     id = record.metadata.id,
                     sourceAppInfo = healthConnectCompatibleApps[packageName],
                     title = record.title,
-                    points = getPoints(sessionData)
+                    points = newPoints
                 )
             }
+        Log.d("offset", "the last value read is: ${lastInstantRead.value}")
+
+        if (lastInstantRead.value !== Instant.EPOCH) {
+            healthConnectManager.readExerciseSessions(
+                lastInstantRead.value,
+                now
+            ).map { record ->
+                val sessionData = healthConnectManager.readAssociatedSessionData(record.metadata.id)
+                val newPoints = getPoints(sessionData)
+                val exerciseType = record.exerciseType
+                writePieDataOnTheDb(exerciseType, newPoints)
+                writeCurveLineDataOnTheDb(newPoints)
+                Log.d(
+                    "offset",
+                    "the record: ${record.startTime} distance:${sessionData.totalDistance} "
+                )
+            }
+            writeLastInstantInDb(SerializableFactory.getInstantSerializable(Instant.now()))
+        }
+
+        /*val curveLineData = listOf(
+            LineDataSerializable(1, 3F),
+            LineDataSerializable(2, 15F),
+            LineDataSerializable(3, 9F),
+            LineDataSerializable(4, 3F),
+            LineDataSerializable(5, 34F),
+            LineDataSerializable(6, 23F),
+            LineDataSerializable(7, 19F),
+            LineDataSerializable(8, 20F),
+            LineDataSerializable(9, 15F),
+            LineDataSerializable(10, 17F),
+            LineDataSerializable(11, 17F),
+            LineDataSerializable(12, 13F),
+            LineDataSerializable(13, 20F),
+            LineDataSerializable(14, 22F),
+            LineDataSerializable(15, 23F),
+            LineDataSerializable(16, 10F),
+            LineDataSerializable(17, 14F),
+            LineDataSerializable(18, 23F),
+        )
+
+        database.child("pointStats")
+            .child("userID")
+            .child("curveLine")
+            .child("curveLineData")
+            .setValue(curveLineData)
+
+        Log.d("curve", "success")
+        val refer = database.child("pointStats")
+            .child("userID")
+            .child("curveLine")
+            .child("curveLineData")
+
+        refer.get().addOnSuccessListener {
+            val curveLineDataDb = it.getValue<List<LineDataSerializable>>()
+            if (curveLineDataDb != null) {
+                val curveLineList = curveLineDataDb.map { lineData ->
+                    SerializableFactory.getLineData(lineData)
+                }
+                Log.d("curve", "the data are: $curveLineList")
+            }
+        }*/
         var dailyDuration = Duration.ofSeconds(0)
         var dailyPoints = 0
         sessions.forEach {
@@ -173,15 +244,12 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
         val dailySessionsSummary = DailySessionsSummary(today, dailyDuration, dailyPoints)
         val todaySessionsList = DailySessionsList(dailySessionsSummary, sessions)
-        Log.d("daily", "this is the total number of points today is: ${todaySessionsList.dailySessionsSummary.totalPoints}")
 
 
         val todaySessionsListSerializable =
             SerializableFactory.getDailySessionsListSerializable(todaySessionsList)
-        Log.d("daily", "this is the total number of points serialized today is: ${todaySessionsListSerializable.dailySessionsSummary.totalPoints}")
         // write in the realtime database
         //TODO: add a loading animation when the data is retrieved
-        database = Firebase.database.reference
         //TODO: update the database with the sessionsList of today at the position of a list of
         // DailySessionsList, and then retrieve from the database a list of DailySessionsList
 
@@ -200,7 +268,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
         val newChildRef1 = ref.push()
         val newKey1 = newChildRef1.key
-        Log.d(TAG, "the brand new key is: $newKey1")
         if (newKey1 != null) {
             // push today sessions
             newChildRef1.setValue(todaySessionsListSerializable1)
@@ -227,7 +294,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
         val newChildRef2 = ref.push()
         val newKey2 = newChildRef2.key
-        Log.d(TAG, "the brand new key is: $newKey2")
         if (newKey2 != null) {
             // push today sessions
             newChildRef2.setValue(todaySessionsListSerializable2)
@@ -266,12 +332,9 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                         val todaySKey = keys.filter {
                             it.date == today
                         }
-                        Log.d(TAG, "this is the list: $todaySKey")
                         if (todaySKey.size == 1) {
                             isTodaySessionPushed = true
                             todaySessionKey = todaySKey[0].key
-                            Log.d(TAG, "the boolean is: $isTodaySessionPushed")
-                            Log.d(TAG, "the key is: $todaySessionKey")
                         }
 
                         //retrieve the session with the corresponding key
@@ -287,19 +350,11 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                                     val dbTodaySession =
                                         it.getValue<DailySessionsListSerializable>()
                                     if (dbTodaySession != null) {
-                                        Log.d(
-                                            TAG,
-                                            "db list size: ${dbTodaySession.exerciseSessions.size}"
-                                        )
-                                        Log.d(
-                                            TAG,
-                                            "today list size: ${todaySessionsListSerializable.exerciseSessions.size}"
-                                        )
+
                                         if (dbTodaySession.exerciseSessions.size < todaySessionsListSerializable.exerciseSessions.size) {
                                             // update the db with the new session list
                                             ref.child(todaySessionKey)
                                                 .setValue(todaySessionsListSerializable)
-                                            Log.d(TAG, "that is what I thought")
                                         }
                                     }
                                 }.addOnFailureListener {
@@ -308,7 +363,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                         } else {
                             val newChildRef = ref.push()
                             val newKey = newChildRef.key
-                            Log.d(TAG, "the brand new key is: $newKey")
                             if (newKey != null) {
                                 // push today sessions
                                 newChildRef.setValue(todaySessionsListSerializable)
@@ -368,6 +422,20 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             .addValueEventListener(sessionListener)
         val sevenDays = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(31)
         stepsList.value = healthConnectManager.readStepSession(sevenDays.toInstant())
+
+
+        /*val ref2 = database.child("pointStats")
+            .child("userID")
+            .child("pieChart")
+
+        ref2.get().addOnSuccessListener {
+            //we check is the list of session on the database is up to date
+            val dbMap = it.getValue<Map<String, Int>>()
+            if (dbMap != null) {
+                Log.d("map", "the map is $dbMap")
+            }
+        }*/
+        refreshing.value = false
     }
 
     /**
@@ -406,6 +474,69 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         // and recomposition won't result in multiple snackbars.
         data class Error(val exception: Throwable, val uuid: UUID = UUID.randomUUID()) : UiState()
     }
+
+    fun readLastInstantInDb() {
+        val database = Firebase.database.reference
+
+        val refer = database.child("pointStats")
+            .child("userID")
+            .child("pieChart")
+            .child("lastInstant")
+
+        refer.get().addOnSuccessListener {
+            val lastInstantDb = it.getValue<InstantSerializable>()
+            val lastInstant: Instant?
+            if (lastInstantDb != null) {
+                lastInstant = SerializableFactory.getInstant(lastInstantDb)
+                lastInstantRead.value = lastInstant
+            }
+        }
+    }
+
+    fun writeLastInstantInDb(instantSerializable: InstantSerializable) {
+        val database = Firebase.database.reference
+        database.child("pointStats")
+            .child("userID")
+            .child("pieChart")
+            .child("lastInstant")
+            .setValue(instantSerializable)
+    }
+
+    fun writeCurveLineDataOnTheDb(newPoints: Int) {
+        database = Firebase.database.reference
+        val refer = database.child("pointStats")
+            .child("userID")
+            .child("curveLine")
+            .child("curveLineData")
+
+        Log.d("curve", "1")
+        refer.get().addOnSuccessListener {
+            Log.d("curve", "3")
+            Log.d("curve", "before")
+            val dayOfMonth = ZonedDateTime.now().dayOfMonth
+            var isTodayPresent = false
+            val curveLineDataDb = it.getValue<MutableList<LineDataSerializable>>()
+            Log.d("curve", "deserialized: $curveLineDataDb")
+            if (curveLineDataDb != null) {
+                curveLineDataDb.map { lineData ->
+                    if (lineData.xvalue == dayOfMonth) {
+                        isTodayPresent = true
+                        lineData.yvalue = lineData.yvalue + newPoints.toFloat()
+                    } else {
+                        lineData
+                    }
+                }
+                if (!isTodayPresent) {
+                    curveLineDataDb.add(LineDataSerializable(dayOfMonth, newPoints.toFloat()))
+                }
+                Log.d("curve", "about to serialize: $curveLineDataDb")
+
+                refer.setValue(curveLineDataDb)
+            }
+        }
+        Log.d("curve", "2")
+
+    }
 }
 
 class ExerciseSessionViewModelFactory(
@@ -426,8 +557,57 @@ fun getPoints(exerciseSessionData: ExerciseSessionData): Int {
         return floor(exerciseSessionData.totalDistance.inKilometers).toInt()
     } else if (exerciseSessionData.totalActiveTime != null) {
         val val1 = exerciseSessionData.totalActiveTime.seconds.toDouble()
-        val val2 = Duration.ofSeconds(1).seconds.toDouble() // 1 --> 600: 1 point for every 10 min of workout
+        val val2 =
+            Duration.ofSeconds(1).seconds.toDouble() // 1 --> 600: 1 point for every 10 min of workout
         return floor(val1 / val2).toInt() // 1 point for every 10 min of workout
     }
     return 0
 }
+
+fun writePieDataOnTheDb(exerciseType: Int, newPoints: Int) {
+    val database = Firebase.database.reference
+    val ref = database.child("pointStats")
+        .child("userID")
+        .child("pieChart")
+        .child("pieChartData")
+
+    when (exerciseType) {
+        56 -> {
+            ref.child("running").get().addOnSuccessListener {
+                val runningPoints = it.getValue<Int>()
+                if (runningPoints != null) {
+                    ref.child("running").setValue(runningPoints + newPoints)
+                }
+            }
+        }
+
+        79 -> {
+            ref.child("walking").get().addOnSuccessListener {
+                val walkingPoints = it.getValue<Int>()
+                if (walkingPoints != null) {
+                    ref.child("walking").setValue(walkingPoints + newPoints)
+                }
+            }
+        }
+
+        8 -> {
+            ref.child("cycling").get().addOnSuccessListener {
+                val cyclingPoints = it.getValue<Int>()
+                if (cyclingPoints != null) {
+                    ref.child("cycling").setValue(cyclingPoints + newPoints)
+                }
+            }
+        }
+
+        else -> {
+            ref.child("workout").get().addOnSuccessListener {
+                val workoutPoints = it.getValue<Int>()
+                if (workoutPoints != null) {
+                    ref.child("workout").setValue(workoutPoints + newPoints)
+                }
+            }
+        }
+    }
+    Log.d("write", "write in db $exerciseType")
+}
+

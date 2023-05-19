@@ -16,8 +16,11 @@
 package com.example.ahealthychallenge.presentation.navigation
 
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,6 +43,9 @@ import com.example.ahealthychallenge.presentation.screen.exercisesessiondetail.E
 import com.example.ahealthychallenge.presentation.screen.inputreadings.InputReadingsScreen
 import com.example.ahealthychallenge.presentation.screen.inputreadings.InputReadingsViewModel
 import com.example.ahealthychallenge.presentation.screen.inputreadings.InputReadingsViewModelFactory
+import com.example.ahealthychallenge.presentation.screen.points.PointStatScreen
+import com.example.ahealthychallenge.presentation.screen.points.PointStatScreenViewModel
+import com.example.ahealthychallenge.presentation.screen.points.PointStatScreenViewModelFactory
 import com.example.ahealthychallenge.presentation.screen.privacypolicy.PrivacyPolicyScreen
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionScreen
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionViewModel
@@ -50,6 +56,7 @@ import kotlinx.coroutines.launch
 /**
  * Provides the navigation in the app.
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HealthConnectNavigation(
     navController: NavHostController,
@@ -97,6 +104,10 @@ fun HealthConnectNavigation(
             val permissionsLauncher =
                 rememberLauncherForActivityResult(viewModel.permissionsLauncher) {
                 onPermissionsResult()}
+
+            val refreshing by viewModel.refreshing
+            val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.initialLoad() })
+
             ExerciseSessionScreen(
                 permissionsGranted = permissionsGranted,
                 permissions = permissions,
@@ -122,9 +133,27 @@ fun HealthConnectNavigation(
                     viewModel.initialLoad()
                 },
                 onPermissionsLaunch = { values ->
-                    permissionsLauncher.launch(values)}
+                    permissionsLauncher.launch(values)},
+                pullRefreshState = pullRefreshState,
+                refreshing = refreshing
             )
+
         }
+
+        composable(Screen.PointScreen.route) {
+            val viewModel: PointStatScreenViewModel = viewModel(
+                factory = PointStatScreenViewModelFactory(
+                    healthConnectManager = healthConnectManager
+                )
+            )
+
+            val pieData by viewModel.pieData
+            val curveLineData by viewModel.curveLineData
+            val refreshing by viewModel.refreshing
+            val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.refreshing()})
+            PointStatScreen(pieData, curveLineData, pullRefreshState, refreshing)
+        }
+
         composable(Screen.ExerciseSessionDetail.route + "/{$UID_NAV_ARGUMENT}") {
             val uid = it.arguments?.getString(UID_NAV_ARGUMENT)!!
             val viewModel: ExerciseSessionDetailViewModel = viewModel(
@@ -259,5 +288,6 @@ fun HealthConnectNavigation(
                 permissionsLauncher.launch(values)
             }
         }
+
     }
 }

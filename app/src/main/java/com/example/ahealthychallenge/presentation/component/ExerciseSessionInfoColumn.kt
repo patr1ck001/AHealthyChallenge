@@ -59,7 +59,7 @@ fun ExerciseSessionInfoColumn(
     onClick: (String) -> Unit = {},
     distance: Length?
 ) {
-    Log.d(TAG, "the exercise type number: $exerciseType")
+    Log.d("ex", "the exercise type number: $exerciseType")
     Column(
         modifier = modifier.clickable {
             onClick(uid)
@@ -125,10 +125,20 @@ fun ExerciseSessionInfoColumn(
 
 fun getExerciseType(recordType: Int): String {
     val exerciseType = when (recordType) {
-//TODO: display the correct exercise session
+        5 -> "Basketball"
+        8 -> "Biking"
+        29 -> "Football"
+        37 -> "Hiking"
         56 -> "Running"
+        61 -> "Skiing"
+        62 -> "Snowboarding"
+        73 -> "Swimming"
+        74 -> "Swimming"
+        75 -> "Table tennis"
+        76 -> "Tennis"
+        78 -> "Volleyball"
         79 -> "Walking"
-        else -> "Cycling"
+        else -> "Workout"
     }
     return exerciseType
 }

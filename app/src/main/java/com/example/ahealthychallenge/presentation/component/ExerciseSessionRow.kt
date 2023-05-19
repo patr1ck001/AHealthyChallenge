@@ -66,7 +66,7 @@ fun ExerciseSessionRow(
                 .padding(10.dp)
         ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_running),
+                    painter = painterResource(id = getIconId(exerciseType)),
                     contentDescription = null,
                     tint = MaterialTheme.colors.primary
                 )
@@ -87,6 +87,26 @@ fun ExerciseSessionRow(
             onClick = onDetailsClick
         )
     }
+}
+
+fun getIconId(recordType: Int): Int {
+    val exerciseType = when (recordType) {
+        5 -> R.drawable.ic_basketball
+        8 -> R.drawable.ic_biking
+        29 -> R.drawable.ic_football
+        37 -> R.drawable.ic_hiking
+        56 -> R.drawable.ic_runner
+        61 -> R.drawable.ic_skiing
+        62 -> R.drawable.ic_snowboarding
+        73 -> R.drawable.ic_swimming_pool
+        74 -> R.drawable.ic_swimming_pool
+        75 -> R.drawable.ic_ping_pong
+        76 -> R.drawable.ic_tennis
+        78 -> R.drawable.ic_volleyball
+        79 -> R.drawable.ic_step
+        else -> R.drawable.ic_workout
+    }
+    return exerciseType
 }
 
 

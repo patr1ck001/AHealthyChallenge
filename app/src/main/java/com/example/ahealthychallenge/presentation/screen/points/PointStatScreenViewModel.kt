@@ -20,62 +20,15 @@ import java.time.Instant
 class PointStatScreenViewModel(private val healthConnectManager: HealthConnectManager) :
     ViewModel() {
     private lateinit var database: DatabaseReference
-    var pieData: MutableState<List<PieData>> = mutableStateOf(
-        listOf(
-            PieData(3F),
-            PieData(1F),
-            PieData(1F),
-        )
-    )
+    var pieData: MutableState<List<PieData>> = mutableStateOf(listOf())
         private set
 
-    var curveLineData: MutableState<List<LineData>> = mutableStateOf(
-        listOf(
-            LineData(1, 3F),
-            LineData(2, 15F),
-            LineData(3, 9F),
-            LineData(4, 3F),
-            LineData(5, 7F)
-        )
-    )
-    var walkingLineData: MutableState<List<LineData>> = mutableStateOf(
-        listOf(
-            LineData(1, 3F),
-            LineData(2, 15F),
-            LineData(3, 9F),
-            LineData(4, 3F),
-            LineData(5, 7F)
-        )
-    )
-    var runningLineData: MutableState<List<LineData>> = mutableStateOf(
-        listOf(
-            LineData(1, 3F),
-            LineData(2, 15F),
-            LineData(3, 9F),
-            LineData(4, 3F),
-            LineData(5, 7F)
-        )
-    )
-    var bikingLineData: MutableState<List<LineData>> = mutableStateOf(
-        listOf(
-            LineData(1, 3F),
-            LineData(2, 15F),
-            LineData(3, 9F),
-            LineData(4, 3F),
-            LineData(5, 7F)
-        )
-    )
-    var workoutLineData: MutableState<List<LineData>> = mutableStateOf(
-        listOf(
-            LineData(1, 3F),
-            LineData(2, 15F),
-            LineData(3, 9F),
-            LineData(4, 3F),
-            LineData(5, 7F)
-        )
-    )
+    var curveLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
+    var walkingLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
+    var runningLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
+    var bikingLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
+    var workoutLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
 
-        private set
     var refreshing: MutableState<Boolean> = mutableStateOf(false)
 
     init {

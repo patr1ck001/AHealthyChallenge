@@ -236,7 +236,6 @@ fun writeCurveLineDataOnTheDb(curveLineDataDb: MutableList<LineDataSerializable>
         if (lineData.xvalue == dayOfMonth) {
             isTodayPresent = true
             lineData.yvalue= lineData.yvalue + newPoints.toFloat()
-            //println("here the code arrives ${LineData(lineData.xValue, lineData.yValue.plus(newPoints.toFloat()))}")
         } else {
             lineData
         }

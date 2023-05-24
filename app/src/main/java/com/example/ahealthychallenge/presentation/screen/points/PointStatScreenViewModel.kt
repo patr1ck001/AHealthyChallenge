@@ -38,17 +38,62 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
             LineData(5, 7F)
         )
     )
+    var walkingLineData: MutableState<List<LineData>> = mutableStateOf(
+        listOf(
+            LineData(1, 3F),
+            LineData(2, 15F),
+            LineData(3, 9F),
+            LineData(4, 3F),
+            LineData(5, 7F)
+        )
+    )
+    var runningLineData: MutableState<List<LineData>> = mutableStateOf(
+        listOf(
+            LineData(1, 3F),
+            LineData(2, 15F),
+            LineData(3, 9F),
+            LineData(4, 3F),
+            LineData(5, 7F)
+        )
+    )
+    var bikingLineData: MutableState<List<LineData>> = mutableStateOf(
+        listOf(
+            LineData(1, 3F),
+            LineData(2, 15F),
+            LineData(3, 9F),
+            LineData(4, 3F),
+            LineData(5, 7F)
+        )
+    )
+    var workoutLineData: MutableState<List<LineData>> = mutableStateOf(
+        listOf(
+            LineData(1, 3F),
+            LineData(2, 15F),
+            LineData(3, 9F),
+            LineData(4, 3F),
+            LineData(5, 7F)
+        )
+    )
+
         private set
     var refreshing: MutableState<Boolean> = mutableStateOf(false)
 
     init {
         readPieChartData()
         readCurveLineData()
+        readLineData("walkingLineData")
+        readLineData("runningLineData")
+        readLineData("bikingLineData")
+        readLineData("workoutLineData")
     }
 
     fun refreshing() {
         readPieChartData()
         readCurveLineData()
+        readLineData("walkingLineData")
+        readLineData("runningLineData")
+        readLineData("bikingLineData")
+        readLineData("workoutLineData")
     }
 
     fun readPieChartData() {
@@ -105,6 +150,33 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
         }
 
         Log.d("curve", "before")
+    }
+
+    fun readLineData(pathName: String) {
+        database = Firebase.database.reference
+        val refer = database.child("pointStats")
+            .child("userID")
+            .child(pathName)
+
+        Log.d("viewLine", "refer $refer")
+        refer.get().addOnSuccessListener {
+            val lineDataDb = it.getValue<List<LineDataSerializable>>()
+            Log.d("viewLine", "deserialized: $lineDataDb")
+            if (lineDataDb != null) {
+                val lineDataList = lineDataDb.map { lineData ->
+                    SerializableFactory.getLineData(lineData)
+                }
+                Log.d("curve", "deserialized2: $lineDataList")
+
+                when(pathName){
+                    "walkingLineData" -> walkingLineData.value = lineDataList
+                    "runningLineData" -> runningLineData.value = lineDataList
+                    "bikingLineData" -> bikingLineData.value = lineDataList
+                    "workoutLineData" -> workoutLineData.value = lineDataList
+                }
+            }
+        }
+        Log.d("viewLine", "before")
     }
     /*fun readCurveLineData() {
         database = Firebase.database.reference

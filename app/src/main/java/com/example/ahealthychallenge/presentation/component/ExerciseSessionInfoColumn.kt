@@ -140,6 +140,7 @@ fun getExerciseType(recordType: Int): String {
         79 -> "Walking"
         else -> "Workout"
     }
+    // TODO: reverse the order of the exercise session when rendered on the screen
     return exerciseType
 }
 

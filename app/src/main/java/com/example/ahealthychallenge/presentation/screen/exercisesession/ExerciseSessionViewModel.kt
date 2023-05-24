@@ -31,6 +31,7 @@ import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.*
 import com.example.ahealthychallenge.data.serializables.DailyExerciseSessionKeySerializable
 import com.example.ahealthychallenge.data.serializables.DailySessionsListSerializable
@@ -185,10 +186,13 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                 val exerciseType = record.exerciseType
                 writePieDataOnTheDb(exerciseType, newPoints)
                 writeCurveLineDataOnTheDb(newPoints)
-                Log.d(
-                    "offset",
-                    "the record: ${record.startTime} distance:${sessionData.totalDistance} "
-                )
+                val pathString = when(exerciseType) {
+                    8 -> "bikingLineData"
+                    56 -> "runningLineData"
+                    79 -> "walkingLineData"
+                    else -> "workoutLineData"
+                }
+                writeExerciseLineDataOnTheDb(newPoints, pathString)
             }
             writeLastInstantInDb(SerializableFactory.getInstantSerializable(Instant.now()))
         }
@@ -216,15 +220,13 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
         database.child("pointStats")
             .child("userID")
-            .child("curveLine")
-            .child("curveLineData")
+            .child("workoutLineData")
             .setValue(curveLineData)
 
         Log.d("curve", "success")
         val refer = database.child("pointStats")
             .child("userID")
-            .child("curveLine")
-            .child("curveLineData")
+            .child("workoutLineData")
 
         refer.get().addOnSuccessListener {
             val curveLineDataDb = it.getValue<List<LineDataSerializable>>()
@@ -535,6 +537,42 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             }
         }
         Log.d("curve", "2")
+
+    }
+
+    fun writeExerciseLineDataOnTheDb(newPoints: Int, pathString: String) {
+        database = Firebase.database.reference
+        val refer = database
+            .child("pointStats")
+            .child("userID")
+            .child(pathString)
+
+        Log.d("lineData", "1")
+        refer.get().addOnSuccessListener {
+            Log.d("lineData", "3")
+            Log.d("lineData", "before")
+            val dayOfMonth = ZonedDateTime.now().dayOfMonth
+            var isTodayPresent = false
+            val lineDataDb = it.getValue<MutableList<LineDataSerializable>>()
+            Log.d("lineData", "deserialized: $lineDataDb")
+            if (lineDataDb != null) {
+                lineDataDb.map { lineData ->
+                    if (lineData.xvalue == dayOfMonth) {
+                        isTodayPresent = true
+                        lineData.yvalue = lineData.yvalue + newPoints.toFloat()
+                    } else {
+                        lineData
+                    }
+                }
+                if (!isTodayPresent) {
+                    lineDataDb.add(LineDataSerializable(dayOfMonth, newPoints.toFloat()))
+                }
+                Log.d("lineData", "about to serialize: $lineDataDb")
+
+                refer.setValue(lineDataDb)
+            }
+        }
+        Log.d("lineData", "2")
 
     }
 }

@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:text="Sign in"
         android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textColor="@color/health_connect_blue"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/etSignInEmail"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +33,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etSignInEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="20dp"
+        android:hint="email"
+
+        app:layout_constraintBottom_toTopOf="@+id/etSignInPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!--
+     <EditText
         android:id="@+id/etSignInEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -46,8 +72,35 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed" /> -->
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etSignInPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="20dp"
+        android:hint="password"
+        app:endIconMode="password_toggle"
+
+
+        app:layout_constraintBottom_toTopOf="@+id/btnSignIn"
+        app:layout_constraintEnd_toEndOf="@+id/etSignInEmail"
+        app:layout_constraintStart_toStartOf="@+id/etSignInEmail"
+        app:layout_constraintTop_toBottomOf="@+id/etSignInEmail" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!--
     <EditText
         android:id="@+id/etSignInPassword"
         android:layout_width="0dp"
@@ -61,14 +114,15 @@
         app:layout_constraintEnd_toEndOf="@+id/etSignInEmail"
         app:layout_constraintStart_toStartOf="@+id/etSignInEmail"
         app:layout_constraintTop_toBottomOf="@+id/etSignInEmail" />
-
+-->
     <Button
         android:id="@+id/btnSignIn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
-        android:backgroundTint="@color/black"
-        android:text="sign_in"
+        android:backgroundTint="@color/health_connect_blue"
+        android:text="sign in"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/btnCreateAccount2"
         app:layout_constraintEnd_toEndOf="@+id/etSignInPassword"
         app:layout_constraintStart_toStartOf="@+id/etSignInPassword"
@@ -79,7 +133,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
-        android:text="create_account"
+        android:backgroundTint="#bec1e0"
+        android:textColor="@color/black"
+        android:text="create account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/btnSignIn"
         app:layout_constraintStart_toStartOf="@+id/btnSignIn"

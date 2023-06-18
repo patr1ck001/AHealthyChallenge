@@ -9,31 +9,48 @@
     tools:ignore="Autofill">
 
 
-    <ImageView
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24"
-        app:layout_constraintBottom_toTopOf="@id/create_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/create_text"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
     <TextView
         android:id="@+id/create_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create your account"
         android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textColor="@color/health_connect_blue"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/etEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="20dp"
+        android:hint="email"
+
+
+        app:layout_constraintBottom_toTopOf="@id/etPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email_edit_text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!--
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="0dp"
@@ -47,7 +64,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
+-->
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="20dp"
+        android:hint="password"
+        app:endIconMode="password_toggle"
+
+
+        app:layout_constraintBottom_toTopOf="@id/etConfirmPassword"
+        app:layout_constraintEnd_toEndOf="@id/etEmail"
+        app:layout_constraintStart_toStartOf="@id/etEmail"
+        app:layout_constraintTop_toBottomOf="@id/etEmail">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password_edit_text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="0dp"
@@ -61,13 +104,39 @@
         app:layout_constraintEnd_toEndOf="@id/etEmail"
         app:layout_constraintStart_toStartOf="@id/etEmail"
         app:layout_constraintTop_toBottomOf="@id/etEmail" />
+-->
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etConfirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="20dp"
+        android:hint="confirm password"
+        app:endIconMode="password_toggle"
+
+
+        app:layout_constraintBottom_toTopOf="@id/btnCreateAccount"
+        app:layout_constraintEnd_toEndOf="@id/etPassword"
+        app:layout_constraintStart_toStartOf="@id/etPassword"
+        app:layout_constraintTop_toBottomOf="@id/etPassword">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/confirm_password_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--
     <EditText
         android:id="@+id/etConfirmPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:hint="confirm_password"
+        android:hint="confirm password"
         android:inputType="textPassword"
         android:maxLength="8"
         android:padding="10dp"
@@ -76,12 +145,15 @@
         app:layout_constraintStart_toStartOf="@id/etPassword"
         app:layout_constraintTop_toBottomOf="@id/etPassword" />
 
+-->
     <Button
         android:id="@+id/btnCreateAccount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
-        android:text="create_account"
+        android:text="create account"
+        android:backgroundTint="#bec1e0"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/etConfirmPassword"
         app:layout_constraintStart_toStartOf="@id/etConfirmPassword"

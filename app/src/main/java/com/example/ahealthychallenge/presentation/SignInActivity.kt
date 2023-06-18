@@ -15,6 +15,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.GoogleAuthProvider
 
 
@@ -28,10 +30,10 @@ class SignInActivity:  ComponentActivity() {
 
     lateinit var signInEmail: String
     lateinit var signInPassword: String
-    lateinit var signInInputsArray: Array<EditText>
+    lateinit var signInInputsArray: Array<TextInputEditText>
 
-    private lateinit var email: EditText
-    private lateinit var password: EditText
+    private lateinit var email: TextInputEditText
+    private lateinit var password: TextInputEditText
     private lateinit var button: SignInButton
 
 
@@ -46,8 +48,8 @@ class SignInActivity:  ComponentActivity() {
 
         setupUI()
 
-        email = binding.etSignInEmail
-        password = binding.etSignInPassword
+        email = binding.emailEditText
+        password = binding.passwordEditText
 
         signInInputsArray = arrayOf(email, password)
         binding.btnCreateAccount2.setOnClickListener {

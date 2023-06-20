@@ -80,9 +80,9 @@ class CreateAccountActivity : ComponentActivity() {
             firebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "created account successfully !", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Success !", Toast.LENGTH_LONG).show()
                         sendEmailVerification()
-                        startActivity(Intent(this, HomeActivity::class.java))
+                        startActivity(Intent(this, UserActivity::class.java))
                         finish()
                     } else {
                         Toast.makeText(this, "failed to Authenticate !", Toast.LENGTH_LONG).show()

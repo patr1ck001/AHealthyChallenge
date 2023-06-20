@@ -39,6 +39,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthConnect">
         <activity
+            android:name=".presentation.UserActivity"
+            android:parentActivityName=".presentation.CreateAccountActivity"></activity>
+        <activity
             android:name=".presentation.CreateAccountActivity"
             android:parentActivityName=".presentation.SignInActivity"></activity>
         <activity

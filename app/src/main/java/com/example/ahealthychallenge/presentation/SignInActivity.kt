@@ -2,7 +2,6 @@ package com.example.ahealthychallenge.presentation
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.ahealthychallenge.R
@@ -16,7 +15,6 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.GoogleAuthProvider
 
 
@@ -59,6 +57,11 @@ class SignInActivity:  ComponentActivity() {
 
         binding.btnSignIn.setOnClickListener {
             signInUser()
+        }
+
+        binding.btnForget.setOnClickListener{
+            val intent = Intent(this, ResetPasswordActivity::class.java)
+            startActivity(intent)
         }
 
     }

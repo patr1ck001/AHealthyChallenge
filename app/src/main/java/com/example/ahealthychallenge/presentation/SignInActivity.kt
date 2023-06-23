@@ -16,7 +16,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.GoogleAuthProvider
-
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 
 class SignInActivity:  ComponentActivity() {
@@ -34,11 +35,15 @@ class SignInActivity:  ComponentActivity() {
     private lateinit var password: TextInputEditText
     private lateinit var button: SignInButton
 
+    private lateinit var databaseReference: DatabaseReference
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
 
         button = binding.googleButton
 
@@ -140,14 +145,24 @@ class SignInActivity:  ComponentActivity() {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
+                val user = firebaseAuth.currentUser
+                if (user != null) {
+                    databaseReference.child(user.uid).get().addOnSuccessListener { it ->
+                        if(it.exists()){
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                        }
+                        else{
+                            val intent = Intent(this, UserActivity::class.java)
+                            startActivity(intent)
+                        }
+                    }
+                }
             } else {
                 Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
             }
         }
     }
 
-
-
 }
+

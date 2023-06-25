@@ -79,9 +79,23 @@ class SignInActivity:  ComponentActivity() {
             firebaseAuth.signInWithEmailAndPassword(signInEmail, signInPassword)
                 .addOnCompleteListener { signIn ->
                     if (signIn.isSuccessful) {
-                        startActivity(Intent(this, HomeActivity::class.java))
-                        Toast.makeText(this, "signed in successfully", Toast.LENGTH_LONG).show()
-                        finish()
+                        val user = firebaseAuth.currentUser
+                        if (user != null) {
+                            databaseReference.child(user.uid).get().addOnSuccessListener { it ->
+                                if(it.exists() && user.isEmailVerified){
+                                    startActivity(Intent(this, HomeActivity::class.java))
+                                    Toast.makeText(this, "signed in successfully", Toast.LENGTH_LONG).show()
+                                    finish()
+                                }
+                                else if(!(user.isEmailVerified)){
+                                    Toast.makeText(this, "User isn't verified. Check your email !", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    val intent = Intent(this, UserActivity::class.java)
+                                    startActivity(intent)
+                                }
+                            }
+                        }
                     } else {
                         Toast.makeText(this, "sign in failed", Toast.LENGTH_LONG).show()
                     }
@@ -102,10 +116,14 @@ class SignInActivity:  ComponentActivity() {
         super.onStart()
         val user = firebaseAuth.currentUser
         if (user != null) {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            Toast.makeText(this, "welcome back", Toast.LENGTH_LONG).show()
-            finish()
+            databaseReference.child(user.uid).get().addOnSuccessListener { it ->
+                if (it.exists()) {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                    Toast.makeText(this, "welcome back", Toast.LENGTH_LONG).show()
+                    finish()
+                }
+            }
         }
     }
 

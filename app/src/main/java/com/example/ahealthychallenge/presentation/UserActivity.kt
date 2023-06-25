@@ -47,17 +47,25 @@ class UserActivity: ComponentActivity() {
             val lastName = binding.lastName.text.toString()
             val username = binding.userName.text.toString()
 
-            val user = User(firstName, lastName, username)
+            databaseReference.child(username).get().addOnSuccessListener { it ->
+                if(it.exists()) {
+                    Toast.makeText(this, "Username already exists !", Toast.LENGTH_LONG).show()
+                }
+                else{
+                    val user = User(firstName, lastName, username, uid)
 
-            if(uid != null){
+                    if(uid != null){
 
-                databaseReference.child(uid).setValue(user).addOnCompleteListener {
+                        databaseReference.child(uid).setValue(uid)
+                        databaseReference.child(username).setValue(user).addOnCompleteListener {
 
-                    if(it.isSuccessful){
-                        updateProfilePic()
-                        startActivity(Intent(this, HomeActivity::class.java))
-                    }else{
-                        Toast.makeText(this, "failed to update profile !", Toast.LENGTH_LONG).show()
+                            if(it.isSuccessful){
+                                updateProfilePic()
+                                startActivity(Intent(this, HomeActivity::class.java))
+                            }else{
+                                Toast.makeText(this, "failed to update profile !", Toast.LENGTH_LONG).show()
+                            }
+                        }
                     }
                 }
             }

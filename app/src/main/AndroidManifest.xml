@@ -39,11 +39,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthConnect">
         <activity
+            android:name=".presentation.SearchUserActivity"
+            android:parentActivityName=".presentation.HomeActivity"></activity>
+        <activity
             android:name=".presentation.ResetPasswordActivity"
             android:parentActivityName=".presentation.SignInActivity"></activity>
         <activity
             android:name=".presentation.UserActivity"
-            android:parentActivityName=".presentation.CreateAccountActivity"></activity>
+            android:parentActivityName=".presentation.SignInActivity"></activity>
         <activity
             android:name=".presentation.CreateAccountActivity"
             android:parentActivityName=".presentation.SignInActivity"></activity>

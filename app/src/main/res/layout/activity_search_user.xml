@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ahealthychallenge.presentation.SearchUserActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/health_connect_blue"
+        android:padding = "10dp"
+        android:id="@+id/tool_bar" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search User"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+        />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tool_bar"
+        android:layout_margin="10dp"
+        android:id = "@+id/search_bar">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_text"
+            android:layout_margin="10dp"
+            android:hint="Username"
+            android:padding="10dp"
+            android:elevation="40dp"
+            android:layout_toLeftOf = "@id/search_btn"/>
+        
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_baseline_search_24"
+            android:layout_alignParentEnd="true"
+            android:id = "@+id/search_btn"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/health_connect_blue"
+            android:padding="4dp"
+            android:layout_margin="10dp"/>
+        
+    </RelativeLayout>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_bar"
+        android:padding="10dp"
+        android:id = "@+id/search_list"
+        />
+
+</RelativeLayout>

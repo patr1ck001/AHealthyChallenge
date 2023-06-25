@@ -6,8 +6,8 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.ahealthychallenge.databinding.ActivityCreateAccountBinding
 import com.example.ahealthychallenge.presentation.utils.FirebaseUtils.firebaseAuth
-import com.example.ahealthychallenge.presentation.utils.FirebaseUtils.firebaseUser
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuth
 
 class CreateAccountActivity : ComponentActivity() {
     lateinit var userEmail: String
@@ -80,10 +80,7 @@ class CreateAccountActivity : ComponentActivity() {
             firebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "Success !", Toast.LENGTH_LONG).show()
                         sendEmailVerification()
-                        startActivity(Intent(this, UserActivity::class.java))
-                        finish()
                     } else {
                         Toast.makeText(this, "failed to Authenticate !", Toast.LENGTH_LONG).show()
                     }
@@ -96,12 +93,19 @@ class CreateAccountActivity : ComponentActivity() {
     */
 
     private fun sendEmailVerification() {
-        firebaseUser?.let {
-            it.sendEmailVerification().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "email sent to $userEmail",Toast.LENGTH_LONG).show()
-                }
+
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseUser = firebaseAuth.currentUser
+
+        //send email verification
+        firebaseUser!!.sendEmailVerification()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Check your email for verification !", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, SignInActivity::class.java))
+                finish()
             }
-        }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to send verification due to " + e.message, Toast.LENGTH_SHORT).show()
+            }
     }
 }

@@ -56,11 +56,11 @@ class UserActivity: ComponentActivity() {
 
                     if(uid != null){
 
-                        databaseReference.child(uid).setValue(uid)
+                        databaseReference.child(uid).setValue(username)
                         databaseReference.child(username).setValue(user).addOnCompleteListener {
 
                             if(it.isSuccessful){
-                                updateProfilePic()
+                                updateProfilePic(username)
                                 startActivity(Intent(this, HomeActivity::class.java))
                             }else{
                                 Toast.makeText(this, "failed to update profile !", Toast.LENGTH_LONG).show()
@@ -81,18 +81,16 @@ class UserActivity: ComponentActivity() {
         }
     }
 
-    private fun updateProfilePic() {
+    private fun updateProfilePic(username: String) {
         if(!flag) {
             imageUri = Uri.parse("android.resource://$packageName/${R.drawable.ic_profile}")
         }
-        storageReference = FirebaseStorage.getInstance().getReference("Users/"+auth.currentUser?.uid)
+        storageReference = FirebaseStorage.getInstance().getReference("Users/$username")
         storageReference.putFile(imageUri).addOnCompleteListener {
-
             Toast.makeText(this, "Profile successfully updated !", Toast.LENGTH_LONG).show()
-
         }.addOnFailureListener {
-
             Toast.makeText(this, "failed to upload the image !", Toast.LENGTH_LONG).show()
         }
     }
+
 }

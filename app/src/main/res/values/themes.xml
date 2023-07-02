@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
 <!--
      Copyright (C) 2022 The Android Open Source Project
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,12 @@
      limitations under the License.
 -->
 <resources>
-    <style name="Theme.HealthConnect" parent="android:Theme.Material.Light.NoActionBar">
+    <!--  <style name="Theme.HealthConnect" parent="android:Theme.Material.Light.NoActionBar"> -->
+    <style name="Theme.HealthConnect" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:statusBarColor">@color/health_connect_blue</item>
+        <item name="colorPrimary">@color/health_connect_blue</item>
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
     </style>
 </resources>

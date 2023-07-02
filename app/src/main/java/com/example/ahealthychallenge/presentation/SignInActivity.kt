@@ -2,7 +2,6 @@ package com.example.ahealthychallenge.presentation
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.ahealthychallenge.R
@@ -15,8 +14,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.GoogleAuthProvider
-
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 
 class SignInActivity:  ComponentActivity() {
@@ -28,11 +29,13 @@ class SignInActivity:  ComponentActivity() {
 
     lateinit var signInEmail: String
     lateinit var signInPassword: String
-    lateinit var signInInputsArray: Array<EditText>
+    lateinit var signInInputsArray: Array<TextInputEditText>
 
-    private lateinit var email: EditText
-    private lateinit var password: EditText
+    private lateinit var email: TextInputEditText
+    private lateinit var password: TextInputEditText
     private lateinit var button: SignInButton
+
+    private lateinit var databaseReference: DatabaseReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,14 +43,16 @@ class SignInActivity:  ComponentActivity() {
         val binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+
         button = binding.googleButton
 
         configureGoogleSignIn()
 
         setupUI()
 
-        email = binding.etSignInEmail
-        password = binding.etSignInPassword
+        email = binding.emailEditText
+        password = binding.passwordEditText
 
         signInInputsArray = arrayOf(email, password)
         binding.btnCreateAccount2.setOnClickListener {
@@ -57,6 +62,11 @@ class SignInActivity:  ComponentActivity() {
 
         binding.btnSignIn.setOnClickListener {
             signInUser()
+        }
+
+        binding.btnForget.setOnClickListener{
+            val intent = Intent(this, ResetPasswordActivity::class.java)
+            startActivity(intent)
         }
 
     }
@@ -69,9 +79,23 @@ class SignInActivity:  ComponentActivity() {
             firebaseAuth.signInWithEmailAndPassword(signInEmail, signInPassword)
                 .addOnCompleteListener { signIn ->
                     if (signIn.isSuccessful) {
-                        startActivity(Intent(this, HomeActivity::class.java))
-                        Toast.makeText(this, "signed in successfully", Toast.LENGTH_LONG).show()
-                        finish()
+                        val user = firebaseAuth.currentUser
+                        if (user != null) {
+                            databaseReference.child(user.uid).get().addOnSuccessListener { it ->
+                                if(it.exists() && user.isEmailVerified){
+                                    startActivity(Intent(this, HomeActivity::class.java))
+                                    Toast.makeText(this, "signed in successfully", Toast.LENGTH_LONG).show()
+                                    finish()
+                                }
+                                else if(!(user.isEmailVerified)){
+                                    Toast.makeText(this, "User isn't verified. Check your email !", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    val intent = Intent(this, UserActivity::class.java)
+                                    startActivity(intent)
+                                }
+                            }
+                        }
                     } else {
                         Toast.makeText(this, "sign in failed", Toast.LENGTH_LONG).show()
                     }
@@ -92,10 +116,14 @@ class SignInActivity:  ComponentActivity() {
         super.onStart()
         val user = firebaseAuth.currentUser
         if (user != null) {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            Toast.makeText(this, "welcome back", Toast.LENGTH_LONG).show()
-            finish()
+            databaseReference.child(user.uid).get().addOnSuccessListener { it ->
+                if (it.exists()) {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                    Toast.makeText(this, "welcome back", Toast.LENGTH_LONG).show()
+                    finish()
+                }
+            }
         }
     }
 
@@ -135,14 +163,24 @@ class SignInActivity:  ComponentActivity() {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
+                val user = firebaseAuth.currentUser
+                if (user != null) {
+                    databaseReference.child(user.uid).get().addOnSuccessListener { it ->
+                        if(it.exists()){
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                        }
+                        else{
+                            val intent = Intent(this, UserActivity::class.java)
+                            startActivity(intent)
+                        }
+                    }
+                }
             } else {
                 Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
             }
         }
     }
 
-
-
 }
+

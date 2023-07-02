@@ -20,10 +20,13 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Snackbar
 import androidx.compose.material.SnackbarHost
@@ -74,6 +77,7 @@ fun HealthConnectApp(healthConnectManager: HealthConnectManager) {
         val context = LocalContext.current
         Scaffold(
             scaffoldState = scaffoldState,
+            modifier = Modifier.statusBarsPadding(),
             topBar = {
                 TopAppBar(
                     title = {
@@ -140,7 +144,7 @@ fun HealthConnectApp(healthConnectManager: HealthConnectManager) {
             snackbarHost = {
                 SnackbarHost(it) { data -> Snackbar(snackbarData = data) }
             }
-        ) {
+        ) {//TODO: add the padding for the backdrop scaffold
             HealthConnectNavigation(
                 healthConnectManager = healthConnectManager,
                 navController = navController,

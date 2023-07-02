@@ -109,13 +109,6 @@ fun WelcomeScreen(
             HealthConnectAvailability.NOT_SUPPORTED -> NotSupportedMessage()
         }
         Spacer(modifier = Modifier.height(32.dp))
-        OutlinedButton(onClick = {
-            firebaseAuth.signOut()
-            val intent = Intent(context, SignInActivity::class.java)
-            context.startActivity(intent)
-             }) {
-            Text("SignOut")
-        }
     }
 }
 

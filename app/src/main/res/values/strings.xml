@@ -11,8 +11,9 @@
      limitations under the License.
 -->
 <resources>
-    <string name="app_name">Health Connect Sample</string>
+    <string name="app_name">A Healthy Challenge</string>
     <string name="menu">menu</string>
+    <string name="sign_out">signOut</string>
 
     <!-- Screen titles -->
     <string name="welcome_screen">Welcome screen</string>

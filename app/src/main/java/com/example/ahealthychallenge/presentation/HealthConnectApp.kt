@@ -16,6 +16,12 @@
 package com.example.ahealthychallenge.presentation
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.foundation.layout.height
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -28,17 +34,27 @@ import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.HealthConnectAvailability
 import com.example.ahealthychallenge.data.HealthConnectManager
+import com.example.ahealthychallenge.presentation.component.getIconId
 import com.example.ahealthychallenge.presentation.navigation.Drawer
 import com.example.ahealthychallenge.presentation.navigation.HealthConnectNavigation
 import com.example.ahealthychallenge.presentation.navigation.Screen
 import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
+import com.example.ahealthychallenge.presentation.utils.FirebaseUtils
+import com.google.android.gms.common.internal.StringResourceValueReader
 import kotlinx.coroutines.launch
 
 const val TAG = "Health Connect sample"
@@ -54,7 +70,8 @@ fun HealthConnectApp(healthConnectManager: HealthConnectManager) {
         val currentRoute = navBackStackEntry?.destination?.route
 
         val availability by healthConnectManager.availability
-
+        var mDisplayMenu by remember { mutableStateOf(false) }
+        val context = LocalContext.current
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
@@ -83,6 +100,30 @@ fun HealthConnectApp(healthConnectManager: HealthConnectManager) {
                                 imageVector = Icons.Rounded.Menu,
                                 stringResource(id = R.string.menu)
                             )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { mDisplayMenu = !mDisplayMenu }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_menu_vertical),
+                                stringResource(id = R.string.menu),
+                                modifier = Modifier.height(30.dp)
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = mDisplayMenu,
+                            onDismissRequest = { mDisplayMenu = false }
+                        ) {
+                            // Creating dropdown menu item, on click
+                            // would create a Toast message
+                            DropdownMenuItem(onClick = {
+                                FirebaseUtils.firebaseAuth.signOut()
+                                val intent = Intent(context, SignInActivity::class.java)
+                                context.startActivity(intent)
+                            }) {
+                                Text(text = stringResource(id = R.string.sign_out))
+                            }
                         }
                     }
                 )

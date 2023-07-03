@@ -13,49 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.ahealthychallenge.presentation.screen
+package com.example.ahealthychallenge.presentation.screen.welcomeScreen
 
 import android.annotation.SuppressLint
-import com.example.ahealthychallenge.presentation.utils.FirebaseUtils.firebaseAuth
 import android.content.Intent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.BackdropScaffold
-import androidx.compose.material.BackdropValue
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.rememberBackdropScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -70,14 +52,17 @@ import androidx.navigation.compose.rememberNavController
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.HealthConnectAvailability
 import com.example.ahealthychallenge.presentation.bottomBar.BottomNavItem
-import com.example.ahealthychallenge.presentation.component.InstalledMessage
-import com.example.ahealthychallenge.presentation.component.NotInstalledMessage
-import com.example.ahealthychallenge.presentation.component.NotSupportedMessage
-import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
 import androidx.compose.material.*
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.presentation.SearchUserActivity
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreen
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModel
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModelFactory
+import kotlinx.coroutines.CoroutineScope
 
 
 /**
@@ -88,6 +73,10 @@ import com.example.ahealthychallenge.presentation.SearchUserActivity
 @Composable
 fun WelcomeScreen(
     healthConnectAvailability: HealthConnectAvailability,
+    healthConnectManager: HealthConnectManager,
+    drawerNavController: NavController,
+    drawerScope: CoroutineScope,
+    scaffoldState: ScaffoldState,
     onResumeAvailabilityCheck: () -> Unit,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
@@ -154,19 +143,46 @@ fun WelcomeScreen(
     ) {
         Navigation(
             navController = navController,
-            healthConnectAvailability = healthConnectAvailability
+            healthConnectAvailability = healthConnectAvailability,
+            healthConnectManager = healthConnectManager,
+            drawerNavController = drawerNavController,
+            drawerScope = drawerScope,
+            scaffoldState = scaffoldState
         )
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Navigation(
     navController: NavHostController,
-    healthConnectAvailability: HealthConnectAvailability
+    healthConnectAvailability: HealthConnectAvailability,
+    scaffoldState: ScaffoldState,
+    drawerNavController: NavController,
+    drawerScope: CoroutineScope,
+    healthConnectManager: HealthConnectManager
 ) {
     NavHost(navController = navController, startDestination = "home") {
+
         composable("home") {
-            HomeScreen(healthConnectAvailability = healthConnectAvailability)
+            val viewModel: HomeScreenViewModel = viewModel(
+                factory = HomeScreenViewModelFactory(
+                    healthConnectManager = healthConnectManager
+                )
+            )
+            val curveLineData by viewModel.curveLineData
+            val refreshing by viewModel.refreshing
+            val onRefresh = { viewModel.refreshing() }
+            val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.refreshing() })
+            HomeScreen(
+                curveLineData = curveLineData,
+                pullRefreshState = pullRefreshState,
+                isRefreshing = refreshing,
+                onRefresh = onRefresh,
+                drawerNavController = drawerNavController,
+                drawerScope = drawerScope,
+                scaffoldState = scaffoldState
+            )
         }
         composable("friends") {
             FriendsScreen()
@@ -234,7 +250,7 @@ fun BottomNavigationBar(
     }
 }
 
-@Composable
+/*@Composable
 fun HomeScreen(
     healthConnectAvailability: HealthConnectAvailability,
 ) {
@@ -264,7 +280,7 @@ fun HomeScreen(
         }
         Spacer(modifier = Modifier.height(32.dp))
     }
-}
+}*/
 
 @Composable
 fun FriendsScreen() {
@@ -283,38 +299,5 @@ fun LeaderBoardScreen() {
         contentAlignment = Alignment.Center
     ) {
         Text(text = "leaderBoard screen")
-    }
-}
-
-@Preview
-@Composable
-fun InstalledMessagePreview() {
-    HealthConnectTheme {
-        WelcomeScreen(
-            healthConnectAvailability = HealthConnectAvailability.INSTALLED,
-            onResumeAvailabilityCheck = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-fun NotInstalledMessagePreview() {
-    HealthConnectTheme {
-        WelcomeScreen(
-            healthConnectAvailability = HealthConnectAvailability.NOT_INSTALLED,
-            onResumeAvailabilityCheck = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-fun NotSupportedMessagePreview() {
-    HealthConnectTheme {
-        WelcomeScreen(
-            healthConnectAvailability = HealthConnectAvailability.NOT_SUPPORTED,
-            onResumeAvailabilityCheck = {}
-        )
     }
 }

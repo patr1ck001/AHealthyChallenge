@@ -146,6 +146,7 @@ fun HealthConnectApp(healthConnectManager: HealthConnectManager) {
             }
         ) {//TODO: add the padding for the backdrop scaffold
             HealthConnectNavigation(
+                drawerScope = scope,
                 healthConnectManager = healthConnectManager,
                 navController = navController,
                 scaffoldState = scaffoldState

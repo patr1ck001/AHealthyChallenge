@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -143,15 +144,17 @@ fun WelcomeScreen(
                 }
             )
         }
-    ) {
-        Navigation(
-            navController = navController,
-            healthConnectAvailability = healthConnectAvailability,
-            healthConnectManager = healthConnectManager,
-            drawerNavController = drawerNavController,
-            drawerScope = drawerScope,
-            scaffoldState = scaffoldState
-        )
+    ) {innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            Navigation(
+                navController = navController,
+                healthConnectAvailability = healthConnectAvailability,
+                healthConnectManager = healthConnectManager,
+                drawerNavController = drawerNavController,
+                drawerScope = drawerScope,
+                scaffoldState = scaffoldState
+            )
+        }
     }
 }
 

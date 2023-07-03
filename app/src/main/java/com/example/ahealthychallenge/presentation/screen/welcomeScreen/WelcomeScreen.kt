@@ -59,6 +59,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.presentation.SearchUserActivity
+import com.example.ahealthychallenge.presentation.navigation.Screen
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.friendsScreen.FriendsScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModel
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModelFactory
@@ -130,13 +132,14 @@ fun WelcomeScreen(
                 ),
                 navController = navController,
                 onItemClick = {
-                    if (it.route == "friends") {
+                    navController.navigate(it.route)
+                    /*if (it.route == "friends") {
                         val intent = Intent(context, SearchUserActivity::class.java)
                         context.startActivity(intent)
                     } else {
                         navController.navigate(it.route)
 
-                    }
+                    }*/
                 }
             )
         }
@@ -185,7 +188,18 @@ fun Navigation(
             )
         }
         composable("friends") {
-            FriendsScreen()
+
+            val context = LocalContext.current
+            val onAddFriend = {
+                val intent = Intent(context, SearchUserActivity::class.java)
+                context.startActivity(intent)
+            }
+            FriendsScreen(
+                onDetailsClick = { uid ->
+                    navController.navigate("detailsFriends/$uid")
+                },
+                onAddFriend = onAddFriend
+            )
         }
         composable("leaderBoard") {
             LeaderBoardScreen()
@@ -282,15 +296,6 @@ fun HomeScreen(
     }
 }*/
 
-@Composable
-fun FriendsScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "friends screen")
-    }
-}
 
 @Composable
 fun LeaderBoardScreen() {

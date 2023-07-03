@@ -68,7 +68,8 @@
 
     <!-- Exercise Session screen -->
 <string name="insert_exercise_session">Insert session</string>
-<string name="refresh">Refresh</string>
+    <string name="refresh">Refresh</string>
+    <string name="add_friend">Add friend</string>
     <string name="no_title">[No title]</string>
     <string name="unknown_app">[Unknown app]</string>
     <string name="delete_button">Delete</string>

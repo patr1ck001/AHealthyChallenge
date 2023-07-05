@@ -20,7 +20,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,7 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.presentation.screen.SettingsScreen
-import com.example.ahealthychallenge.presentation.screen.WelcomeScreen
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.WelcomeScreen
 import com.example.ahealthychallenge.presentation.screen.changes.DifferentialChangesScreen
 import com.example.ahealthychallenge.presentation.screen.changes.DifferentialChangesViewModel
 import com.example.ahealthychallenge.presentation.screen.changes.DifferentialChangesViewModelFactory
@@ -50,7 +49,10 @@ import com.example.ahealthychallenge.presentation.screen.privacypolicy.PrivacyPo
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionScreen
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionViewModel
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionViewModelFactory
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.WelcomeScreenViewModel
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.WelcomeScreenViewModelFactory
 import com.example.ahealthychallenge.showExceptionSnackbar
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -59,6 +61,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HealthConnectNavigation(
+    drawerScope: CoroutineScope,
     navController: NavHostController,
     healthConnectManager: HealthConnectManager,
     scaffoldState: ScaffoldState
@@ -69,6 +72,10 @@ fun HealthConnectNavigation(
         composable(Screen.WelcomeScreen.route) {
             WelcomeScreen(
                 healthConnectAvailability = availability,
+                healthConnectManager = healthConnectManager,
+                drawerNavController = navController,
+                drawerScope = drawerScope,
+                scaffoldState = scaffoldState,
                 onResumeAvailabilityCheck = {
                     healthConnectManager.checkAvailability()
                 }

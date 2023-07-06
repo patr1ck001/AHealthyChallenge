@@ -130,7 +130,7 @@ fun WelcomeScreen(
 
     val navController = rememberNavController()
 
-    when(navigationType) {
+    when (navigationType) {
         NavigationType.BOTTOM_NAVIGATION -> {
             Scaffold(
                 bottomBar = {
@@ -149,9 +149,10 @@ fun WelcomeScreen(
                         }
                     )
                 }
-            ) {innerPadding ->
+            ) { innerPadding ->
                 Box(modifier = Modifier.padding(innerPadding)) {
                     Navigation(
+                        navigationType = navigationType,
                         navController = navController,
                         healthConnectAvailability = healthConnectAvailability,
                         healthConnectManager = healthConnectManager,
@@ -162,8 +163,10 @@ fun WelcomeScreen(
                 }
             }
         }
+
         NavigationType.NAVIGATION_RAIL -> {
             NavigationRailBar(
+                navigationType = navigationType,
                 items = navItems,
                 navController = navController,
                 healthConnectAvailability = healthConnectAvailability,
@@ -176,6 +179,7 @@ fun WelcomeScreen(
                 }
             )
         }
+
         else -> { // NavigationType.PERMANENT_NAVIGATION_DRAWER
             LeaderBoardScreen()
         }
@@ -185,6 +189,7 @@ fun WelcomeScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Navigation(
+    navigationType: NavigationType,
     navController: NavHostController,
     healthConnectAvailability: HealthConnectAvailability,
     scaffoldState: ScaffoldState,
@@ -201,14 +206,9 @@ fun Navigation(
                 )
             )
             val curveLineData by viewModel.lineData
-            val refreshing by viewModel.refreshing
-            val onRefresh = { viewModel.refreshing() }
-            val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.refreshing() })
             HomeScreen(
+                navigationType = navigationType,
                 lineData = curveLineData,
-                pullRefreshState = pullRefreshState,
-                isRefreshing = refreshing,
-                onRefresh = onRefresh,
                 drawerNavController = drawerNavController,
                 drawerScope = drawerScope,
                 scaffoldState = scaffoldState
@@ -294,6 +294,7 @@ fun BottomNavigationBar(
 @ExperimentalMaterialApi
 @Composable
 fun NavigationRailBar(
+    navigationType: NavigationType,
     items: List<NavItem>,
     navController: NavHostController,
     modifier: Modifier = Modifier,
@@ -306,7 +307,7 @@ fun NavigationRailBar(
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
-    Row(modifier = Modifier.fillMaxSize()){
+    Row(modifier = Modifier.fillMaxSize()) {
         NavigationRail(
             modifier = modifier,
             backgroundColor = MaterialTheme.colors.onPrimary,
@@ -354,6 +355,7 @@ fun NavigationRailBar(
             }
         }
         Navigation(
+            navigationType = navigationType,
             navController = navController,
             healthConnectAvailability = healthConnectAvailability,
             healthConnectManager = healthConnectManager,

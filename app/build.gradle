@@ -127,6 +127,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.5.0")
     implementation("com.himanshoe:charty:1.0.1")
     implementation "androidx.navigation:navigation-compose:2.7.0-beta02"
+    implementation("androidx.compose.material3:material3-window-size-class")
     debugImplementation "androidx.compose.ui:ui-tooling"
 
 

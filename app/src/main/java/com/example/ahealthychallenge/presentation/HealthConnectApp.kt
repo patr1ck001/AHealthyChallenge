@@ -16,6 +16,7 @@
 package com.example.ahealthychallenge.presentation
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
@@ -35,6 +36,9 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,15 +60,48 @@ import com.example.ahealthychallenge.presentation.navigation.Drawer
 import com.example.ahealthychallenge.presentation.navigation.HealthConnectNavigation
 import com.example.ahealthychallenge.presentation.navigation.Screen
 import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
+import com.example.ahealthychallenge.presentation.utils.ContentType
 import com.example.ahealthychallenge.presentation.utils.FirebaseUtils
+import com.example.ahealthychallenge.presentation.utils.NavigationType
 import com.google.android.gms.common.internal.StringResourceValueReader
 import kotlinx.coroutines.launch
 
 const val TAG = "Health Connect sample"
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HealthConnectApp(healthConnectManager: HealthConnectManager) {
+fun HealthConnectApp(
+    healthConnectManager: HealthConnectManager,
+    activity: Activity
+) {
+    val windowSize = calculateWindowSizeClass(activity).widthSizeClass
+    val navigationType: NavigationType
+    val contentType: ContentType
+
+    Log.d("navigo", "this is the windows size: $windowSize")
+    when (windowSize) {
+        WindowWidthSizeClass.Compact -> {
+            navigationType = NavigationType.BOTTOM_NAVIGATION
+            contentType = ContentType.LIST_ONLY
+        }
+
+        WindowWidthSizeClass.Medium -> {
+            navigationType = NavigationType.NAVIGATION_RAIL
+            contentType = ContentType.LIST_ONLY
+        }
+
+        WindowWidthSizeClass.Expanded -> {
+            navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER
+            contentType = ContentType.LIST_AND_DETAIL
+        }
+
+        else -> {
+            navigationType = NavigationType.BOTTOM_NAVIGATION
+            contentType = ContentType.LIST_ONLY
+        }
+    }
+
     HealthConnectTheme {
         val scaffoldState = rememberScaffoldState()
         val navController = rememberNavController()
@@ -146,6 +183,7 @@ fun HealthConnectApp(healthConnectManager: HealthConnectManager) {
             }
         ) {//TODO: add the padding for the backdrop scaffold
             HealthConnectNavigation(
+                navigationType = navigationType,
                 drawerScope = scope,
                 healthConnectManager = healthConnectManager,
                 navController = navController,

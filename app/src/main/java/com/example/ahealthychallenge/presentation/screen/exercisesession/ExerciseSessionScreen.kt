@@ -53,6 +53,7 @@ import com.example.ahealthychallenge.presentation.component.CircularProgressBar
 import com.example.ahealthychallenge.presentation.component.ExerciseSessionRow
 import com.example.ahealthychallenge.presentation.component.StepSessionRow
 import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
+import com.example.ahealthychallenge.presentation.utils.NavigationType
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import java.time.Duration
 import java.time.ZonedDateTime
@@ -66,6 +67,7 @@ const val TAG = "ExerciseSessionScreen"
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExerciseSessionScreen(
+    navigationType: NavigationType,
     permissions: Set<String>,
     permissionsGranted: Boolean,
     sessionsList: List<ExerciseSession>,
@@ -308,7 +310,8 @@ fun ExerciseSessionScreenPreview() {
                 )
             ),
             pullRefreshState = rememberPullRefreshState(refreshing, {}) ,
-            refreshing = refreshing
+            refreshing = refreshing,
+            navigationType = NavigationType.BOTTOM_NAVIGATION
         )
     }
 }

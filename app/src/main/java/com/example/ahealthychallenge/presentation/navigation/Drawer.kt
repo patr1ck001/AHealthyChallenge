@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
@@ -56,16 +57,57 @@ fun Drawer(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Image(
-                modifier = Modifier
-                    .width(96.dp)
-                    .clickable {
-                        navController.navigate(Screen.WelcomeScreen.route) {
+    LazyColumn() {
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    modifier = Modifier
+                        .width(96.dp)
+                        .clickable {
+                            navController.navigate(Screen.WelcomeScreen.route) {
+                                navController.graph.startDestinationRoute?.let { route ->
+                                    popUpTo(route) {
+                                        saveState = true
+                                    }
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                            scope.launch {
+                                scaffoldState.drawerState.close()
+                            }
+                        },
+                    painter = painterResource(id = R.drawable.ic_health_connect_logo),
+                    contentDescription = stringResource(id = R.string.health_connect_logo)
+                )
+            }
+        }
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                text = stringResource(id = R.string.app_name)
+            )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        Screen.values().filter { it.hasMenuItem }.forEach { item ->
+            item {
+                DrawerItem(
+                    item = item,
+                    selected = item.route == currentRoute,
+                    onItemClick = {
+                        navController.navigate(item.route) {
+                            // See: https://developer.android.com/jetpack/compose/navigation#nav-to-composable
                             navController.graph.startDestinationRoute?.let { route ->
                                 popUpTo(route) {
                                     saveState = true
@@ -77,38 +119,9 @@ fun Drawer(
                         scope.launch {
                             scaffoldState.drawerState.close()
                         }
-                    },
-                painter = painterResource(id = R.drawable.ic_health_connect_logo),
-                contentDescription = stringResource(id = R.string.health_connect_logo)
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            text = stringResource(id = R.string.app_name)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Screen.values().filter { it.hasMenuItem }.forEach { item ->
-            DrawerItem(
-                item = item,
-                selected = item.route == currentRoute,
-                onItemClick = {
-                    navController.navigate(item.route) {
-                        // See: https://developer.android.com/jetpack/compose/navigation#nav-to-composable
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route) {
-                                saveState = true
-                            }
-                        }
-                        launchSingleTop = true
-                        restoreState = true
                     }
-                    scope.launch {
-                        scaffoldState.drawerState.close()
-                    }
-                }
-            )
+                )
+            }
         }
     }
 }

@@ -8,11 +8,13 @@ class HomeActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        val activity = this
         val healthConnectManager = (application as BaseApplication).healthConnectManager
 
         setContent {
-             HealthConnectApp(healthConnectManager = healthConnectManager)
+             HealthConnectApp(
+                 activity = activity,
+                 healthConnectManager = healthConnectManager)
          }
     }
 }

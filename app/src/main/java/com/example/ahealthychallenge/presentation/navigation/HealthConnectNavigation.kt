@@ -51,6 +51,7 @@ import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessi
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionViewModelFactory
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.WelcomeScreenViewModel
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.WelcomeScreenViewModelFactory
+import com.example.ahealthychallenge.presentation.utils.NavigationType
 import com.example.ahealthychallenge.showExceptionSnackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -61,6 +62,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HealthConnectNavigation(
+    navigationType: NavigationType,
     drawerScope: CoroutineScope,
     navController: NavHostController,
     healthConnectManager: HealthConnectManager,
@@ -71,6 +73,7 @@ fun HealthConnectNavigation(
         val availability by healthConnectManager.availability
         composable(Screen.WelcomeScreen.route) {
             WelcomeScreen(
+                navigationType = navigationType,
                 healthConnectAvailability = availability,
                 healthConnectManager = healthConnectManager,
                 drawerNavController = navController,
@@ -116,6 +119,7 @@ fun HealthConnectNavigation(
             val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.initialLoad() })
 
             ExerciseSessionScreen(
+                navigationType = navigationType,
                 permissionsGranted = permissionsGranted,
                 permissions = permissions,
                 sessionsList = sessionsList,
@@ -162,7 +166,17 @@ fun HealthConnectNavigation(
             val workoutLineData by viewModel.workoutLineData
             val refreshing by viewModel.refreshing
             val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.refreshing()})
-            PointStatScreen(pieData, curveLineData, walkingLineData, runningLineData, bikingLineData, workoutLineData, pullRefreshState, refreshing)
+            PointStatScreen(
+                navigationType = navigationType,
+                pieData = pieData,
+                curveLineData = curveLineData,
+                walkingLineData = walkingLineData,
+                runningLineData = runningLineData,
+                bikingLineData = bikingLineData,
+                workoutLineData = workoutLineData,
+                pullRefreshState = pullRefreshState,
+                isRefreshing = refreshing
+            )
         }
 
         composable(Screen.ExerciseSessionDetail.route + "/{$UID_NAV_ARGUMENT}") {

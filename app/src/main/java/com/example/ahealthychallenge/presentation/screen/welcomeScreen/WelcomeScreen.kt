@@ -19,6 +19,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,7 +53,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.HealthConnectAvailability
-import com.example.ahealthychallenge.presentation.bottomBar.BottomNavItem
+import com.example.ahealthychallenge.presentation.bottomBar.NavItem
 import androidx.compose.material.*
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -60,11 +61,11 @@ import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.presentation.SearchUserActivity
-import com.example.ahealthychallenge.presentation.navigation.Screen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.friendsScreen.FriendsScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModel
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModelFactory
+import com.example.ahealthychallenge.presentation.utils.NavigationType
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -75,6 +76,7 @@ import kotlinx.coroutines.CoroutineScope
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WelcomeScreen(
+    navigationType: NavigationType,
     healthConnectAvailability: HealthConnectAvailability,
     healthConnectManager: HealthConnectManager,
     drawerNavController: NavController,
@@ -85,6 +87,25 @@ fun WelcomeScreen(
 ) {
     val currentOnAvailabilityCheck by rememberUpdatedState(onResumeAvailabilityCheck)
     val context = LocalContext.current
+    val navItems = listOf(
+        NavItem(
+            name = "Home",
+            route = "home",
+            icon = ImageVector.vectorResource(id = R.drawable.ic_home)
+        ),
+        NavItem(
+            name = "leaderBoard",
+            route = "leaderBoard",
+            icon = ImageVector.vectorResource(id = R.drawable.ic_ranking),
+            badgeCount = 214
+        ),
+        NavItem(
+            name = "friends",
+            route = "friends",
+            icon = ImageVector.vectorResource(id = R.drawable.ic_friends),
+            badgeCount = 23
+        )
+    )
 
     // Add a listener to re-check whether Health Connect has been installed each time the Welcome
     // screen is resumed: This ensures that if the user has been redirected to the Play store and
@@ -109,51 +130,54 @@ fun WelcomeScreen(
 
     val navController = rememberNavController()
 
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(
-                items = listOf(
-                    BottomNavItem(
-                        name = "Home",
-                        route = "home",
-                        icon = ImageVector.vectorResource(id = R.drawable.ic_home)
-                    ),
-                    BottomNavItem(
-                        name = "leaderBoard",
-                        route = "leaderBoard",
-                        icon = ImageVector.vectorResource(id = R.drawable.ic_ranking),
-                        badgeCount = 214
-                    ),
-                    BottomNavItem(
-                        name = "friends",
-                        route = "friends",
-                        icon = ImageVector.vectorResource(id = R.drawable.ic_friends),
-                        badgeCount = 23
-                    ),
-                ),
-                navController = navController,
-                onItemClick = {
-                    navController.navigate(it.route)
-                    /*if (it.route == "friends") {
-                        val intent = Intent(context, SearchUserActivity::class.java)
-                        context.startActivity(intent)
-                    } else {
-                        navController.navigate(it.route)
+    when(navigationType) {
+        NavigationType.BOTTOM_NAVIGATION -> {
+            Scaffold(
+                bottomBar = {
+                    BottomNavigationBar(
+                        items = navItems,
+                        navController = navController,
+                        onItemClick = {
+                            navController.navigate(it.route)
+                            /*if (it.route == "friends") {
+                                val intent = Intent(context, SearchUserActivity::class.java)
+                                context.startActivity(intent)
+                            } else {
+                                navController.navigate(it.route)
 
-                    }*/
+                            }*/
+                        }
+                    )
                 }
-            )
+            ) {innerPadding ->
+                Box(modifier = Modifier.padding(innerPadding)) {
+                    Navigation(
+                        navController = navController,
+                        healthConnectAvailability = healthConnectAvailability,
+                        healthConnectManager = healthConnectManager,
+                        drawerNavController = drawerNavController,
+                        drawerScope = drawerScope,
+                        scaffoldState = scaffoldState
+                    )
+                }
+            }
         }
-    ) {innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            Navigation(
+        NavigationType.NAVIGATION_RAIL -> {
+            NavigationRailBar(
+                items = navItems,
                 navController = navController,
                 healthConnectAvailability = healthConnectAvailability,
                 healthConnectManager = healthConnectManager,
                 drawerNavController = drawerNavController,
                 drawerScope = drawerScope,
-                scaffoldState = scaffoldState
+                scaffoldState = scaffoldState,
+                onItemClick = {
+                    navController.navigate(it.route)
+                }
             )
+        }
+        else -> { // NavigationType.PERMANENT_NAVIGATION_DRAWER
+            LeaderBoardScreen()
         }
     }
 }
@@ -213,10 +237,10 @@ fun Navigation(
 @ExperimentalMaterialApi
 @Composable
 fun BottomNavigationBar(
-    items: List<BottomNavItem>,
+    items: List<NavItem>,
     navController: NavController,
     modifier: Modifier = Modifier,
-    onItemClick: (BottomNavItem) -> Unit
+    onItemClick: (NavItem) -> Unit
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
     BottomNavigation(
@@ -267,37 +291,78 @@ fun BottomNavigationBar(
     }
 }
 
-/*@Composable
-fun HomeScreen(
+@ExperimentalMaterialApi
+@Composable
+fun NavigationRailBar(
+    items: List<NavItem>,
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
     healthConnectAvailability: HealthConnectAvailability,
+    healthConnectManager: HealthConnectManager,
+    drawerNavController: NavController,
+    drawerScope: CoroutineScope,
+    scaffoldState: ScaffoldState,
+    onItemClick: (NavItem) -> Unit
 ) {
+    val backStackEntry = navController.currentBackStackEntryAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            modifier = Modifier.fillMaxWidth(0.5f),
-            painter = painterResource(id = R.drawable.ic_health_connect_logo),
-            contentDescription = stringResource(id = R.string.health_connect_logo)
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(
-            text = stringResource(id = R.string.welcome_message),
-            color = MaterialTheme.colors.onBackground
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        when (healthConnectAvailability) {
-            HealthConnectAvailability.INSTALLED -> InstalledMessage()
-            HealthConnectAvailability.NOT_INSTALLED -> NotInstalledMessage()
-            HealthConnectAvailability.NOT_SUPPORTED -> NotSupportedMessage()
+    Row(modifier = Modifier.fillMaxSize()){
+        NavigationRail(
+            modifier = modifier,
+            backgroundColor = MaterialTheme.colors.onPrimary,
+        ) {
+            items.forEach { item ->
+                val selected = item.route == backStackEntry.value?.destination?.route
+                NavigationRailItem(
+                    selected = selected,
+                    onClick = { onItemClick(item) },
+                    selectedContentColor = MaterialTheme.colors.secondary,
+                    unselectedContentColor = MaterialTheme.colors.secondary,
+                    icon = {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            if (item.badgeCount > 0) {
+                                BadgedBox(
+                                    badge = { Badge { Text(text = item.badgeCount.toString()) } }
+                                ) {
+                                    Icon(
+                                        imageVector = item.icon,
+                                        contentDescription = item.name,
+                                        modifier = Modifier
+                                            .height(30.dp)
+                                            .width(30.dp)
+                                    )
+                                }
+                            } else {
+                                Icon(
+                                    imageVector = item.icon,
+                                    contentDescription = item.name,
+                                    modifier = Modifier
+                                        .height(30.dp)
+                                        .width(30.dp)
+                                )
+                            }
+                            if (selected) {
+                                Text(
+                                    text = item.name,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 10.sp
+                                )
+                            }
+                        }
+                    }
+                )
+            }
         }
-        Spacer(modifier = Modifier.height(32.dp))
+        Navigation(
+            navController = navController,
+            healthConnectAvailability = healthConnectAvailability,
+            healthConnectManager = healthConnectManager,
+            drawerNavController = drawerNavController,
+            drawerScope = drawerScope,
+            scaffoldState = scaffoldState
+        )
     }
-}*/
+}
 
 
 @Composable

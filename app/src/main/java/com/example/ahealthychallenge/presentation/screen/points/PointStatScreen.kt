@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ahealthychallenge.presentation.theme.HealthConnectBlue
 import com.example.ahealthychallenge.presentation.theme.HealthConnectGreen
+import com.example.ahealthychallenge.presentation.utils.NavigationType
 import com.himanshoe.charty.common.axis.AxisConfig
 import com.himanshoe.charty.line.CurveLineChart
 import com.himanshoe.charty.line.LineChart
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PointStatScreen(
+    navigationType: NavigationType,
     pieData: List<PieData>,
     curveLineData: List<LineData>,
     walkingLineData: List<LineData>,

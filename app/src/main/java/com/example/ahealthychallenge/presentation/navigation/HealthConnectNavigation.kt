@@ -164,8 +164,6 @@ fun HealthConnectNavigation(
             val runningLineData by viewModel.runningLineData
             val bikingLineData by viewModel.bikingLineData
             val workoutLineData by viewModel.workoutLineData
-            val refreshing by viewModel.refreshing
-            val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.refreshing()})
             PointStatScreen(
                 navigationType = navigationType,
                 pieData = pieData,
@@ -173,9 +171,7 @@ fun HealthConnectNavigation(
                 walkingLineData = walkingLineData,
                 runningLineData = runningLineData,
                 bikingLineData = bikingLineData,
-                workoutLineData = workoutLineData,
-                pullRefreshState = pullRefreshState,
-                isRefreshing = refreshing
+                workoutLineData = workoutLineData
             )
         }
 

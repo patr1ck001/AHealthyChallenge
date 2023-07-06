@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
-    curveLineData: List<LineData>,
+    lineData: List<LineData>,
     pullRefreshState: PullRefreshState,
     drawerNavController: NavController,
     drawerScope: CoroutineScope,
@@ -60,7 +60,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            if (curveLineData.isNotEmpty()) {
+            if (lineData.isNotEmpty()) {
                 item {
                     Card(
                         modifier = Modifier
@@ -100,7 +100,7 @@ fun HomeScreen(
                                     .fillMaxSize()
                                     .padding(20.dp),
                                 color = HealthConnectBlue,
-                                lineData = curveLineData,
+                                lineData = lineData,
                                 axisConfig = AxisConfig(
                                     showAxis = true,
                                     showUnitLabels = true,

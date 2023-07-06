@@ -200,12 +200,12 @@ fun Navigation(
                     healthConnectManager = healthConnectManager
                 )
             )
-            val curveLineData by viewModel.curveLineData
+            val curveLineData by viewModel.lineData
             val refreshing by viewModel.refreshing
             val onRefresh = { viewModel.refreshing() }
             val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.refreshing() })
             HomeScreen(
-                curveLineData = curveLineData,
+                lineData = curveLineData,
                 pullRefreshState = pullRefreshState,
                 isRefreshing = refreshing,
                 onRefresh = onRefresh,

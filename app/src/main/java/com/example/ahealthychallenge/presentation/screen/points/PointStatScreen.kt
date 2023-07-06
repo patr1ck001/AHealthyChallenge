@@ -41,10 +41,7 @@ fun PointStatScreen(
     walkingLineData: List<LineData>,
     runningLineData: List<LineData>,
     bikingLineData: List<LineData>,
-    workoutLineData: List<LineData>,
-    pullRefreshState: PullRefreshState,
-    isRefreshing: Boolean
-
+    workoutLineData: List<LineData>
 ) {
 
     val lineChartData = listOf(
@@ -57,211 +54,201 @@ fun PointStatScreen(
         LineData(20F, 25F),
     )
 //TODO: manage the case in which there is no exercise session yet
-    Box(
+
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .pullRefresh(pullRefreshState)
+            .padding(32.dp)
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp)
-        ) {
-            if (pieData.isNotEmpty()) {
-                item {
-                    PieChart(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        pieData = pieData,
-                        config = PieConfig(isDonut = true, expandDonutOnClick = true),
-                        onSectionClicked = { percent, value ->
-                            Log.d("point", "value: $value")
-                            Log.d("point", "percent: $percent")
-                        }
-                    )
-                }
-                item {
-                    Text(
-                        text = "Points per exercise type",
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 32.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
+        if (pieData.isNotEmpty()) {
+            item {
+                PieChart(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    pieData = pieData,
+                    config = PieConfig(isDonut = true, expandDonutOnClick = true),
+                    onSectionClicked = { percent, value ->
+                        Log.d("point", "value: $value")
+                        Log.d("point", "percent: $percent")
+                    }
+                )
             }
-
-            if (curveLineData.isNotEmpty()) {
-                item {
-                    LineChart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                        color = HealthConnectBlue,
-                        lineData = curveLineData,
-                        axisConfig = AxisConfig(
-                            showAxis = true,
-                            showUnitLabels = true,
-                            isAxisDashed = true,
-                            showXLabels = true,
-                            textColor = HealthConnectBlue,
-                            xAxisColor = HealthConnectBlue,
-                            yAxisColor = HealthConnectGreen
-                        )
-                    )
-                }
-
-                item {
-                    Text(
-                        text = "Points this month",
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 32.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-            /*walking*/
-            if (walkingLineData.isNotEmpty()) {
-                item {
-                    LineChart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                        color = HealthConnectGreen,
-                        lineData = walkingLineData,
-                        axisConfig = AxisConfig(
-                            showAxis = true,
-                            showUnitLabels = true,
-                            isAxisDashed = true,
-                            showXLabels = true,
-                            textColor = HealthConnectBlue,
-                            xAxisColor = HealthConnectBlue,
-                            yAxisColor = HealthConnectGreen
-                        )
-                    )
-                }
-
-                item {
-                    Text(
-                        text = "Points walking",
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 32.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-
-            /*running*/
-            if (runningLineData.isNotEmpty()) {
-                item {
-                    LineChart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                        color = HealthConnectGreen,
-                        lineData = runningLineData,
-                        axisConfig = AxisConfig(
-                            showAxis = true,
-                            showUnitLabels = true,
-                            isAxisDashed = true,
-                            showXLabels = true,
-                            textColor = HealthConnectBlue,
-                            xAxisColor = HealthConnectBlue,
-                            yAxisColor = HealthConnectGreen
-                        )
-                    )
-                }
-
-                item {
-                    Text(
-                        text = "Points running",
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 32.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-
-            /*biking*/
-            if (bikingLineData.isNotEmpty()) {
-
-                item {
-                    LineChart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                        color = HealthConnectGreen,
-                        lineData = bikingLineData,
-                        axisConfig = AxisConfig(
-                            showAxis = true,
-                            showUnitLabels = true,
-                            isAxisDashed = true,
-                            showXLabels = true,
-                            textColor = HealthConnectBlue,
-                            xAxisColor = HealthConnectBlue,
-                            yAxisColor = HealthConnectGreen
-                        )
-                    )
-                }
-
-                item {
-                    Text(
-                        text = "Points biking",
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 32.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-
-            /*working out*/
-            if (workoutLineData.isNotEmpty()) {
-                item {
-                    LineChart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp),
-                        color = HealthConnectGreen,
-                        lineData = workoutLineData,
-                        axisConfig = AxisConfig(
-                            showAxis = true,
-                            showUnitLabels = true,
-                            isAxisDashed = true,
-                            showXLabels = true,
-                            textColor = HealthConnectBlue,
-                            xAxisColor = HealthConnectBlue,
-                            yAxisColor = HealthConnectGreen
-                        )
-                    )
-                }
-
-                item {
-                    Text(
-                        text = "Points working out",
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 32.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
+            item {
+                Text(
+                    text = "Points per exercise type",
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    textAlign = TextAlign.Center
+                )
             }
         }
 
-        PullRefreshIndicator(
-            refreshing = isRefreshing,
-            state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
+        if (curveLineData.isNotEmpty()) {
+            item {
+                LineChart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                    color = HealthConnectBlue,
+                    lineData = curveLineData,
+                    axisConfig = AxisConfig(
+                        showAxis = true,
+                        showUnitLabels = true,
+                        isAxisDashed = true,
+                        showXLabels = true,
+                        textColor = HealthConnectBlue,
+                        xAxisColor = HealthConnectBlue,
+                        yAxisColor = HealthConnectGreen
+                    )
+                )
+            }
+
+            item {
+                Text(
+                    text = "Points this month",
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+        /*walking*/
+        if (walkingLineData.isNotEmpty()) {
+            item {
+                LineChart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                    color = HealthConnectGreen,
+                    lineData = walkingLineData,
+                    axisConfig = AxisConfig(
+                        showAxis = true,
+                        showUnitLabels = true,
+                        isAxisDashed = true,
+                        showXLabels = true,
+                        textColor = HealthConnectBlue,
+                        xAxisColor = HealthConnectBlue,
+                        yAxisColor = HealthConnectGreen
+                    )
+                )
+            }
+
+            item {
+                Text(
+                    text = "Points walking",
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        /*running*/
+        if (runningLineData.isNotEmpty()) {
+            item {
+                LineChart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                    color = HealthConnectGreen,
+                    lineData = runningLineData,
+                    axisConfig = AxisConfig(
+                        showAxis = true,
+                        showUnitLabels = true,
+                        isAxisDashed = true,
+                        showXLabels = true,
+                        textColor = HealthConnectBlue,
+                        xAxisColor = HealthConnectBlue,
+                        yAxisColor = HealthConnectGreen
+                    )
+                )
+            }
+
+            item {
+                Text(
+                    text = "Points running",
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        /*biking*/
+        if (bikingLineData.isNotEmpty()) {
+
+            item {
+                LineChart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                    color = HealthConnectGreen,
+                    lineData = bikingLineData,
+                    axisConfig = AxisConfig(
+                        showAxis = true,
+                        showUnitLabels = true,
+                        isAxisDashed = true,
+                        showXLabels = true,
+                        textColor = HealthConnectBlue,
+                        xAxisColor = HealthConnectBlue,
+                        yAxisColor = HealthConnectGreen
+                    )
+                )
+            }
+
+            item {
+                Text(
+                    text = "Points biking",
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        /*working out*/
+        if (workoutLineData.isNotEmpty()) {
+            item {
+                LineChart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                    color = HealthConnectGreen,
+                    lineData = workoutLineData,
+                    axisConfig = AxisConfig(
+                        showAxis = true,
+                        showUnitLabels = true,
+                        isAxisDashed = true,
+                        showXLabels = true,
+                        textColor = HealthConnectBlue,
+                        xAxisColor = HealthConnectBlue,
+                        yAxisColor = HealthConnectGreen
+                    )
+                )
+            }
+
+            item {
+                Text(
+                    text = "Points working out",
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
+
 
 }

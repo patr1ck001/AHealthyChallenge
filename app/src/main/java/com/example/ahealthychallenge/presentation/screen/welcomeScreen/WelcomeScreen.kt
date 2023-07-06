@@ -181,7 +181,19 @@ fun WelcomeScreen(
         }
 
         else -> { // NavigationType.PERMANENT_NAVIGATION_DRAWER
-            LeaderBoardScreen()
+            NavigationRailBar(
+                navigationType = navigationType,
+                items = navItems,
+                navController = navController,
+                healthConnectAvailability = healthConnectAvailability,
+                healthConnectManager = healthConnectManager,
+                drawerNavController = drawerNavController,
+                drawerScope = drawerScope,
+                scaffoldState = scaffoldState,
+                onItemClick = {
+                    navController.navigate(it.route)
+                }
+            )
         }
     }
 }

@@ -114,11 +114,12 @@ fun CompactHomeScreen(
                                 .align(Alignment.CenterHorizontally),
                             text = "Point This month"
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Box(modifier = Modifier.height(30.dp))
                         LineChart(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(20.dp)
+                                .fillMaxSize(0.85f)
+                                .align(Alignment.CenterHorizontally)
+                                .padding(bottom = 50.dp)
                                 .weight(1f),
                             color = HealthConnectBlue,
                             lineData = lineData,
@@ -232,11 +233,12 @@ fun ExpendedHomeScreen(
                                 .align(Alignment.CenterHorizontally),
                             text = "Point This month"
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Box(modifier = Modifier.height(30.dp))
                         LineChart(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(30.dp)
+                                .fillMaxSize(0.85f)
+                                .align(Alignment.CenterHorizontally)
+                                .padding(bottom = 50.dp)
                                 .weight(1f),
                             color = HealthConnectBlue,
                             lineData = lineData,
@@ -260,7 +262,21 @@ fun ExpendedHomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(top = 7.dp)
-                        .weight(1f),
+                        .weight(1f)
+                        .clickable {
+                            drawerNavController.navigate(Screen.ExerciseSessions.route) {
+                                drawerNavController.graph.startDestinationRoute?.let { route ->
+                                    popUpTo(route) {
+                                        saveState = true
+                                    }
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                            drawerScope.launch {
+                                scaffoldState.drawerState.close()
+                            }
+                        },
                     elevation = 10.dp,
                     contentColor = MaterialTheme.colors.onPrimary,
                     backgroundColor = HealthConnectBlue

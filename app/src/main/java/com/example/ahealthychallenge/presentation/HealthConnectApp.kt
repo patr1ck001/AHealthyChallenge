@@ -46,9 +46,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.BeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -64,6 +73,7 @@ import com.example.ahealthychallenge.presentation.utils.ContentType
 import com.example.ahealthychallenge.presentation.utils.FirebaseUtils
 import com.example.ahealthychallenge.presentation.utils.NavigationType
 import com.google.android.gms.common.internal.StringResourceValueReader
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 
 const val TAG = "Health Connect sample"
@@ -77,6 +87,8 @@ fun HealthConnectApp(
 ) {
     val windowSize = calculateWindowSizeClass(activity).widthSizeClass
     val navigationType: NavigationType
+    var drawerShape = NavShape(0.dp, 1f)
+
     val contentType: ContentType
 
     Log.d("navigo", "this is the windows size: $windowSize")
@@ -89,6 +101,7 @@ fun HealthConnectApp(
         WindowWidthSizeClass.Medium -> {
             navigationType = NavigationType.NAVIGATION_RAIL
             contentType = ContentType.LIST_ONLY
+            drawerShape = NavShape(0.dp, 0.5f)
         }
 
         WindowWidthSizeClass.Expanded -> {
@@ -190,5 +203,26 @@ fun HealthConnectApp(
                 scaffoldState = scaffoldState
             )
         }
+    }
+}
+
+class NavShape(
+    private val widthOffset: Dp,
+    private val scale: Float
+) : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        return Outline.Rectangle(
+            Rect(
+                Offset.Zero,
+                Offset(
+                    size.width * scale + with(density) { widthOffset.toPx() },
+                    size.height
+                )
+            )
+        )
     }
 }

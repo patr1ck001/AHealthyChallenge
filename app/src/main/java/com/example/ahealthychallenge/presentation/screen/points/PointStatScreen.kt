@@ -302,7 +302,7 @@ fun ExpendedPointStatScreen(
 ) {
 
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 300.dp),
+        columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(30.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(50.dp),

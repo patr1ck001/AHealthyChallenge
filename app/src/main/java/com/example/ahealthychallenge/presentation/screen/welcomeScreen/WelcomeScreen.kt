@@ -86,7 +86,6 @@ fun WelcomeScreen(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     val currentOnAvailabilityCheck by rememberUpdatedState(onResumeAvailabilityCheck)
-    val context = LocalContext.current
     val navItems = listOf(
         NavItem(
             name = "Home",
@@ -130,73 +129,49 @@ fun WelcomeScreen(
 
     val navController = rememberNavController()
 
-    when (navigationType) {
-        NavigationType.BOTTOM_NAVIGATION -> {
-            Scaffold(
-                bottomBar = {
-                    BottomNavigationBar(
-                        items = navItems,
-                        navController = navController,
-                        onItemClick = {
-                            navController.navigate(it.route)
-                            /*if (it.route == "friends") {
-                                val intent = Intent(context, SearchUserActivity::class.java)
-                                context.startActivity(intent)
-                            } else {
-                                navController.navigate(it.route)
-
-                            }*/
-                        }
-                    )
-                }
-            ) { innerPadding ->
-                Box(modifier = Modifier.padding(innerPadding)) {
-                    Navigation(
-                        navigationType = navigationType,
-                        navController = navController,
-                        healthConnectAvailability = healthConnectAvailability,
-                        healthConnectManager = healthConnectManager,
-                        drawerNavController = drawerNavController,
-                        drawerScope = drawerScope,
-                        scaffoldState = scaffoldState
-                    )
-                }
+    if (navigationType == NavigationType.BOTTOM_NAVIGATION ||
+        navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER) {
+        Scaffold(
+            bottomBar = {
+                BottomNavigationBar(
+                    items = navItems,
+                    navController = navController,
+                    onItemClick = {
+                        navController.navigate(it.route)
+                    }
+                )
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                Navigation(
+                    navigationType = navigationType,
+                    navController = navController,
+                    healthConnectAvailability = healthConnectAvailability,
+                    healthConnectManager = healthConnectManager,
+                    drawerNavController = drawerNavController,
+                    drawerScope = drawerScope,
+                    scaffoldState = scaffoldState
+                )
             }
         }
+    } else { //NavigationType.NAVIGATION_RAIL -> {
 
-        NavigationType.NAVIGATION_RAIL -> {
-            NavigationRailBar(
-                navigationType = navigationType,
-                items = navItems,
-                navController = navController,
-                healthConnectAvailability = healthConnectAvailability,
-                healthConnectManager = healthConnectManager,
-                drawerNavController = drawerNavController,
-                drawerScope = drawerScope,
-                scaffoldState = scaffoldState,
-                onItemClick = {
-                    navController.navigate(it.route)
-                }
-            )
-        }
-
-        else -> { // NavigationType.PERMANENT_NAVIGATION_DRAWER
-            NavigationRailBar(
-                navigationType = navigationType,
-                items = navItems,
-                navController = navController,
-                healthConnectAvailability = healthConnectAvailability,
-                healthConnectManager = healthConnectManager,
-                drawerNavController = drawerNavController,
-                drawerScope = drawerScope,
-                scaffoldState = scaffoldState,
-                onItemClick = {
-                    navController.navigate(it.route)
-                }
-            )
-        }
+        NavigationRailBar(
+            navigationType = navigationType,
+            items = navItems,
+            navController = navController,
+            healthConnectAvailability = healthConnectAvailability,
+            healthConnectManager = healthConnectManager,
+            drawerNavController = drawerNavController,
+            drawerScope = drawerScope,
+            scaffoldState = scaffoldState,
+            onItemClick = {
+                navController.navigate(it.route)
+            }
+        )
     }
 }
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

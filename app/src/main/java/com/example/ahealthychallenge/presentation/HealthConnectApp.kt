@@ -19,15 +19,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Snackbar
 import androidx.compose.material.SnackbarHost
@@ -51,7 +48,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.layout.BeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,7 +60,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.HealthConnectAvailability
 import com.example.ahealthychallenge.data.HealthConnectManager
-import com.example.ahealthychallenge.presentation.component.getIconId
+import com.example.ahealthychallenge.presentation.largeScreenLayout.LargeScreen
 import com.example.ahealthychallenge.presentation.navigation.Drawer
 import com.example.ahealthychallenge.presentation.navigation.HealthConnectNavigation
 import com.example.ahealthychallenge.presentation.navigation.Screen
@@ -72,8 +68,7 @@ import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
 import com.example.ahealthychallenge.presentation.utils.ContentType
 import com.example.ahealthychallenge.presentation.utils.FirebaseUtils
 import com.example.ahealthychallenge.presentation.utils.NavigationType
-import com.google.android.gms.common.internal.StringResourceValueReader
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.accompanist.adaptive.calculateDisplayFeatures
 import kotlinx.coroutines.launch
 
 const val TAG = "Health Connect sample"
@@ -125,82 +120,93 @@ fun HealthConnectApp(
         val availability by healthConnectManager.availability
         var mDisplayMenu by remember { mutableStateOf(false) }
         val context = LocalContext.current
-        Scaffold(
-            scaffoldState = scaffoldState,
-            modifier = Modifier.statusBarsPadding(),
-            topBar = {
-                TopAppBar(
-                    title = {
-                        val titleId = when (currentRoute) {
-                            Screen.ExerciseSessions.route -> Screen.ExerciseSessions.titleId
-                            Screen.SleepSessions.route -> Screen.SleepSessions.titleId
-                            Screen.InputReadings.route -> Screen.InputReadings.titleId
-                            Screen.DifferentialChanges.route -> Screen.DifferentialChanges.titleId
-                            else -> R.string.app_name
-                        }
-                        Text(stringResource(titleId))
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                if (availability == HealthConnectAvailability.INSTALLED) {
-                                    scope.launch {
-                                        scaffoldState.drawerState.open()
+
+        if (navigationType != NavigationType.PERMANENT_NAVIGATION_DRAWER) {
+            Scaffold(
+                scaffoldState = scaffoldState,
+                modifier = Modifier.statusBarsPadding(),
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            val titleId = when (currentRoute) {
+                                Screen.ExerciseSessions.route -> Screen.ExerciseSessions.titleId
+                                Screen.SleepSessions.route -> Screen.SleepSessions.titleId
+                                Screen.InputReadings.route -> Screen.InputReadings.titleId
+                                Screen.DifferentialChanges.route -> Screen.DifferentialChanges.titleId
+                                else -> R.string.app_name
+                            }
+                            Text(stringResource(titleId))
+                        },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = {
+                                    if (availability == HealthConnectAvailability.INSTALLED) {
+                                        scope.launch {
+                                            scaffoldState.drawerState.open()
+                                        }
                                     }
                                 }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Menu,
+                                    stringResource(id = R.string.menu)
+                                )
                             }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Menu,
-                                stringResource(id = R.string.menu)
-                            )
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { mDisplayMenu = !mDisplayMenu }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_menu_vertical),
-                                stringResource(id = R.string.menu),
-                                modifier = Modifier.height(30.dp)
-                            )
-                        }
+                        },
+                        actions = {
+                            IconButton(onClick = { mDisplayMenu = !mDisplayMenu }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_menu_vertical),
+                                    stringResource(id = R.string.menu),
+                                    modifier = Modifier.height(30.dp)
+                                )
+                            }
 
-                        DropdownMenu(
-                            expanded = mDisplayMenu,
-                            onDismissRequest = { mDisplayMenu = false }
-                        ) {
-                            // Creating dropdown menu item, on click
-                            // would create a Toast message
-                            DropdownMenuItem(onClick = {
-                                FirebaseUtils.firebaseAuth.signOut()
-                                val intent = Intent(context, SignInActivity::class.java)
-                                context.startActivity(intent)
-                            }) {
-                                Text(text = stringResource(id = R.string.sign_out))
+                            DropdownMenu(
+                                expanded = mDisplayMenu,
+                                onDismissRequest = { mDisplayMenu = false }
+                            ) {
+                                // Creating dropdown menu item, on click
+                                // would create a Toast message
+                                DropdownMenuItem(onClick = {
+                                    FirebaseUtils.firebaseAuth.signOut()
+                                    val intent = Intent(context, SignInActivity::class.java)
+                                    context.startActivity(intent)
+                                }) {
+                                    Text(text = stringResource(id = R.string.sign_out))
+                                }
                             }
                         }
-                    }
-                )
-            },
-            drawerContent = {
-                if (availability == HealthConnectAvailability.INSTALLED) {
-                    Drawer(
-                        scope = scope,
-                        scaffoldState = scaffoldState,
-                        navController = navController
                     )
+                },
+                drawerContent = {
+                    if (availability == HealthConnectAvailability.INSTALLED) {
+                        Drawer(
+                            scope = scope,
+                            scaffoldState = scaffoldState,
+                            navController = navController
+                        )
+                    }
+                },
+                snackbarHost = {
+                    SnackbarHost(it) { data -> Snackbar(snackbarData = data) }
                 }
-            },
-            snackbarHost = {
-                SnackbarHost(it) { data -> Snackbar(snackbarData = data) }
+            ) {//TODO: add the padding for the backdrop scaffold
+                HealthConnectNavigation(
+                    navigationType = navigationType,
+                    drawerScope = scope,
+                    healthConnectManager = healthConnectManager,
+                    navController = navController,
+                    scaffoldState = scaffoldState
+                )
             }
-        ) {//TODO: add the padding for the backdrop scaffold
-            HealthConnectNavigation(
-                navigationType = navigationType,
-                drawerScope = scope,
+        } else {
+            LargeScreen(
                 healthConnectManager = healthConnectManager,
+                scaffoldState = scaffoldState,
+                scope = scope,
                 navController = navController,
-                scaffoldState = scaffoldState
+                displayFeatures =  calculateDisplayFeatures(activity)
             )
         }
     }

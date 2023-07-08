@@ -86,7 +86,6 @@ fun WelcomeScreen(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     val currentOnAvailabilityCheck by rememberUpdatedState(onResumeAvailabilityCheck)
-    val context = LocalContext.current
     val navItems = listOf(
         NavItem(
             name = "Home",
@@ -130,61 +129,54 @@ fun WelcomeScreen(
 
     val navController = rememberNavController()
 
-    when(navigationType) {
-        NavigationType.BOTTOM_NAVIGATION -> {
-            Scaffold(
-                bottomBar = {
-                    BottomNavigationBar(
-                        items = navItems,
-                        navController = navController,
-                        onItemClick = {
-                            navController.navigate(it.route)
-                            /*if (it.route == "friends") {
-                                val intent = Intent(context, SearchUserActivity::class.java)
-                                context.startActivity(intent)
-                            } else {
-                                navController.navigate(it.route)
-
-                            }*/
-                        }
-                    )
-                }
-            ) {innerPadding ->
-                Box(modifier = Modifier.padding(innerPadding)) {
-                    Navigation(
-                        navController = navController,
-                        healthConnectAvailability = healthConnectAvailability,
-                        healthConnectManager = healthConnectManager,
-                        drawerNavController = drawerNavController,
-                        drawerScope = drawerScope,
-                        scaffoldState = scaffoldState
-                    )
-                }
+    if (navigationType == NavigationType.BOTTOM_NAVIGATION ||
+        navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER) {
+        Scaffold(
+            bottomBar = {
+                BottomNavigationBar(
+                    items = navItems,
+                    navController = navController,
+                    onItemClick = {
+                        navController.navigate(it.route)
+                    }
+                )
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                Navigation(
+                    navigationType = navigationType,
+                    navController = navController,
+                    healthConnectAvailability = healthConnectAvailability,
+                    healthConnectManager = healthConnectManager,
+                    drawerNavController = drawerNavController,
+                    drawerScope = drawerScope,
+                    scaffoldState = scaffoldState
+                )
             }
         }
-        NavigationType.NAVIGATION_RAIL -> {
-            NavigationRailBar(
-                items = navItems,
-                navController = navController,
-                healthConnectAvailability = healthConnectAvailability,
-                healthConnectManager = healthConnectManager,
-                drawerNavController = drawerNavController,
-                drawerScope = drawerScope,
-                scaffoldState = scaffoldState,
-                onItemClick = {
-                    navController.navigate(it.route)
-                }
-            )
-        }
-        else -> { // NavigationType.PERMANENT_NAVIGATION_DRAWER
-            LeaderBoardScreen()
-        }
+    } else { //NavigationType.NAVIGATION_RAIL -> {
+
+        NavigationRailBar(
+            navigationType = navigationType,
+            items = navItems,
+            navController = navController,
+            healthConnectAvailability = healthConnectAvailability,
+            healthConnectManager = healthConnectManager,
+            drawerNavController = drawerNavController,
+            drawerScope = drawerScope,
+            scaffoldState = scaffoldState,
+            onItemClick = {
+                navController.navigate(it.route)
+            }
+        )
     }
 }
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Navigation(
+    navigationType: NavigationType,
     navController: NavHostController,
     healthConnectAvailability: HealthConnectAvailability,
     scaffoldState: ScaffoldState,
@@ -201,14 +193,9 @@ fun Navigation(
                 )
             )
             val curveLineData by viewModel.lineData
-            val refreshing by viewModel.refreshing
-            val onRefresh = { viewModel.refreshing() }
-            val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.refreshing() })
             HomeScreen(
+                navigationType = navigationType,
                 lineData = curveLineData,
-                pullRefreshState = pullRefreshState,
-                isRefreshing = refreshing,
-                onRefresh = onRefresh,
                 drawerNavController = drawerNavController,
                 drawerScope = drawerScope,
                 scaffoldState = scaffoldState
@@ -294,6 +281,7 @@ fun BottomNavigationBar(
 @ExperimentalMaterialApi
 @Composable
 fun NavigationRailBar(
+    navigationType: NavigationType,
     items: List<NavItem>,
     navController: NavHostController,
     modifier: Modifier = Modifier,
@@ -306,7 +294,7 @@ fun NavigationRailBar(
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
-    Row(modifier = Modifier.fillMaxSize()){
+    Row(modifier = Modifier.fillMaxSize()) {
         NavigationRail(
             modifier = modifier,
             backgroundColor = MaterialTheme.colors.onPrimary,
@@ -354,6 +342,7 @@ fun NavigationRailBar(
             }
         }
         Navigation(
+            navigationType = navigationType,
             navController = navController,
             healthConnectAvailability = healthConnectAvailability,
             healthConnectManager = healthConnectManager,

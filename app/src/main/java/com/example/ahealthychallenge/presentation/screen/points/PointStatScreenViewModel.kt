@@ -41,14 +41,6 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
         readLineData("workoutLineData")
     }
 
-    fun refreshing() {
-        readPieChartData()
-        readCurveLineData()
-        readLineData("walkingLineData")
-        readLineData("runningLineData")
-        readLineData("bikingLineData")
-        readLineData("workoutLineData")
-    }
 
     private fun readPieChartData() {
         val database = Firebase.database.reference

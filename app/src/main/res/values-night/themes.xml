@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--  <style name="Theme.HealthConnect" parent="android:Theme.Material.Light.NoActionBar"> -->
+    <style name="Theme.HealthConnect" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/HealthConnectGreen</item>
+        <item name="colorOnPrimary">@color/black</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/health_connect_blue</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/health_connect_blue</item>
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+    </style>
+</resources>

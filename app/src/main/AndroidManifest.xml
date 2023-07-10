@@ -38,9 +38,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthConnect">
+        <activity android:name=".presentation.FriendsActivity"
+            android:parentActivityName=".presentation.HomeActivity"></activity>
         <activity
             android:name=".presentation.SearchUserActivity"
-            android:parentActivityName=".presentation.HomeActivity"></activity>
+            android:parentActivityName=".presentation.FriendsActivity"></activity>
         <activity
             android:name=".presentation.ResetPasswordActivity"
             android:parentActivityName=".presentation.SignInActivity"></activity>

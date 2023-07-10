@@ -1,10 +1,13 @@
 package com.example.ahealthychallenge.presentation
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.activity.ComponentActivity
+import androidx.compose.material.AlertDialog
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.databinding.ActivitySearchUserBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -30,11 +33,11 @@ class SearchUserActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivitySearchUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        
         val firebase = FirebaseDatabase.getInstance().getReference("Users")
         val storage = FirebaseStorage.getInstance().getReference("Users")
         firebaseRef = FirebaseDatabase.getInstance().getReference("FriendRequests")
-        val localfile = File.createTempFile("tempImage", "jpg")
+        val localfile = File.createTempFile("tempImage", "jpeg")
         val user = FirebaseAuth.getInstance().currentUser?.uid
 
         searchText = binding.searchText
@@ -57,14 +60,15 @@ class SearchUserActivity : ComponentActivity() {
             if(currentState == "not_friends"){
                 sendRequestFriend()
             }
+            else if(currentState == "request_sent"){
+                cancelRequest()
+            }
         }
 
         searchBtn.setOnClickListener{
             name.visibility = View.GONE
             image.visibility = View.GONE
             requestBtn.visibility = View.GONE
-
-            currentState = "not_friends"
 
             val searchTerm = searchText.text.toString()
             if(searchTerm.isEmpty()){
@@ -104,15 +108,7 @@ class SearchUserActivity : ComponentActivity() {
         }
     }
 
-   /* private fun checkRequestType(): String {
-        var requestType = "not_friends"
-        firebaseRef.child(friendUsername).get().addOnSuccessListener {
-            if (it.hasChild(currentUsername)) {
-                requestType = it.child(currentUsername).child("request_type").value.toString()
-            }
-        }
-        return requestType
-    }  */
+
 
     private fun maintenanceOfButton() {
         firebaseRef.child(currentUsername).get().addOnSuccessListener {
@@ -123,6 +119,10 @@ class SearchUserActivity : ComponentActivity() {
                     currentState = "request_sent"
                 }
             }
+            else{
+                currentState = "not_friends"
+                requestBtn.text = "Send Request"
+            }
         }
     }
 
@@ -132,6 +132,15 @@ class SearchUserActivity : ComponentActivity() {
             firebaseRef.child(friendUsername).child(currentUsername).child("request_type").setValue("received").addOnSuccessListener {
                 requestBtn.text = "Request Sent"
                 currentState = "request_sent"
+            }
+        }
+    }
+
+    private fun cancelRequest() {
+        firebaseRef.child(currentUsername).child(friendUsername).removeValue().addOnSuccessListener {
+            firebaseRef.child(friendUsername).child(currentUsername).removeValue().addOnSuccessListener {
+                currentState = "not_friends"
+                requestBtn.text = "Send Request"
             }
         }
     }

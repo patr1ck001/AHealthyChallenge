@@ -60,11 +60,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ahealthychallenge.data.HealthConnectManager
+import com.example.ahealthychallenge.presentation.FriendsActivity
 import com.example.ahealthychallenge.presentation.SearchUserActivity
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.friendsScreen.FriendsScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModel
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModelFactory
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderBoardScreen.LeaderBoardScreen
 import com.example.ahealthychallenge.presentation.utils.NavigationType
 import kotlinx.coroutines.CoroutineScope
 
@@ -138,14 +140,14 @@ fun WelcomeScreen(
                         items = navItems,
                         navController = navController,
                         onItemClick = {
-                            navController.navigate(it.route)
-                            /*if (it.route == "friends") {
-                                val intent = Intent(context, SearchUserActivity::class.java)
+                           // navController.navigate(it.route)
+                            if (it.route == "friends") {
+                                val intent = Intent(context, FriendsActivity::class.java)
                                 context.startActivity(intent)
                             } else {
                                 navController.navigate(it.route)
 
-                            }*/
+                            }
                         }
                     )
                 }

@@ -79,20 +79,15 @@ class FriendsActivity : ComponentActivity() {
                                    friendArrayList.add(friend)
                                    friendRecyclerView.adapter = FriendAdapter(friendArrayList, username, userSnapshot.key.toString())
                                }
-
                            }
-
                         }
-                       //
                     }
-                   //
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
-
         })
     }
 }

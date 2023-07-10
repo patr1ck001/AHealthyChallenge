@@ -24,6 +24,7 @@ class SearchUserActivity : ComponentActivity() {
     private lateinit var image: CircleImageView
     private lateinit var name: TextView
     private lateinit var requestBtn: Button
+    private lateinit var refuseBtn: Button
     private lateinit var currentUsername: String
     private lateinit var friendUsername: String
     private lateinit var firebaseRef: DatabaseReference
@@ -45,6 +46,7 @@ class SearchUserActivity : ComponentActivity() {
         image = binding.image
         name = binding.nameSurname
         requestBtn = binding.requestBtn
+        refuseBtn = binding.refuseBtn
 
         searchText.requestFocus()
 
@@ -54,15 +56,24 @@ class SearchUserActivity : ComponentActivity() {
             }
         }
 
+        refuseBtn.setOnClickListener{
+            cancelRequest()
+        }
+
         requestBtn.setOnClickListener{
 
-           //currentState = checkRequestType()
             if(currentState == "not_friends"){
                 sendRequestFriend()
             }
             else if(currentState == "request_sent"){
                 cancelRequest()
             }
+            else if(currentState == "friend"){
+                //implementare il dialog "are you sure?"
+            }
+            else if(currentState == "received"){
+                acceptRequest()
+             }
         }
 
         searchBtn.setOnClickListener{
@@ -109,7 +120,6 @@ class SearchUserActivity : ComponentActivity() {
     }
 
 
-
     private fun maintenanceOfButton() {
         firebaseRef.child(currentUsername).get().addOnSuccessListener {
             if(it.hasChild(friendUsername)){
@@ -117,6 +127,15 @@ class SearchUserActivity : ComponentActivity() {
                 if(requestType == "sent") {
                     requestBtn.text = "Request Sent"
                     currentState = "request_sent"
+                }
+                else if (requestType == "friend"){
+                    requestBtn.text = "Friend"
+                    currentState = "friend"
+                }
+                else if (requestType == "received"){
+                    requestBtn.text = "Accept"
+                    refuseBtn.visibility = View.VISIBLE
+                    currentState = "received"
                 }
             }
             else{
@@ -141,6 +160,17 @@ class SearchUserActivity : ComponentActivity() {
             firebaseRef.child(friendUsername).child(currentUsername).removeValue().addOnSuccessListener {
                 currentState = "not_friends"
                 requestBtn.text = "Send Request"
+                refuseBtn.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun acceptRequest() {
+        firebaseRef.child(currentUsername).child(friendUsername).child("request_type").setValue("friend").addOnSuccessListener {
+            firebaseRef.child(friendUsername).child(currentUsername).child("request_type").setValue("friend").addOnSuccessListener {
+                requestBtn.text = "Friend"
+                refuseBtn.visibility = View.GONE
+                currentState = "friend"
             }
         }
     }

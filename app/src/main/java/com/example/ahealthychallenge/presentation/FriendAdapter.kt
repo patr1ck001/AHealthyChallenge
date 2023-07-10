@@ -1,6 +1,5 @@
 package com.example.ahealthychallenge.presentation
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import de.hdodenhof.circleimageview.CircleImageView
 
-class FriendAdapter(private val friendList: ArrayList<Friend>, private val currentUsername: String, private val friendUsername: String): RecyclerView.Adapter<FriendAdapter.MyViewHolder>(){
+
+class FriendAdapter(private val friendList: ArrayList<Friend>, private val currentUsername: String): RecyclerView.Adapter<FriendAdapter.MyViewHolder>(){
 
     private var firebaseRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("FriendRequests")
 
@@ -29,6 +29,7 @@ class FriendAdapter(private val friendList: ArrayList<Friend>, private val curre
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentitem = friendList[position]
         holder.name.text = currentitem.firstName+" "+currentitem.lastName
+        holder.friendUsername.text = currentitem.username
         if(currentitem.bitmap == null){
             holder.image.setImageResource(R.drawable.ic_profile)
         }
@@ -37,23 +38,25 @@ class FriendAdapter(private val friendList: ArrayList<Friend>, private val curre
         }
 
         holder.acceptButton.setOnClickListener {
-            firebaseRef.child(currentUsername).child(friendUsername).child("request_type").setValue("friend").addOnSuccessListener {
-                firebaseRef.child(friendUsername).child(currentUsername).child("request_type").setValue("friend").addOnSuccessListener {
+            firebaseRef.child(currentUsername).child(holder.friendUsername.text.toString()).child("request_type").setValue("friend").addOnSuccessListener {
+                firebaseRef.child(holder.friendUsername.text.toString()).child(currentUsername).child("request_type").setValue("friend").addOnSuccessListener {
                     holder.name.visibility = View.GONE
                     holder.image.visibility = View.GONE
                     holder.refuseButton.visibility = View.GONE
                     holder.acceptButton.visibility = View.GONE
+                    friendList.remove(currentitem)
                 }
             }
         }
 
         holder.refuseButton.setOnClickListener {
-            firebaseRef.child(currentUsername).child(friendUsername).removeValue().addOnSuccessListener {
-                firebaseRef.child(friendUsername).child(currentUsername).removeValue().addOnSuccessListener {
+            firebaseRef.child(currentUsername).child(holder.friendUsername.text.toString()).removeValue().addOnSuccessListener {
+                firebaseRef.child(holder.friendUsername.text.toString()).child(currentUsername).removeValue().addOnSuccessListener {
                         holder.name.visibility = View.GONE
                         holder.image.visibility = View.GONE
                         holder.refuseButton.visibility = View.GONE
                         holder.acceptButton.visibility = View.GONE
+                        friendList.remove(currentitem)
                 }
             }
         }
@@ -67,6 +70,7 @@ class FriendAdapter(private val friendList: ArrayList<Friend>, private val curre
         var image: CircleImageView = itemView.findViewById(R.id.img)
         val acceptButton: Button = itemView.findViewById(R.id.accept_btn)
         val refuseButton: Button = itemView.findViewById(R.id.refuse_btn)
+        val friendUsername: TextView = itemView.findViewById(R.id.username)
     }
 
 

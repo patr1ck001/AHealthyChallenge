@@ -57,6 +57,7 @@ import com.example.ahealthychallenge.presentation.bottomBar.NavItem
 import androidx.compose.material.*
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ahealthychallenge.data.HealthConnectManager
@@ -93,13 +94,13 @@ fun WelcomeScreen(
             icon = ImageVector.vectorResource(id = R.drawable.ic_home)
         ),
         NavItem(
-            name = "leaderBoard",
+            name = "LeaderBoard",
             route = "leaderBoard",
             icon = ImageVector.vectorResource(id = R.drawable.ic_ranking),
             badgeCount = 214
         ),
         NavItem(
-            name = "friends",
+            name = "Friends",
             route = "friends",
             icon = ImageVector.vectorResource(id = R.drawable.ic_friends),
             badgeCount = 23
@@ -230,6 +231,7 @@ fun BottomNavigationBar(
     onItemClick: (NavItem) -> Unit
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
+    var index = 1
     BottomNavigation(
         modifier = modifier,
         backgroundColor = MaterialTheme.colors.onPrimary,
@@ -253,6 +255,7 @@ fun BottomNavigationBar(
                                     modifier = Modifier
                                         .height(30.dp)
                                         .width(30.dp)
+                                        .testTag("bottomNav + $index")
                                 )
                             }
                         } else {
@@ -262,6 +265,7 @@ fun BottomNavigationBar(
                                 modifier = Modifier
                                     .height(30.dp)
                                     .width(30.dp)
+                                    .testTag("bottomNav")
                             )
                         }
                         if (selected) {
@@ -274,6 +278,7 @@ fun BottomNavigationBar(
                     }
                 }
             )
+            index++
         }
     }
 }

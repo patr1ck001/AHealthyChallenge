@@ -20,9 +20,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.presentation.navigation.Screen
 import com.example.ahealthychallenge.presentation.theme.HealthConnectBlue
 import com.example.ahealthychallenge.presentation.theme.HealthConnectGreen
@@ -80,6 +83,7 @@ fun CompactHomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(7.dp)
+                        .testTag("clickableCard")
                         .clickable {
                             drawerNavController.navigate(Screen.PointScreen.route) {
                                 drawerNavController.graph.startDestinationRoute?.let { route ->
@@ -104,7 +108,7 @@ fun CompactHomeScreen(
                         Text(
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally),
-                            text = "Point This month"
+                            text = stringResource(R.string.points_this_month)
                         )
                         Box(modifier = Modifier.height(30.dp))
                         LineChart(

@@ -22,10 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.presentation.theme.HealthConnectBlue
 import com.example.ahealthychallenge.presentation.theme.HealthConnectGreen
 import com.example.ahealthychallenge.presentation.utils.NavigationType
@@ -99,7 +101,7 @@ fun CompactPointStatScreen(
             .padding(32.dp)
     ) {
         if (pieData.isNotEmpty()) {
-            item {
+            item(key = 1) {
                 PieChart(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -111,9 +113,9 @@ fun CompactPointStatScreen(
                     }
                 )
             }
-            item {
+            item(key = 2) {
                 Text(
-                    text = "Points per exercise type",
+                    text = stringResource(R.string.points_per_exercise_type),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -124,7 +126,7 @@ fun CompactPointStatScreen(
         }
 
         if (curveLineData.isNotEmpty()) {
-            item {
+            item(key = 3) {
                 LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -143,9 +145,9 @@ fun CompactPointStatScreen(
                 )
             }
 
-            item {
+            item(key = 4) {
                 Text(
-                    text = "Points this month",
+                    text = stringResource(R.string.points_this_month),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -156,7 +158,7 @@ fun CompactPointStatScreen(
         }
         /*walking*/
         if (walkingLineData.isNotEmpty()) {
-            item {
+            item(key = 5) {
                 LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -175,9 +177,9 @@ fun CompactPointStatScreen(
                 )
             }
 
-            item {
+            item(key = 6) {
                 Text(
-                    text = "Points walking",
+                    text = stringResource(R.string.points_walking),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -189,7 +191,7 @@ fun CompactPointStatScreen(
 
         /*running*/
         if (runningLineData.isNotEmpty()) {
-            item {
+            item(key = 7) {
                 LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -208,9 +210,9 @@ fun CompactPointStatScreen(
                 )
             }
 
-            item {
+            item(key = 8) {
                 Text(
-                    text = "Points running",
+                    text = stringResource(R.string.points_running),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -223,7 +225,7 @@ fun CompactPointStatScreen(
         /*biking*/
         if (bikingLineData.isNotEmpty()) {
 
-            item {
+            item(key = 9) {
                 LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -242,9 +244,9 @@ fun CompactPointStatScreen(
                 )
             }
 
-            item {
+            item(key = 10) {
                 Text(
-                    text = "Points biking",
+                    text = stringResource(R.string.points_biking),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -256,7 +258,7 @@ fun CompactPointStatScreen(
 
         /*working out*/
         if (workoutLineData.isNotEmpty()) {
-            item {
+            item(key = 11) {
                 LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -275,9 +277,9 @@ fun CompactPointStatScreen(
                 )
             }
 
-            item {
+            item(key = 12) {
                 Text(
-                    text = "Points working out",
+                    text = stringResource(R.string.points_working_out),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()

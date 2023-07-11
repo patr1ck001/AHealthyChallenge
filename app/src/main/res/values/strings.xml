@@ -155,4 +155,11 @@
     <string name="total_duration_layout">%1$d:%2$d:%3$d</string>
 
     <string name="point_statistic">Points stats</string>
-</resources>
+
+    <string name="points_per_exercise_type">Points per exercise type</string>
+    <string name="points_this_month">Points this month</string>
+    <string name="points_walking">Points walking</string>
+    <string name="points_running">Points running</string>
+    <string name="points_biking">Points biking</string>
+    <string name="points_working_out">Points working out</string>
+    </resources>

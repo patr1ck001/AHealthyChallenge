@@ -1,17 +1,10 @@
 package com.example.ahealthychallenge.presentation.screen.points
 
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.printToLog
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.DistanceRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
@@ -19,15 +12,12 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.SpeedRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
-import androidx.navigation.compose.rememberNavController
 import com.example.ahealthychallenge.data.DailySessionsList
 import com.example.ahealthychallenge.data.DailySessionsSummary
 import com.example.ahealthychallenge.data.ExerciseSession
 import com.example.ahealthychallenge.data.ExerciseSessionData
-import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.presentation.screen.exercisesession.ExerciseSessionScreen
 import com.example.ahealthychallenge.presentation.screen.exercisesession.ExerciseSessionViewModel
-import com.example.ahealthychallenge.presentation.screen.welcomeScreen.WelcomeScreen
 import com.example.ahealthychallenge.presentation.utils.NavigationType
 import org.junit.Rule
 import org.junit.Test

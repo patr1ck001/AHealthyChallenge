@@ -20,14 +20,6 @@ import org.junit.Test
 class WelcomeScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
-
-    private val pieData = listOf(
-        PieData(2F),
-        PieData(2F),
-        PieData(2F),
-        PieData(2F)
-    )
-
     @Test
     fun clickNavBarItemTest() {
 

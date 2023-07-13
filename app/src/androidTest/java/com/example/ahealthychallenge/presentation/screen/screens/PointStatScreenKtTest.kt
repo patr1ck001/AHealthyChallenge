@@ -1,33 +1,14 @@
-package com.example.ahealthychallenge.presentation.screen.points
+package com.example.ahealthychallenge.presentation.screen.screens
 
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assert
-import androidx.compose.ui.test.assertAll
-import androidx.compose.ui.test.assertHasClickAction
-import androidx.compose.ui.test.hasAnySibling
-import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performScrollToKey
-import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.printToLog
-import androidx.core.content.res.TypedArrayUtils.getText
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.presentation.utils.NavigationType
 import com.himanshoe.charty.line.model.LineData
 import com.himanshoe.charty.pie.config.PieData
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 

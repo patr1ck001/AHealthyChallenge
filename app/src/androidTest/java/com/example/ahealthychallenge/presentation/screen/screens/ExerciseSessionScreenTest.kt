@@ -1,4 +1,4 @@
-package com.example.ahealthychallenge.presentation.screen.points
+package com.example.ahealthychallenge.presentation.screen.screens
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.rememberPullRefreshState

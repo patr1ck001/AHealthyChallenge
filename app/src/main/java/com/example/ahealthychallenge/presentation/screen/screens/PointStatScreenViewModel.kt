@@ -1,4 +1,4 @@
-package com.example.ahealthychallenge.presentation.screen.points
+package com.example.ahealthychallenge.presentation.screen.screens
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -11,14 +11,12 @@ import com.example.ahealthychallenge.data.serializables.SerializableFactory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.himanshoe.charty.line.model.LineData
 import com.himanshoe.charty.pie.config.PieData
-import java.time.Instant
 
 class PointStatScreenViewModel(private val healthConnectManager: HealthConnectManager) :
     ViewModel() {

@@ -1,4 +1,4 @@
-package com.example.ahealthychallenge.presentation.screen.points
+package com.example.ahealthychallenge.presentation.screen.screens
 
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.getValue
@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.WelcomeScreen
 import com.example.ahealthychallenge.presentation.utils.NavigationType
-import com.himanshoe.charty.pie.config.PieData
 import org.junit.Rule
 import org.junit.Test
 

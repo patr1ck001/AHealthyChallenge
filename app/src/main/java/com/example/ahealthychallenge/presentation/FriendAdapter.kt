@@ -13,7 +13,7 @@ import com.google.firebase.database.FirebaseDatabase
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-class FriendAdapter(private val friendList: ArrayList<Friend>, private val currentUsername: String): RecyclerView.Adapter<FriendAdapter.MyViewHolder>(){
+class FriendAdapter(private val friendList: ArrayList<Friend>): RecyclerView.Adapter<FriendAdapter.MyViewHolder>(){
 
     private var firebaseRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("FriendRequests")
 
@@ -38,25 +38,23 @@ class FriendAdapter(private val friendList: ArrayList<Friend>, private val curre
         }
 
         holder.acceptButton.setOnClickListener {
-            firebaseRef.child(currentUsername).child(holder.friendUsername.text.toString()).child("request_type").setValue("friend").addOnSuccessListener {
-                firebaseRef.child(holder.friendUsername.text.toString()).child(currentUsername).child("request_type").setValue("friend").addOnSuccessListener {
+            firebaseRef.child(currentitem.currentUsername!!).child(holder.friendUsername.text.toString()).child("request_type").setValue("friend").addOnSuccessListener {
+                firebaseRef.child(holder.friendUsername.text.toString()).child(currentitem.currentUsername!!).child("request_type").setValue("friend").addOnSuccessListener {
                     holder.name.visibility = View.GONE
                     holder.image.visibility = View.GONE
                     holder.refuseButton.visibility = View.GONE
                     holder.acceptButton.visibility = View.GONE
-                    friendList.remove(currentitem)
                 }
             }
         }
 
         holder.refuseButton.setOnClickListener {
-            firebaseRef.child(currentUsername).child(holder.friendUsername.text.toString()).removeValue().addOnSuccessListener {
-                firebaseRef.child(holder.friendUsername.text.toString()).child(currentUsername).removeValue().addOnSuccessListener {
+            firebaseRef.child(currentitem.currentUsername!!).child(holder.friendUsername.text.toString()).removeValue().addOnSuccessListener {
+                firebaseRef.child(holder.friendUsername.text.toString()).child(currentitem.currentUsername!!).removeValue().addOnSuccessListener {
                         holder.name.visibility = View.GONE
                         holder.image.visibility = View.GONE
                         holder.refuseButton.visibility = View.GONE
                         holder.acceptButton.visibility = View.GONE
-                        friendList.remove(currentitem)
                 }
             }
         }

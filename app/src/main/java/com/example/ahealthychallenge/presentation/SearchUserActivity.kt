@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material.AlertDialog
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.databinding.ActivitySearchUserBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -69,7 +70,7 @@ class SearchUserActivity : ComponentActivity() {
                 cancelRequest()
             }
             else if(currentState == "friend"){
-                //implementare il dialog "are you sure?"
+                showDialog()
             }
             else if(currentState == "received"){
                 acceptRequest()
@@ -118,6 +119,7 @@ class SearchUserActivity : ComponentActivity() {
             }
         }
     }
+
 
 
     private fun maintenanceOfButton() {
@@ -174,4 +176,12 @@ class SearchUserActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun showDialog() {
+       MaterialAlertDialogBuilder(this).setTitle("Alert").setMessage("Delete friend. Are you sure?")
+           .setNegativeButton("No") {dialog, which -> }
+           .setPositiveButton("Yes") {dialog, which -> cancelRequest()
+               Toast.makeText(this, "Friend deleted !", Toast.LENGTH_LONG).show() } .show()
+    }
+
 }

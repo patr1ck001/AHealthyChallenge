@@ -22,13 +22,8 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
     ViewModel() {
     private lateinit var database: DatabaseReference
     var lineData: MutableState<List<LineData>> = mutableStateOf(listOf())
-    var refreshing: MutableState<Boolean> = mutableStateOf(false)
 
     init {
-        readLineData()
-    }
-
-    fun refreshing() {
         readLineData()
     }
 

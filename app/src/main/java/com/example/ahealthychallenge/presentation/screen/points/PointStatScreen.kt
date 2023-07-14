@@ -1,12 +1,18 @@
 package com.example.ahealthychallenge.presentation.screen.points
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -16,9 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.presentation.theme.HealthConnectBlue
 import com.example.ahealthychallenge.presentation.theme.HealthConnectGreen
 import com.example.ahealthychallenge.presentation.utils.NavigationType
@@ -32,7 +41,6 @@ import com.himanshoe.charty.pie.config.PieConfig
 import com.himanshoe.charty.pie.config.PieData
 import kotlinx.coroutines.flow.MutableStateFlow
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PointStatScreen(
     navigationType: NavigationType,
@@ -43,7 +51,6 @@ fun PointStatScreen(
     bikingLineData: List<LineData>,
     workoutLineData: List<LineData>
 ) {
-
     val lineChartData = listOf(
         LineData(10F, 35F),
         LineData(20F, 25F),
@@ -55,13 +62,46 @@ fun PointStatScreen(
     )
 //TODO: manage the case in which there is no exercise session yet
 
+    if (navigationType == NavigationType.BOTTOM_NAVIGATION) {
+        CompactPointStatScreen(
+            pieData = pieData,
+            curveLineData = curveLineData,
+            walkingLineData = walkingLineData,
+            runningLineData = runningLineData,
+            bikingLineData = bikingLineData,
+            workoutLineData = workoutLineData
+        )
+    } else {
+        ExpendedPointStatScreen(
+            navigationType = navigationType,
+            pieData = pieData,
+            curveLineData = curveLineData,
+            walkingLineData = walkingLineData,
+            runningLineData = runningLineData,
+            bikingLineData = bikingLineData,
+            workoutLineData = workoutLineData
+        )
+    }
+
+
+}
+
+@Composable
+fun CompactPointStatScreen(
+    pieData: List<PieData>,
+    curveLineData: List<LineData>,
+    walkingLineData: List<LineData>,
+    runningLineData: List<LineData>,
+    bikingLineData: List<LineData>,
+    workoutLineData: List<LineData>
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp)
     ) {
         if (pieData.isNotEmpty()) {
-            item {
+            item(key = 1) {
                 PieChart(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -73,9 +113,9 @@ fun PointStatScreen(
                     }
                 )
             }
-            item {
+            item(key = 2) {
                 Text(
-                    text = "Points per exercise type",
+                    text = stringResource(R.string.points_per_exercise_type),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -86,7 +126,7 @@ fun PointStatScreen(
         }
 
         if (curveLineData.isNotEmpty()) {
-            item {
+            item(key = 3) {
                 LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -105,9 +145,9 @@ fun PointStatScreen(
                 )
             }
 
-            item {
+            item(key = 4) {
                 Text(
-                    text = "Points this month",
+                    text = stringResource(R.string.points_this_month),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -118,7 +158,7 @@ fun PointStatScreen(
         }
         /*walking*/
         if (walkingLineData.isNotEmpty()) {
-            item {
+            item(key = 5) {
                 LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -137,9 +177,9 @@ fun PointStatScreen(
                 )
             }
 
-            item {
+            item(key = 6) {
                 Text(
-                    text = "Points walking",
+                    text = stringResource(R.string.points_walking),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -151,7 +191,7 @@ fun PointStatScreen(
 
         /*running*/
         if (runningLineData.isNotEmpty()) {
-            item {
+            item(key = 7) {
                 LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -170,9 +210,9 @@ fun PointStatScreen(
                 )
             }
 
-            item {
+            item(key = 8) {
                 Text(
-                    text = "Points running",
+                    text = stringResource(R.string.points_running),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -185,7 +225,7 @@ fun PointStatScreen(
         /*biking*/
         if (bikingLineData.isNotEmpty()) {
 
-            item {
+            item(key = 9) {
                 LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -204,9 +244,9 @@ fun PointStatScreen(
                 )
             }
 
-            item {
+            item(key = 10) {
                 Text(
-                    text = "Points biking",
+                    text = stringResource(R.string.points_biking),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -218,7 +258,7 @@ fun PointStatScreen(
 
         /*working out*/
         if (workoutLineData.isNotEmpty()) {
-            item {
+            item(key = 11) {
                 LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -237,9 +277,9 @@ fun PointStatScreen(
                 )
             }
 
-            item {
+            item(key = 12) {
                 Text(
-                    text = "Points working out",
+                    text = stringResource(R.string.points_working_out),
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -249,6 +289,211 @@ fun PointStatScreen(
             }
         }
     }
+}
 
 
+@Composable
+fun ExpendedPointStatScreen(
+    navigationType: NavigationType,
+    pieData: List<PieData>,
+    curveLineData: List<LineData>,
+    walkingLineData: List<LineData>,
+    runningLineData: List<LineData>,
+    bikingLineData: List<LineData>,
+    workoutLineData: List<LineData>
+) {
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(30.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(50.dp),
+    ){
+        if (pieData.isNotEmpty()) {
+            item {
+                Column {
+                    PieChart(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        pieData = pieData,
+                        config = PieConfig(isDonut = true, expandDonutOnClick = true),
+                        onSectionClicked = { percent, value ->
+                            Log.d("point", "value: $value")
+                            Log.d("point", "percent: $percent")
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Points per exercise type",
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+        }
+
+        if (curveLineData.isNotEmpty()) {
+            item {
+                Column() {
+                    LineChart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        color = HealthConnectBlue,
+                        lineData = curveLineData,
+                        axisConfig = AxisConfig(
+                            showAxis = true,
+                            showUnitLabels = true,
+                            isAxisDashed = true,
+                            showXLabels = true,
+                            textColor = HealthConnectBlue,
+                            xAxisColor = HealthConnectBlue,
+                            yAxisColor = HealthConnectGreen
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Points per exercise type",
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        if (walkingLineData.isNotEmpty()) {
+            item {
+                Column() {
+                    LineChart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        color = HealthConnectGreen,
+                        lineData = walkingLineData,
+                        axisConfig = AxisConfig(
+                            showAxis = true,
+                            showUnitLabels = true,
+                            isAxisDashed = true,
+                            showXLabels = true,
+                            textColor = HealthConnectBlue,
+                            xAxisColor = HealthConnectBlue,
+                            yAxisColor = HealthConnectGreen
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Points walking",
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        if (runningLineData.isNotEmpty()) {
+            item {
+                Column() {
+                    LineChart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        color = HealthConnectGreen,
+                        lineData = runningLineData,
+                        axisConfig = AxisConfig(
+                            showAxis = true,
+                            showUnitLabels = true,
+                            isAxisDashed = true,
+                            showXLabels = true,
+                            textColor = HealthConnectBlue,
+                            xAxisColor = HealthConnectBlue,
+                            yAxisColor = HealthConnectGreen
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Points running",
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        if (bikingLineData.isNotEmpty()) {
+            item {
+                Column() {
+                    LineChart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        color = HealthConnectGreen,
+                        lineData = bikingLineData,
+                        axisConfig = AxisConfig(
+                            showAxis = true,
+                            showUnitLabels = true,
+                            isAxisDashed = true,
+                            showXLabels = true,
+                            textColor = HealthConnectBlue,
+                            xAxisColor = HealthConnectBlue,
+                            yAxisColor = HealthConnectGreen
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Points biking",
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        if (workoutLineData.isNotEmpty()) {
+            item {
+                Column() {
+                    LineChart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        color = HealthConnectGreen,
+                        lineData = workoutLineData,
+                        axisConfig = AxisConfig(
+                            showAxis = true,
+                            showUnitLabels = true,
+                            isAxisDashed = true,
+                            showXLabels = true,
+                            textColor = HealthConnectBlue,
+                            xAxisColor = HealthConnectBlue,
+                            yAxisColor = HealthConnectGreen
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Points working out",
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    }
 }

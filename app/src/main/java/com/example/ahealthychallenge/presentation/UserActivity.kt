@@ -1,6 +1,7 @@
 package com.example.ahealthychallenge.presentation
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -15,6 +16,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import de.hdodenhof.circleimageview.CircleImageView
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+
 
 class UserActivity: ComponentActivity() {
 
@@ -22,6 +26,7 @@ class UserActivity: ComponentActivity() {
     private lateinit var databaseReference: DatabaseReference
     private lateinit var storageReference: StorageReference
     private lateinit var imageUri: Uri
+    private lateinit var  fileInBytes: ByteArray
     private var flag: Boolean = false
     private lateinit var circleImageView: CircleImageView
 
@@ -75,22 +80,41 @@ class UserActivity: ComponentActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == RESULT_OK && data != null){
-            imageUri = data.getData()!!
+            imageUri = data.data!!
+            var bmp: Bitmap? = null
+            try {
+                bmp = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            val baos = ByteArrayOutputStream()
+            bmp!!.compress(Bitmap.CompressFormat.JPEG, 25, baos)
+            fileInBytes = baos.toByteArray()
+
             circleImageView.setImageURI(imageUri)
             flag = true
         }
     }
 
     private fun updateProfilePic(username: String) {
+        storageReference = FirebaseStorage.getInstance().getReference("Users/$username")
         if(!flag) {
             imageUri = Uri.parse("android.resource://$packageName/${R.drawable.ic_profile}")
+            storageReference.putFile(imageUri).addOnCompleteListener {
+                Toast.makeText(this, "Profile successfully updated !", Toast.LENGTH_LONG).show()
+            }.addOnFailureListener {
+                Toast.makeText(this, "failed to upload the image !", Toast.LENGTH_LONG).show()
+            }
         }
-        storageReference = FirebaseStorage.getInstance().getReference("Users/$username")
-        storageReference.putFile(imageUri).addOnCompleteListener {
-            Toast.makeText(this, "Profile successfully updated !", Toast.LENGTH_LONG).show()
-        }.addOnFailureListener {
-            Toast.makeText(this, "failed to upload the image !", Toast.LENGTH_LONG).show()
+        else{
+            storageReference.putBytes(fileInBytes).addOnCompleteListener {
+                Toast.makeText(this, "Profile successfully updated !", Toast.LENGTH_LONG).show()
+            }.addOnFailureListener {
+                Toast.makeText(this, "failed to upload the image !", Toast.LENGTH_LONG).show()
+            }
         }
+
+
     }
 
 }

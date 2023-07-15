@@ -152,30 +152,6 @@ fun HealthConnectApp(
                                     stringResource(id = R.string.menu)
                                 )
                             }
-                        },
-                        actions = {
-                            IconButton(onClick = { mDisplayMenu = !mDisplayMenu }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_menu_vertical),
-                                    stringResource(id = R.string.menu),
-                                    modifier = Modifier.height(30.dp)
-                                )
-                            }
-
-                            DropdownMenu(
-                                expanded = mDisplayMenu,
-                                onDismissRequest = { mDisplayMenu = false }
-                            ) {
-                                // Creating dropdown menu item, on click
-                                // would create a Toast message
-                                DropdownMenuItem(onClick = {
-                                    FirebaseUtils.firebaseAuth.signOut()
-                                    val intent = Intent(context, SignInActivity::class.java)
-                                    context.startActivity(intent)
-                                }) {
-                                    Text(text = stringResource(id = R.string.sign_out))
-                                }
-                            }
                         }
                     )
                 },

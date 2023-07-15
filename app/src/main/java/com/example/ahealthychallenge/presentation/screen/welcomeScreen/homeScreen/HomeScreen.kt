@@ -259,7 +259,66 @@ fun ExpendedAndMediumHomeScreen(
                 }
             }
         }
+        Column(modifier = Modifier
+            .weight(0.2f)
+            .fillMaxHeight()) {
+            Card(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 7.dp)
+                    .weight(1f)
+                    .clickable {
+                        drawerNavController.navigate(Screen.ExerciseSessions.route) {
+                            drawerNavController.graph.startDestinationRoute?.let { route ->
+                                popUpTo(route) {
+                                    saveState = true
+                                }
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                        drawerScope.launch {
+                            scaffoldState.drawerState.close()
+                        }
+                    },
+                elevation = 10.dp,
+                contentColor = MaterialTheme.colors.onPrimary,
+                backgroundColor = HealthConnectBlue
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "1 st",
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+            }
+            Spacer(modifier = Modifier.height(5.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 7.dp)
+                    .weight(1f),
+                elevation = 10.dp,
+                contentColor = MaterialTheme.colors.onPrimary,
+                backgroundColor = HealthConnectBlue
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = "10 points",
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
     }
+
 }
 
 @Composable

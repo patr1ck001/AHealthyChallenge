@@ -60,9 +60,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ahealthychallenge.data.Friend
 import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.presentation.FriendsActivity
 import com.example.ahealthychallenge.presentation.SearchUserActivity
+import com.example.ahealthychallenge.presentation.screen.profile.ProfileScreen
+import com.example.ahealthychallenge.presentation.screen.profile.ProfileScreenViewModel
+import com.example.ahealthychallenge.presentation.screen.profile.ProfileScreenViewModelFactory
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.friendsScreen.FriendsScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModel
@@ -89,6 +93,7 @@ fun WelcomeScreen(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     val currentOnAvailabilityCheck by rememberUpdatedState(onResumeAvailabilityCheck)
+    val context = LocalContext.current
     val navItems = listOf(
         NavItem(
             name = "Home",
@@ -102,9 +107,9 @@ fun WelcomeScreen(
             badgeCount = 214
         ),
         NavItem(
-            name = "Friends",
-            route = "friends",
-            icon = ImageVector.vectorResource(id = R.drawable.ic_friends),
+            name = "Profile",
+            route = "profile",
+            icon = ImageVector.vectorResource(id = R.drawable.profile_ic),
             badgeCount = 23
         )
     )
@@ -132,37 +137,36 @@ fun WelcomeScreen(
 
     val navController = rememberNavController()
 
-    when(navigationType) {
-        NavigationType.BOTTOM_NAVIGATION -> {
-            Scaffold(
-                bottomBar = {
-                    BottomNavigationBar(
-                        items = navItems,
-                        navController = navController,
-                        onItemClick = {
-                           // navController.navigate(it.route)
-                            if (it.route == "friends") {
-                                val intent = Intent(context, FriendsActivity::class.java)
-                                context.startActivity(intent)
-                            } else {
-                                navController.navigate(it.route)
+    if (navigationType == NavigationType.BOTTOM_NAVIGATION ||
+        navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER) {
+        Scaffold(
+            bottomBar = {
+                BottomNavigationBar(
+                    items = navItems,
+                    navController = navController,
+                    onItemClick = {
+                        navController.navigate(it.route)
+                        /*if (it.route == "friends") {
+                            val intent = Intent(context, FriendsActivity::class.java)
+                            context.startActivity(intent)
+                        } else {
+                            navController.navigate(it.route)
 
-                            }
-                        }
-                    )
-                }
-            ) {innerPadding ->
-                Box(modifier = Modifier.padding(innerPadding)) {
-                    Navigation(
-                        navController = navController,
-                        healthConnectAvailability = healthConnectAvailability,
-                        healthConnectManager = healthConnectManager,
-                        drawerNavController = drawerNavController,
-                        drawerScope = drawerScope,
-                        scaffoldState = scaffoldState
-                    )
-                }
-
+                        }*/
+                    }
+                )
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                Navigation(
+                    navigationType = navigationType,
+                    navController = navController,
+                    healthConnectAvailability = healthConnectAvailability,
+                    healthConnectManager = healthConnectManager,
+                    drawerNavController = drawerNavController,
+                    drawerScope = drawerScope,
+                    scaffoldState = scaffoldState
+                )
             }
         }
     } else { //NavigationType.NAVIGATION_RAIL -> {
@@ -212,9 +216,9 @@ fun Navigation(
                 scaffoldState = scaffoldState
             )
         }
-        composable("friends") {
+        composable("profile") {
 
-            val context = LocalContext.current
+            /*val context = LocalContext.current
             val onAddFriend = {
                 val intent = Intent(context, SearchUserActivity::class.java)
                 context.startActivity(intent)
@@ -224,6 +228,15 @@ fun Navigation(
                     navController.navigate("detailsFriends/$uid")
                 },
                 onAddFriend = onAddFriend
+            )*/
+            val viewModel: ProfileScreenViewModel = viewModel(
+                factory = ProfileScreenViewModelFactory()
+            )
+            val currentUser by viewModel.currentUser
+            val profileLoading by viewModel.profileLoading
+            ProfileScreen(
+                currentUser = currentUser,
+                profileLoading = profileLoading
             )
         }
         composable("leaderBoard") {
@@ -255,20 +268,6 @@ fun BottomNavigationBar(
                 unselectedContentColor = MaterialTheme.colors.secondary,
                 icon = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        if (item.badgeCount > 0) {
-                            BadgedBox(
-                                badge = { Badge { Text(text = item.badgeCount.toString()) } }
-                            ) {
-                                Icon(
-                                    imageVector = item.icon,
-                                    contentDescription = item.name,
-                                    modifier = Modifier
-                                        .height(30.dp)
-                                        .width(30.dp)
-                                        .testTag("bottomNav + $index")
-                                )
-                            }
-                        } else {
                             Icon(
                                 imageVector = item.icon,
                                 contentDescription = item.name,
@@ -277,7 +276,7 @@ fun BottomNavigationBar(
                                     .width(30.dp)
                                     .testTag("bottomNav")
                             )
-                        }
+
                         if (selected) {
                             Text(
                                 text = item.name,
@@ -323,19 +322,6 @@ fun NavigationRailBar(
                     unselectedContentColor = MaterialTheme.colors.secondary,
                     icon = {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            if (item.badgeCount > 0) {
-                                BadgedBox(
-                                    badge = { Badge { Text(text = item.badgeCount.toString()) } }
-                                ) {
-                                    Icon(
-                                        imageVector = item.icon,
-                                        contentDescription = item.name,
-                                        modifier = Modifier
-                                            .height(30.dp)
-                                            .width(30.dp)
-                                    )
-                                }
-                            } else {
                                 Icon(
                                     imageVector = item.icon,
                                     contentDescription = item.name,
@@ -343,7 +329,7 @@ fun NavigationRailBar(
                                         .height(30.dp)
                                         .width(30.dp)
                                 )
-                            }
+
                             if (selected) {
                                 Text(
                                     text = item.name,

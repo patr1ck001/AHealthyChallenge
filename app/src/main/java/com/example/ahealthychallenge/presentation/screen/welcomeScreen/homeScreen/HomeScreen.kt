@@ -1,5 +1,6 @@
 package com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScaffoldState
@@ -20,12 +22,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.ahealthychallenge.R
+import com.example.ahealthychallenge.presentation.FriendsActivity
 import com.example.ahealthychallenge.presentation.navigation.Screen
 import com.example.ahealthychallenge.presentation.theme.HealthConnectBlue
 import com.example.ahealthychallenge.presentation.theme.HealthConnectGreen
@@ -69,6 +73,7 @@ fun CompactHomeScreen(
     drawerScope: CoroutineScope,
     scaffoldState: ScaffoldState
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -132,7 +137,7 @@ fun CompactHomeScreen(
                     }
                 }
             }
-            Row(
+            /*Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.2f)
@@ -177,6 +182,15 @@ fun CompactHomeScreen(
                         )
                     }
                 }
+            }*/
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    val intent = Intent(context, FriendsActivity::class.java)
+                    context.startActivity(intent)
+                }
+            ) {
+                Text(text = "Friends") // TODO: add this on the drawer
             }
         }
     }
@@ -189,6 +203,7 @@ fun ExpendedAndMediumHomeScreen(
     drawerScope: CoroutineScope,
     scaffoldState: ScaffoldState
 ) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -252,64 +267,6 @@ fun ExpendedAndMediumHomeScreen(
                     }
                 }
             }
-            Column(modifier = Modifier
-                .weight(0.2f)
-                .fillMaxHeight()) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 7.dp)
-                        .weight(1f)
-                        .clickable {
-                            drawerNavController.navigate(Screen.ExerciseSessions.route) {
-                                drawerNavController.graph.startDestinationRoute?.let { route ->
-                                    popUpTo(route) {
-                                        saveState = true
-                                    }
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                            drawerScope.launch {
-                                scaffoldState.drawerState.close()
-                            }
-                        },
-                    elevation = 10.dp,
-                    contentColor = MaterialTheme.colors.onPrimary,
-                    backgroundColor = HealthConnectBlue
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "1 st",
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                }
-                Spacer(modifier = Modifier.height(5.dp))
-                Card(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 7.dp)
-                        .weight(1f),
-                    elevation = 10.dp,
-                    contentColor = MaterialTheme.colors.onPrimary,
-                    backgroundColor = HealthConnectBlue
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        Text(
-                            text = "10 points",
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
         }
     }
 }
@@ -321,6 +278,7 @@ fun ExpendedHomeScreen(
     drawerScope: CoroutineScope,
     scaffoldState: ScaffoldState
 ) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxSize()

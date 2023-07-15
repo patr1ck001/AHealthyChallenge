@@ -137,7 +137,7 @@ fun CompactHomeScreen(
                     }
                 }
             }
-            /*Row(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.2f)
@@ -182,15 +182,6 @@ fun CompactHomeScreen(
                         )
                     }
                 }
-            }*/
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    val intent = Intent(context, FriendsActivity::class.java)
-                    context.startActivity(intent)
-                }
-            ) {
-                Text(text = "Friends") // TODO: add this on the drawer
             }
         }
     }

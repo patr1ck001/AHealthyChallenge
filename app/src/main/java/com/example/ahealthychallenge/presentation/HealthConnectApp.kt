@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
@@ -150,6 +151,21 @@ fun HealthConnectApp(
                                 Icon(
                                     imageVector = Icons.Rounded.Menu,
                                     stringResource(id = R.string.menu)
+                                )
+                            }
+                        },
+
+                        actions = {
+                            IconButton(onClick = {
+                                val intent = Intent(context, FriendsActivity::class.java)
+                                context.startActivity(intent)
+                            }
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_friends),
+                                    stringResource(id = R.string.add_friend),
+                                    modifier = Modifier.height(45.dp),
+                                    tint = Color.White
                                 )
                             }
                         }

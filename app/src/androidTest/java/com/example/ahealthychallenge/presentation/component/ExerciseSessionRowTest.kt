@@ -37,7 +37,7 @@ class ExerciseSessionRowTest {
                     "Running",
                     "0",
                     sourceAppName = "My Fitness app",
-                    sourceAppIcon = context.getDrawable(R.drawable.ic_launcher_foreground),
+                    sourceAppIcon = context.getDrawable(R.drawable.common_google_signin_btn_text_light),
                     distance = Length.meters(100.0)
                 )
             }
@@ -60,7 +60,7 @@ class ExerciseSessionRowTest {
                     "Running",
                     "0",
                     sourceAppName = "My Fitness app",
-                    sourceAppIcon = context.getDrawable(R.drawable.ic_launcher_foreground),
+                    sourceAppIcon = context.getDrawable(R.drawable.common_google_signin_btn_text_light),
                     distance = Length.meters(100.0)
                 )
             }
@@ -83,7 +83,7 @@ class ExerciseSessionRowTest {
                     "Running",
                     "0",
                     sourceAppName = "My Fitness app",
-                    sourceAppIcon = context.getDrawable(R.drawable.ic_launcher_foreground),
+                    sourceAppIcon = context.getDrawable(R.drawable.common_google_signin_btn_text_light),
                     distance = Length.meters(100.0)
                 )
             }
@@ -106,7 +106,7 @@ class ExerciseSessionRowTest {
                     "Running",
                     "0",
                     sourceAppName = "My Fitness app",
-                    sourceAppIcon = context.getDrawable(R.drawable.ic_launcher_foreground),
+                    sourceAppIcon = context.getDrawable(R.drawable.common_google_signin_btn_text_light),
                     distance = Length.meters(100.0)
                 )
             }
@@ -129,7 +129,7 @@ class ExerciseSessionRowTest {
                     "Running",
                     "0",
                     sourceAppName = "My Fitness app",
-                    sourceAppIcon = context.getDrawable(R.drawable.ic_launcher_foreground),
+                    sourceAppIcon = context.getDrawable(R.drawable.common_google_signin_btn_text_light),
                     distance = Length.meters(100.0)
                 )
             }

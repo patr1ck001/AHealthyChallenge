@@ -235,6 +235,7 @@ fun Navigation(
             val currentUser by viewModel.currentUser
             val profileLoading by viewModel.profileLoading
             ProfileScreen(
+                navigationType = navigationType,
                 currentUser = currentUser,
                 profileLoading = profileLoading
             )

@@ -198,7 +198,7 @@ fun ExerciseSessionScreen(
                                         .padding(end = 20.dp)
                                 )
                             }
-                            items(dailySessionsList.exerciseSessions) { session ->
+                            items(dailySessionsList.exerciseSessions.reversed()) { session ->
                                 //Log.d(TAG, "${session.startTime}: ${session.sessionData.totalActiveTime?.formatTime()}")
                                 val appInfo = session.sourceAppInfo
                                 ExerciseSessionRow(exerciseType = session.exerciseType,

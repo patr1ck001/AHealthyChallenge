@@ -49,7 +49,6 @@ class SearchUserActivity : ComponentActivity() {
         requestBtn = binding.requestBtn
         refuseBtn = binding.refuseBtn
 
-        searchText.requestFocus()
 
         firebase.child(user!!).get().addOnSuccessListener { it ->
             if (it.exists()) {

@@ -162,4 +162,5 @@
     <string name="points_running">Points running</string>
     <string name="points_biking">Points biking</string>
     <string name="points_working_out">Points working out</string>
-    </resources>
+    <string name="insert_username">Insert username</string>
+</resources>

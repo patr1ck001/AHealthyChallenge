@@ -7,22 +7,21 @@
     tools:context="com.example.ahealthychallenge.presentation.SearchUserActivity">
 
     <RelativeLayout
+        android:id="@+id/tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/health_connect_blue"
-        android:padding = "10dp"
-        android:id="@+id/tool_bar" >
+        android:background="?attr/colorPrimary"
+        android:padding="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search User"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_marginStart="10dp"
             android:layout_centerVertical="true"
-        />
+            android:layout_marginStart="10dp"
+            android:text="@string/search_user"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
@@ -31,32 +30,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tool_bar"
-        android:layout_margin = "10dp">
-
+        android:layout_margin="10dp">
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/search"
+            style="@style/OutlinedRoundedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:layout_marginVertical="20dp"
             android:hint="@string/insert_username"
-
-
-            app:layout_constraintTop_toBottomOf="parent"
+            android:textColorHint="?attr/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            style="@style/OutlinedRoundedBox">
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintVertical_chainStyle="packed">
 
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/search_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                />
+                android:inputType="textEmailAddress" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -67,10 +63,11 @@
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_margin = "10dp"
+            android:layout_margin="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/search_user"
             android:padding="4dp"
-            android:src="@drawable/ic_baseline_search_24"/>
+            android:src="@drawable/ic_baseline_search_24" />
 
     </RelativeLayout>
 
@@ -88,55 +85,52 @@
             android:id="@+id/image"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:visibility="gone"
+            app:civ_border_color="#FF000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/name_surname"
             app:layout_constraintHorizontal_bias="0.5"
-            app:civ_border_color="#FF000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_profile"
-            android:visibility="gone"
-            />
+            tools:src="@drawable/ic_profile" />
 
         <TextView
             android:id="@+id/name_surname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/image"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:visibility="gone"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/name_surname"
-            android:layout_toRightOf="@+id/image"
-            android:layout_marginStart="10dp"
-            android:text="Send Request"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            android:backgroundTint="@color/health_connect_blue"
-            android:layout_marginTop = "10dp"
-            android:id = "@+id/request_btn"
-            />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/name_surname"
-            android:layout_toRightOf="@+id/request_btn"
-            android:layout_marginStart="10dp"
-            android:text="Refuse"
+            android:layout_toEndOf="@+id/image"
             android:textColor="@color/black"
-            android:visibility="gone"
-            android:backgroundTint="@color/white"
-            android:layout_marginTop = "10dp"
-            android:id = "@+id/refuse_btn"
-            />
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/request_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/name_surname"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/image"
+            android:backgroundTint="?attr/colorPrimary"
+            android:text="@string/send_request"
+            android:textColor="?attr/colorOnPrimary"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/refuse_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/name_surname"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/request_btn"
+            android:backgroundTint="?attr/colorOnPrimary"
+            android:text="@string/refuse"
+            android:textColor="@color/black"
+            android:visibility="gone" />
 
 
     </RelativeLayout>

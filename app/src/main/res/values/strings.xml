@@ -67,7 +67,7 @@
     <string name="not_available_abbrev">N/A</string>
 
     <!-- Exercise Session screen -->
-<string name="insert_exercise_session">Insert session</string>
+    <string name="insert_exercise_session">Insert session</string>
     <string name="refresh">Refresh</string>
     <string name="add_friend">Add friend</string>
     <string name="no_title">[No title]</string>
@@ -163,4 +163,27 @@
     <string name="points_biking">Points biking</string>
     <string name="points_working_out">Points working out</string>
     <string name="insert_username">Insert username</string>
+    <string name="create">Create</string>
+    <string name="account">Account</string>
+    <string name="email">email</string>
+    <string name="password">Password</string>
+    <string name="create_account">create account</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="friends">Friends</string>
+    <string name="your_friends">Your friends</string>
+    <string name="reset">Reset</string>
+    <string name="search_user">Search user</string>
+    <string name="send_request">Send request</string>
+    <string name="refuse">Refuse</string>
+    <string name="or">or</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="sign_in">sign in</string>
+    <string name="save">Save</string>
+    <string name="alessandra_anna_canestrale">Alessandra Anna Canestrale</string>
+    <string name="accept">Accept</string>
+    <string name="alessandra_canestrale">Alessandra Canestrale</string>
+    <string name="al_fio">al_fio</string>
+    <string name="delete">Delete</string>
+    <string name="last_name">Last Name</string>
 </resources>

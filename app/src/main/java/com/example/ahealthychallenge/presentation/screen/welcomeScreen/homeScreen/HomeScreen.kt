@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.presentation.FriendsActivity
@@ -156,7 +157,12 @@ fun CompactHomeScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "1 st",
+                            text = "Position",
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "1",
+                            fontSize = 30.sp,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -177,7 +183,12 @@ fun CompactHomeScreen(
                         verticalArrangement = Arrangement.Center,
                     ) {
                         Text(
-                            text = "10 points",
+                            text = "Points this month",
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "10",
+                            fontSize = 30.sp,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -290,7 +301,12 @@ fun ExpendedAndMediumHomeScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "1 st",
+                        text = "Position",
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "1",
+                        fontSize = 30.sp,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -311,7 +327,12 @@ fun ExpendedAndMediumHomeScreen(
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Text(
-                        text = "10 points",
+                        text = "Points this month",
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "10",
+                        fontSize = 30.sp,
                         textAlign = TextAlign.Center
                     )
                 }

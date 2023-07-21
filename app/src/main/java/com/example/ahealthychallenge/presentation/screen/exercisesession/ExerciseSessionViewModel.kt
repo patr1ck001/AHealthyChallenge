@@ -38,6 +38,7 @@ import com.example.ahealthychallenge.data.serializables.DailySessionsListSeriali
 import com.example.ahealthychallenge.data.serializables.InstantSerializable
 import com.example.ahealthychallenge.data.serializables.LineDataSerializable
 import com.example.ahealthychallenge.data.serializables.SerializableFactory
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
@@ -57,6 +58,8 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
     private val healthConnectCompatibleApps = healthConnectManager.healthConnectCompatibleApps
     private lateinit var database: DatabaseReference
     val TAG = "ExerciseSessionViewModel"
+
+    var uid = FirebaseAuth.getInstance().currentUser?.uid
 
     // TODO: manage permissions that we need
     val permissions = setOf(
@@ -316,7 +319,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
         // set the database when data already exist
         database.child("exerciseSessions")
-            .child("userID")
+            .child(uid!!)
             .child("keys")
             .get().addOnCompleteListener {
                 loading.value = true
@@ -341,7 +344,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
                         //retrieve the session with the corresponding key
                         val ref = database.child("exerciseSessions")
-                            .child("userID")
+                            .child(uid!!)
                             .child("exerciseSessions")
 
                         if (isTodaySessionPushed) {
@@ -378,7 +381,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                                     )
                                 dbKeys.add(newDailyExerciseSessionKeySerializable)
                                 database.child("exerciseSessions")
-                                    .child("userID")
+                                    .child(uid!!)
                                     .child("keys")
                                     .setValue(dbKeys)
 
@@ -419,7 +422,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             }
         }
         database.child("exerciseSessions")
-            .child("userID")
+            .child(uid!!)
             .child("exerciseSessions")
             .addValueEventListener(sessionListener)
         val sevenDays = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(31)
@@ -481,7 +484,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         val database = Firebase.database.reference
 
         val refer = database.child("pointStats")
-            .child("userID")
+            .child(uid!!)
             .child("pieChart")
             .child("lastInstant")
 
@@ -498,7 +501,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
     fun writeLastInstantInDb(instantSerializable: InstantSerializable) {
         val database = Firebase.database.reference
         database.child("pointStats")
-            .child("userID")
+            .child(uid!!)
             .child("pieChart")
             .child("lastInstant")
             .setValue(instantSerializable)
@@ -507,7 +510,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
     fun writeCurveLineDataOnTheDb(newPoints: Int) {
         database = Firebase.database.reference
         val refer = database.child("pointStats")
-            .child("userID")
+            .child(uid!!)
             .child("curveLine")
             .child("curveLineData")
 
@@ -544,7 +547,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         database = Firebase.database.reference
         val refer = database
             .child("pointStats")
-            .child("userID")
+            .child(uid!!)
             .child(pathString)
 
         Log.d("lineData", "1")
@@ -605,7 +608,7 @@ fun getPoints(exerciseSessionData: ExerciseSessionData): Int {
 fun writePieDataOnTheDb(exerciseType: Int, newPoints: Int) {
     val database = Firebase.database.reference
     val ref = database.child("pointStats")
-        .child("userID")
+        .child(FirebaseAuth.getInstance().currentUser?.uid!!)
         .child("pieChart")
         .child("pieChartData")
 

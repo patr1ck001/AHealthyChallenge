@@ -40,9 +40,9 @@ class ProfileScreenViewModel() : ViewModel() {
         val localFile = File.createTempFile("tempImage", "jpeg")
         dbref.child(username).get().addOnSuccessListener { user ->
             if (user.exists()) {
-                lateinit var bitmap: Bitmap
+                //lateinit var bitmap: Bitmap
                 storage.child(username).getFile(localFile).addOnSuccessListener {
-                    bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                   val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
                     val myUser = Friend(
                         firstName = user.child("firstName").value.toString(),
                         lastName = user.child("lastName").value.toString(),

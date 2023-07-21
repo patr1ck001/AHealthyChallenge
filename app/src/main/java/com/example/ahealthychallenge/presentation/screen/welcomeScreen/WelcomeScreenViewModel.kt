@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.data.serializables.LineDataSerializable
 import com.example.ahealthychallenge.data.serializables.SerializableFactory
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
@@ -18,6 +19,7 @@ class WelcomeScreenViewModel(private val healthConnectManager: HealthConnectMana
     ViewModel() {
     private lateinit var database: DatabaseReference
     var curveLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
+    val uid = FirebaseAuth.getInstance().currentUser?.uid
 
     init {
         readCurveLineData()
@@ -26,7 +28,7 @@ class WelcomeScreenViewModel(private val healthConnectManager: HealthConnectMana
     private fun readCurveLineData() {
         database = Firebase.database.reference
         val refer = database.child("pointStats")
-            .child("userID")
+            .child(uid!!)
             .child("curveLine")
             .child("curveLineData")
 

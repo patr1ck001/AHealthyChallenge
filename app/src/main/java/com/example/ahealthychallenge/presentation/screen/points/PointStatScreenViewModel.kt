@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.data.serializables.LineDataSerializable
 import com.example.ahealthychallenge.data.serializables.SerializableFactory
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -32,6 +33,8 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
     var bikingLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
     var workoutLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
 
+    var uid = FirebaseAuth.getInstance().currentUser?.uid
+
     init {
         readPieChartData()
         readCurveLineData()
@@ -50,7 +53,7 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
         var workoutPoints: Int
 
         val ref = database.child("pointStats")
-            .child("userID")
+            .child(uid!!)
             .child("pieChart")
             .child("pieChartData")
         Log.d("map", "before refer")
@@ -77,7 +80,7 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
     private fun readCurveLineData() {
         database = Firebase.database.reference
         val refer = database.child("pointStats")
-            .child("userID")
+            .child(uid!!)
             .child("curveLine")
             .child("curveLineData")
 
@@ -121,7 +124,7 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
     private fun readLineData(pathName: String) {
         database = Firebase.database.reference
         val refer = database.child("pointStats")
-            .child("userID")
+            .child(uid!!)
             .child(pathName)
 
         Log.d("viewLine", "refer $refer")

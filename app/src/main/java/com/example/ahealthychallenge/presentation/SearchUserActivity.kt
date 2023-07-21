@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.*
 import androidx.activity.ComponentActivity
 import androidx.compose.material.AlertDialog
+import androidx.compose.ui.graphics.Color
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.databinding.ActivitySearchUserBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -130,7 +131,7 @@ class SearchUserActivity : ComponentActivity() {
                     currentState = "request_sent"
                 }
                 else if (requestType == "friend"){
-                    requestBtn.text = "Friend"
+                    requestBtn.text = "Delete"
                     currentState = "friend"
                 }
                 else if (requestType == "received"){
@@ -169,7 +170,7 @@ class SearchUserActivity : ComponentActivity() {
     private fun acceptRequest() {
         firebaseRef.child(currentUsername).child(friendUsername).child("request_type").setValue("friend").addOnSuccessListener {
             firebaseRef.child(friendUsername).child(currentUsername).child("request_type").setValue("friend").addOnSuccessListener {
-                requestBtn.text = "Friend"
+                requestBtn.text = "Delete"
                 refuseBtn.visibility = View.GONE
                 currentState = "friend"
             }

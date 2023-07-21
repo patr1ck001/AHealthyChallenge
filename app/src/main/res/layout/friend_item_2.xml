@@ -16,6 +16,7 @@
             android:id="@+id/img2"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_marginTop="10dp"
             app:civ_border_color="#FF000000"
             app:layout_constraintEnd_toStartOf="@+id/nam_surnam2"
             app:layout_constraintHorizontal_bias="0.5"
@@ -51,7 +52,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/username2"
+            android:layout_below="@id/img2"
             android:layout_marginTop="0dp"
             android:text="@string/delete"
             android:textColor="@color/red" />

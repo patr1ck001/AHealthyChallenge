@@ -40,10 +40,8 @@ class FriendAdapter(private val friendList: ArrayList<Friend>): RecyclerView.Ada
         holder.acceptButton.setOnClickListener {
             firebaseRef.child(currentitem.currentUsername!!).child(holder.friendUsername.text.toString()).child("request_type").setValue("friend").addOnSuccessListener {
                 firebaseRef.child(holder.friendUsername.text.toString()).child(currentitem.currentUsername!!).child("request_type").setValue("friend").addOnSuccessListener {
-                    holder.name.visibility = View.GONE
-                    holder.image.visibility = View.GONE
                     holder.refuseButton.visibility = View.GONE
-                    holder.acceptButton.visibility = View.GONE
+                    holder.acceptButton.text = "Friend"
                 }
             }
         }

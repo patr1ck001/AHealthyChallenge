@@ -101,15 +101,18 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/image"
+            android:visibility="gone"
+            android:text = "Alessandra Fiore Lucia Anna "
             android:textColor="@color/black"
             android:textSize="25sp"
             android:textStyle="bold"
-            android:visibility="gone" />
+            />
 
         <Button
             android:id="@+id/request_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_below="@+id/name_surname"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
@@ -117,10 +120,11 @@
             android:backgroundTint="?attr/colorPrimary"
             android:text="@string/send_request"
             android:textColor="?attr/colorOnPrimary"
-            android:visibility="gone" />
+             />
 
         <Button
             android:id="@+id/refuse_btn"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name_surname"
@@ -130,7 +134,7 @@
             android:backgroundTint="?attr/colorOnPrimary"
             android:text="@string/refuse"
             android:textColor="@color/black"
-            android:visibility="gone" />
+             />
 
 
     </RelativeLayout>

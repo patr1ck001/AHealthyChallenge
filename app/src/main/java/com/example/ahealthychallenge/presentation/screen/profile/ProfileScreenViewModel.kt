@@ -16,7 +16,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
-
+// TODO: when the user does not update the image there is nothing at
 class ProfileScreenViewModel() : ViewModel() {
     private var dbref: DatabaseReference
     private lateinit var username: String

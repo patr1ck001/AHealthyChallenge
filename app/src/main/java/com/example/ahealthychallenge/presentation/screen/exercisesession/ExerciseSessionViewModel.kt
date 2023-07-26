@@ -248,6 +248,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
         val dailySessionsSummary = DailySessionsSummary(today, dailyDuration, dailyPoints)
         val todaySessionsList = DailySessionsList(dailySessionsSummary, sessions)
 
+        Log.d("exooo", "session $sessionsList")
 
         val todaySessionsListSerializable =
             SerializableFactory.getDailySessionsListSerializable(todaySessionsList)
@@ -582,7 +583,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             .setValue(instantSerializable)
     }
 
-    fun writeCurveLineDataOnTheDb(newPoints: Int) {
+    private fun writeCurveLineDataOnTheDb(newPoints: Int) {
         database = Firebase.database.reference
         val refer = database.child("pointStats")
             .child(uid!!)
@@ -630,7 +631,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
     }
 
-    fun writeExerciseLineDataOnTheDb(newPoints: Int, pathString: String) {
+    private fun writeExerciseLineDataOnTheDb(newPoints: Int, pathString: String) {
         database = Firebase.database.reference
         val refer = database
             .child("pointStats")

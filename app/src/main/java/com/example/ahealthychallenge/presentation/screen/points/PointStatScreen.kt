@@ -113,16 +113,25 @@ fun CompactPointStatScreen(
                     }
                 )
             }
-            item(key = 2) {
-                Text(
-                    text = stringResource(R.string.points_per_exercise_type),
-                    fontSize = 16.sp,
+        } else {
+            item(key = 1) {
+                PieChart(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 32.dp),
-                    textAlign = TextAlign.Center
+                        .fillMaxSize(),
+                    pieData = listOf(PieData(1F)),
+                    config = PieConfig(isDonut = true, expandDonutOnClick = true),
                 )
             }
+        }
+        item(key = 2) {
+            Text(
+                text = stringResource(R.string.points_per_exercise_type),
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 32.dp),
+                textAlign = TextAlign.Center
+            )
         }
 
         if (curveLineData.isNotEmpty()) {
@@ -144,18 +153,37 @@ fun CompactPointStatScreen(
                     )
                 )
             }
-
-            item(key = 4) {
-                Text(
-                    text = stringResource(R.string.points_this_month),
-                    fontSize = 16.sp,
+        } else {
+            item(key = 3) {
+                LineChart(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 32.dp),
-                    textAlign = TextAlign.Center
+                        .height(300.dp),
+                    color = HealthConnectBlue,
+                    lineData = listOf(LineData(0, 0F)),
+                    axisConfig = AxisConfig(
+                        showAxis = true,
+                        showUnitLabels = true,
+                        isAxisDashed = true,
+                        showXLabels = true,
+                        textColor = HealthConnectBlue,
+                        xAxisColor = HealthConnectBlue,
+                        yAxisColor = HealthConnectGreen
+                    )
                 )
             }
         }
+        item(key = 4) {
+            Text(
+                text = stringResource(R.string.points_this_month),
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 32.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+
         /*walking*/
         if (walkingLineData.isNotEmpty()) {
             item(key = 5) {
@@ -176,7 +204,6 @@ fun CompactPointStatScreen(
                     )
                 )
             }
-
             item(key = 6) {
                 Text(
                     text = stringResource(R.string.points_walking),
@@ -209,7 +236,6 @@ fun CompactPointStatScreen(
                     )
                 )
             }
-
             item(key = 8) {
                 Text(
                     text = stringResource(R.string.points_running),
@@ -243,7 +269,6 @@ fun CompactPointStatScreen(
                     )
                 )
             }
-
             item(key = 10) {
                 Text(
                     text = stringResource(R.string.points_biking),
@@ -276,7 +301,6 @@ fun CompactPointStatScreen(
                     )
                 )
             }
-
             item(key = 12) {
                 Text(
                     text = stringResource(R.string.points_working_out),
@@ -308,7 +332,7 @@ fun ExpendedPointStatScreen(
         contentPadding = PaddingValues(30.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(50.dp),
-    ){
+    ) {
         if (pieData.isNotEmpty()) {
             item {
                 Column {
@@ -334,6 +358,26 @@ fun ExpendedPointStatScreen(
                 }
             }
 
+        } else {
+            item {
+                Column {
+                    PieChart(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        pieData = listOf(PieData(1F)),
+                        config = PieConfig(isDonut = true, expandDonutOnClick = true),
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Points per exercise type",
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
         }
 
         if (curveLineData.isNotEmpty()) {
@@ -345,6 +389,36 @@ fun ExpendedPointStatScreen(
                             .height(300.dp),
                         color = HealthConnectBlue,
                         lineData = curveLineData,
+                        axisConfig = AxisConfig(
+                            showAxis = true,
+                            showUnitLabels = true,
+                            isAxisDashed = true,
+                            showXLabels = true,
+                            textColor = HealthConnectBlue,
+                            xAxisColor = HealthConnectBlue,
+                            yAxisColor = HealthConnectGreen
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Points per exercise type",
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        } else {
+            item {
+                Column() {
+                    LineChart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        color = HealthConnectBlue,
+                        lineData = listOf(LineData(0, 0F)),
                         axisConfig = AxisConfig(
                             showAxis = true,
                             showUnitLabels = true,

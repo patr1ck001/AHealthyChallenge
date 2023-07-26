@@ -244,10 +244,9 @@ fun getIcon(packageName: String?, context: Context): Drawable? {
         "com.sec.android.app.shealth" -> AppCompatResources.getDrawable(
             context, R.drawable.ic_samsung_health_logo
         )
-        "com.google.android.apps.fitness" -> AppCompatResources.getDrawable(
+        else -> AppCompatResources.getDrawable(
             context, R.drawable.ic_google_fit_logo
         )
-        else -> AppCompatResources.getDrawable(context, R.drawable.ic_samsung_health_logo)
     }
 }
 

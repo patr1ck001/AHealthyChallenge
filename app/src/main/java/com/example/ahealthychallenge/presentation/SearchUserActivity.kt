@@ -30,6 +30,7 @@ class SearchUserActivity : ComponentActivity() {
     private lateinit var currentUsername: String
     private lateinit var friendUsername: String
     private lateinit var firebaseRef: DatabaseReference
+    private lateinit var progressBar: ProgressBar
     private var currentState = "not_friends"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +44,7 @@ class SearchUserActivity : ComponentActivity() {
         val localfile = File.createTempFile("tempImage", "jpeg")
         val user = FirebaseAuth.getInstance().currentUser?.uid
 
+        progressBar = binding.progressBar2
         searchText = binding.searchText
         searchBtn = binding.searchBtn
         image = binding.image
@@ -50,6 +52,8 @@ class SearchUserActivity : ComponentActivity() {
         requestBtn = binding.requestBtn
         refuseBtn = binding.refuseBtn
 
+
+        progressBar.visibility = View.GONE
 
         firebase.child(user!!).get().addOnSuccessListener { it ->
             if (it.exists()) {
@@ -81,6 +85,7 @@ class SearchUserActivity : ComponentActivity() {
             name.visibility = View.GONE
             image.visibility = View.GONE
             requestBtn.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
 
             val searchTerm = searchText.text.toString()
             if(searchTerm.isEmpty()){
@@ -111,6 +116,8 @@ class SearchUserActivity : ComponentActivity() {
                             maintenanceOfButton()
                             requestBtn.visibility = View.VISIBLE
                         }
+
+                        progressBar.visibility = View.GONE
 
                     }else{
                         Toast.makeText(this, "username not founded !", Toast.LENGTH_LONG).show()

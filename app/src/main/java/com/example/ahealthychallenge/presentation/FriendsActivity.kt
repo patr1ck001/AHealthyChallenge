@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +29,7 @@ class FriendsActivity : ComponentActivity() {
     private lateinit var friendArrayList2: ArrayList<Friend>
     private var username: String = ""
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var progressBar: ProgressBar
 
 
 
@@ -36,6 +39,7 @@ class FriendsActivity : ComponentActivity() {
         setContentView(binding.root)
 
         swipeRefreshLayout = binding.refresh
+        progressBar = binding.progressBar
 
         friendRecyclerView = binding.friendList
         friendRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -59,6 +63,7 @@ class FriendsActivity : ComponentActivity() {
 
 
         swipeRefreshLayout.setOnRefreshListener {
+            progressBar.visibility = View.GONE
             refreshList()
             swipeRefreshLayout.isRefreshing = false
         }
@@ -75,6 +80,7 @@ class FriendsActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        progressBar.visibility = View.VISIBLE
         refreshList()
     }
 
@@ -148,6 +154,7 @@ class FriendsActivity : ComponentActivity() {
                         }
                     }
                 }
+                progressBar.visibility = View.GONE
             }
         }
     }

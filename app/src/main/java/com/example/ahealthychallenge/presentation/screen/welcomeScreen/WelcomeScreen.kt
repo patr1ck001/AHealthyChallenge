@@ -208,7 +208,9 @@ fun Navigation(
                 )
             )
             val curveLineData by viewModel.lineData
+            val homeScreenLoading by viewModel.homeScreenLoading
             HomeScreen(
+                homeScreenLoading = homeScreenLoading,
                 navigationType = navigationType,
                 lineData = curveLineData,
                 drawerNavController = drawerNavController,

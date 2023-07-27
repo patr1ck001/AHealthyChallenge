@@ -23,9 +23,11 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
     ViewModel() {
     private lateinit var database: DatabaseReference
     var lineData: MutableState<List<LineData>> = mutableStateOf(listOf())
+    var homeScreenLoading: MutableState<Boolean> = mutableStateOf(true)
     var uid = FirebaseAuth.getInstance().currentUser?.uid
 
     init {
+        homeScreenLoading.value = true
         readLineData()
     }
 
@@ -67,6 +69,7 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
                 }
                 Log.d("curve", "deserialized2: $lineDataList")
                 lineData.value = lineDataList
+                homeScreenLoading.value = false
             }
         }
     }

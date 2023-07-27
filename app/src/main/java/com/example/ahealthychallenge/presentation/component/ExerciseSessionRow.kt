@@ -67,6 +67,7 @@ fun ExerciseSessionRow(
         ) {
                 Icon(
                     painter = painterResource(id = getIconId(exerciseType)),
+                    modifier = Modifier.size(size = 40.dp),
                     contentDescription = null,
                     tint = MaterialTheme.colors.primary
                 )

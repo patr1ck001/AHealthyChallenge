@@ -42,6 +42,7 @@ import com.example.ahealthychallenge.presentation.component.CircularProgressBar
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.CompactHomeScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.ExpendedAndMediumHomeScreen
 import com.example.ahealthychallenge.presentation.theme.HealthConnectBlue
+import com.example.ahealthychallenge.presentation.theme.HealthConnectGreen
 import com.example.ahealthychallenge.presentation.utils.FirebaseUtils
 import com.example.ahealthychallenge.presentation.utils.NavigationType
 
@@ -84,14 +85,25 @@ fun CompactProfileScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    currentUser.bitmap?.let { bm ->
-                        Image(
-                            bitmap = bm.asImageBitmap(),
-                            contentDescription = "userImage",
+                    if (currentUser.bitmap != null) {
+                        currentUser.bitmap?.let { bm ->
+                            Image(
+                                bitmap = bm.asImageBitmap(),
+                                contentDescription = "userImage",
+                                modifier = Modifier
+                                    .size(150.dp) // TODO: ADAPTABLE LAYOUT
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_profile_circle),
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.primary,
                             modifier = Modifier
-                                .size(150.dp) // TODO: ADAPTABLE LAYOUT
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
+                                .size(150.dp)
+                                .padding(8.dp)
                         )
                     }
                 }
@@ -311,17 +323,27 @@ fun ExpendedAndMediumProfileScreen(currentUser: Friend, profileLoading: Boolean)
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                currentUser.bitmap?.let { bm ->
-                    Image(
-                        bitmap = bm.asImageBitmap(),
-                        contentDescription = "userImage",
+                if (currentUser.bitmap != null) {
+                    currentUser.bitmap?.let { bm ->
+                        Image(
+                            bitmap = bm.asImageBitmap(),
+                            contentDescription = "userImage",
+                            modifier = Modifier
+                                .size(150.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_profile_circle),
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.primary,
                         modifier = Modifier
                             .size(150.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
+                            .padding(8.dp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = "${currentUser.username}",

@@ -31,7 +31,7 @@ class FriendAdapter(private val friendList: ArrayList<Friend>): RecyclerView.Ada
         holder.name.text = currentitem.firstName+" "+currentitem.lastName
         holder.friendUsername.text = currentitem.username
         if(currentitem.bitmap == null){
-            holder.image.setImageResource(R.drawable.ic_profile)
+            holder.image.setImageResource(R.drawable.ic_profile_circle)
         }
         else{
             holder.image.setImageBitmap(currentitem.bitmap)

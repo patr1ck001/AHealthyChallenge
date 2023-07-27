@@ -98,7 +98,7 @@ class SearchUserActivity : ComponentActivity() {
                         storage.child(searchTerm).getFile(localfile).addOnSuccessListener {
                             val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
                             if(bitmap == null){
-                                image.setImageResource(R.drawable.ic_profile)
+                                image.setImageResource(R.drawable.ic_profile_circle)
                             }else{
                                 image.setImageBitmap(bitmap)
                             }

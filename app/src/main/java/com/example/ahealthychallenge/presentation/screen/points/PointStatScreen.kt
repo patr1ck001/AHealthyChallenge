@@ -103,7 +103,7 @@ fun CompactPointStatScreen(
     workoutLineData: List<LineData>
 ) {
     val isActivityDisplayed = remember { mutableStateOf(false) }
-    var valueDisplayed = remember { mutableFloatStateOf(0F) }
+    val valueDisplayed = remember { mutableFloatStateOf(0F) }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -116,13 +116,9 @@ fun CompactPointStatScreen(
                         .fillMaxSize(),
                     pieData = pieData,
                     config = PieConfig(isDonut = true, expandDonutOnClick = true),
-                    onSectionClicked = { percent, value ->
+                    onSectionClicked = { _, value ->
                         isActivityDisplayed.value = true
                         valueDisplayed.floatValue = value
-                        //Log.d("walking", "value displayed: ${valueDisplayed.value}")
-                        //Log.d("walking", "value: $value")
-                        //Log.d("walking", "value in the map: ${pieDataMap["workout"]}")
-                        //Log.d("walking", "percent: $percent")
                     }
                 )
             }
@@ -407,7 +403,8 @@ fun ExpendedPointStatScreen(
     bikingLineData: List<LineData>,
     workoutLineData: List<LineData>
 ) {
-
+    val isActivityDisplayed = remember { mutableStateOf(false) }
+    val valueDisplayed = remember { mutableFloatStateOf(0F) }
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(30.dp),
@@ -422,11 +419,71 @@ fun ExpendedPointStatScreen(
                             .fillMaxSize(),
                         pieData = pieData,
                         config = PieConfig(isDonut = true, expandDonutOnClick = true),
-                        onSectionClicked = { percent, value ->
-                            Log.d("point", "value: $value")
-                            Log.d("point", "percent: $percent")
+                        onSectionClicked = { _, value ->
+                            isActivityDisplayed.value = true
+                            valueDisplayed.floatValue = value
                         }
                     )
+                    if (pieDataMap["walking"] != null && isActivityDisplayed.value) {
+                        if (pieDataMap["walking"]!!.toFloat() == valueDisplayed.floatValue) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Walking",
+                                    textAlign = TextAlign.Center,
+                                    color = HealthConnectBlue
+                                )
+                            }
+
+                        }
+                    }
+
+
+                    if (pieDataMap["running"] != null && isActivityDisplayed.value) {
+                        if (pieDataMap["running"]!!.toFloat() == valueDisplayed.floatValue) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Running",
+                                    textAlign = TextAlign.Center,
+                                    color = HealthConnectBlue
+                                )
+                            }
+                        }
+                    }
+
+                    if (pieDataMap["cycling"] != null && isActivityDisplayed.value) {
+                        if (pieDataMap["cycling"]!!.toFloat() == valueDisplayed.floatValue) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Biking",
+                                    textAlign = TextAlign.Center,
+                                    color = HealthConnectBlue
+                                )
+                            }
+                        }
+                    }
+                    if (pieDataMap["workout"] != null && isActivityDisplayed.value) {
+                        if (pieDataMap["workout"]!!.toFloat() == valueDisplayed.floatValue) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Workout",
+                                    textAlign = TextAlign.Center,
+                                    color = HealthConnectBlue
+                                )
+                            }
+                        }
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = "Points per exercise type",

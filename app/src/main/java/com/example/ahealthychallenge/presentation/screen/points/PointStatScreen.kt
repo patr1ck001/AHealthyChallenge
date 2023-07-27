@@ -1,10 +1,11 @@
 package com.example.ahealthychallenge.presentation.screen.points
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,13 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.PullRefreshState
-import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -40,11 +41,13 @@ import com.himanshoe.charty.pie.PieChart
 import com.himanshoe.charty.pie.config.PieConfig
 import com.himanshoe.charty.pie.config.PieData
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.math.roundToInt
 
 @Composable
 fun PointStatScreen(
     navigationType: NavigationType,
     pieData: List<PieData>,
+    pieDataMap: Map<String, Int>,
     curveLineData: List<LineData>,
     walkingLineData: List<LineData>,
     runningLineData: List<LineData>,
@@ -65,6 +68,7 @@ fun PointStatScreen(
     if (navigationType == NavigationType.BOTTOM_NAVIGATION) {
         CompactPointStatScreen(
             pieData = pieData,
+            pieDataMap = pieDataMap,
             curveLineData = curveLineData,
             walkingLineData = walkingLineData,
             runningLineData = runningLineData,
@@ -75,6 +79,7 @@ fun PointStatScreen(
         ExpendedPointStatScreen(
             navigationType = navigationType,
             pieData = pieData,
+            pieDataMap = pieDataMap,
             curveLineData = curveLineData,
             walkingLineData = walkingLineData,
             runningLineData = runningLineData,
@@ -86,15 +91,19 @@ fun PointStatScreen(
 
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun CompactPointStatScreen(
     pieData: List<PieData>,
+    pieDataMap: Map<String, Int>,
     curveLineData: List<LineData>,
     walkingLineData: List<LineData>,
     runningLineData: List<LineData>,
     bikingLineData: List<LineData>,
     workoutLineData: List<LineData>
 ) {
+    val isActivityDisplayed = remember { mutableStateOf(false) }
+    var valueDisplayed = remember { mutableFloatStateOf(0F) }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -108,8 +117,12 @@ fun CompactPointStatScreen(
                     pieData = pieData,
                     config = PieConfig(isDonut = true, expandDonutOnClick = true),
                     onSectionClicked = { percent, value ->
-                        Log.d("point", "value: $value")
-                        Log.d("point", "percent: $percent")
+                        isActivityDisplayed.value = true
+                        valueDisplayed.floatValue = value
+                        //Log.d("walking", "value displayed: ${valueDisplayed.value}")
+                        //Log.d("walking", "value: $value")
+                        //Log.d("walking", "value in the map: ${pieDataMap["workout"]}")
+                        //Log.d("walking", "percent: $percent")
                     }
                 )
             }
@@ -123,6 +136,73 @@ fun CompactPointStatScreen(
                 )
             }
         }
+
+        if (pieDataMap["walking"] != null && isActivityDisplayed.value) {
+            if (pieDataMap["walking"]!!.toFloat() == valueDisplayed.floatValue) {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Walking",
+                            textAlign = TextAlign.Center,
+                            color = HealthConnectBlue
+                        )
+                    }
+                }
+            }
+        }
+
+        if (pieDataMap["running"] != null && isActivityDisplayed.value) {
+            if (pieDataMap["running"]!!.toFloat() == valueDisplayed.floatValue) {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Running",
+                            textAlign = TextAlign.Center,
+                            color = HealthConnectBlue
+                        )
+                    }
+                }
+            }
+        }
+        if (pieDataMap["cycling"] != null && isActivityDisplayed.value) {
+            if (pieDataMap["cycling"]!!.toFloat() == valueDisplayed.floatValue) {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Biking",
+                            textAlign = TextAlign.Center,
+                            color = HealthConnectBlue
+                        )
+                    }
+                }
+            }
+        }
+        if (pieDataMap["workout"] != null && isActivityDisplayed.value) {
+            if (pieDataMap["workout"]!!.toFloat() == valueDisplayed.floatValue) {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Workout",
+                            textAlign = TextAlign.Center,
+                            color = HealthConnectBlue
+                        )
+                    }
+                }
+            }
+        }
+
         item(key = 2) {
             Text(
                 text = stringResource(R.string.points_per_exercise_type),
@@ -319,6 +399,7 @@ fun CompactPointStatScreen(
 @Composable
 fun ExpendedPointStatScreen(
     navigationType: NavigationType,
+    pieDataMap: Map<String, Int>,
     pieData: List<PieData>,
     curveLineData: List<LineData>,
     walkingLineData: List<LineData>,

@@ -24,7 +24,8 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
     private lateinit var database: DatabaseReference
     var pieData: MutableState<List<PieData>> = mutableStateOf(listOf())
         private set
-
+    var pieDataMap: MutableState<Map<String, Int>> = mutableStateOf(mapOf("walking" to 0))
+        private set
     var curveLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
     var walkingLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
     var runningLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
@@ -82,6 +83,7 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
                     PieData(workoutPoints.toFloat())
 
                 )
+                pieDataMap.value = dbMap
             }
         }
     }

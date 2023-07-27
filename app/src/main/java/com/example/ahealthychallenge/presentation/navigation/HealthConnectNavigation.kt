@@ -49,8 +49,6 @@ import com.example.ahealthychallenge.presentation.screen.privacypolicy.PrivacyPo
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionScreen
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionViewModel
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionViewModelFactory
-import com.example.ahealthychallenge.presentation.screen.welcomeScreen.WelcomeScreenViewModel
-import com.example.ahealthychallenge.presentation.screen.welcomeScreen.WelcomeScreenViewModelFactory
 import com.example.ahealthychallenge.presentation.utils.NavigationType
 import com.example.ahealthychallenge.showExceptionSnackbar
 import kotlinx.coroutines.CoroutineScope
@@ -159,6 +157,7 @@ fun HealthConnectNavigation(
             )
 
             val pieData by viewModel.pieData
+            val pieDataMap by viewModel.pieDataMap
             val curveLineData by viewModel.curveLineData
             val walkingLineData by viewModel.walkingLineData
             val runningLineData by viewModel.runningLineData
@@ -167,6 +166,7 @@ fun HealthConnectNavigation(
             PointStatScreen(
                 navigationType = navigationType,
                 pieData = pieData,
+                pieDataMap = pieDataMap,
                 curveLineData = curveLineData,
                 walkingLineData = walkingLineData,
                 runningLineData = runningLineData,

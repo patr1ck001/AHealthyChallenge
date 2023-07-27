@@ -69,7 +69,7 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
                 }
                 Log.d("curve", "deserialized2: $lineDataList")
                 lineData.value = lineDataList
-                homeScreenLoading.value = false
+                homeScreenLoading.value = false //TODO: test this for empty point stat at home screen
             }
         }
     }

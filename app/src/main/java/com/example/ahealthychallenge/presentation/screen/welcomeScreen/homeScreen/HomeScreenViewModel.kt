@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.data.serializables.LineDataSerializable
 import com.example.ahealthychallenge.data.serializables.SerializableFactory
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -22,6 +23,7 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
     ViewModel() {
     private lateinit var database: DatabaseReference
     var lineData: MutableState<List<LineData>> = mutableStateOf(listOf())
+    var uid = FirebaseAuth.getInstance().currentUser?.uid
 
     init {
         readLineData()
@@ -30,7 +32,7 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
     private fun readLineData() {
         database = Firebase.database.reference
         val refer = database.child("pointStats")
-            .child("userID")
+            .child(uid!!)
             .child("curveLine")
             .child("curveLineData")
 

@@ -16,7 +16,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
-
+// TODO: when the user does not update the image there is nothing at
 class ProfileScreenViewModel() : ViewModel() {
     private var dbref: DatabaseReference
     private lateinit var username: String
@@ -40,9 +40,9 @@ class ProfileScreenViewModel() : ViewModel() {
         val localFile = File.createTempFile("tempImage", "jpeg")
         dbref.child(username).get().addOnSuccessListener { user ->
             if (user.exists()) {
-                lateinit var bitmap: Bitmap
+                //lateinit var bitmap: Bitmap
                 storage.child(username).getFile(localFile).addOnSuccessListener {
-                    bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                   val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
                     val myUser = Friend(
                         firstName = user.child("firstName").value.toString(),
                         lastName = user.child("lastName").value.toString(),

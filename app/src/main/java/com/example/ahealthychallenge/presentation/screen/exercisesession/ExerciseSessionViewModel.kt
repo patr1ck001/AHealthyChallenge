@@ -377,7 +377,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                                 )
                             dbKeys.add(newDailyExerciseSessionKeySerializable)
                             database.child("exerciseSessions")
-                                .child("userID")
+                                .child(uid!!)
                                 .child("keys")
                                 .setValue(dbKeys)
 
@@ -695,9 +695,10 @@ class ExerciseSessionViewModelFactory(
 }
 
 fun getPoints(exerciseSessionData: ExerciseSessionData): Int {
-    if (exerciseSessionData.totalDistance != null) {
+    /*if (exerciseSessionData.totalDistance != null) {
         return floor(exerciseSessionData.totalDistance.inKilometers).toInt()
-    } else if (exerciseSessionData.totalActiveTime != null) {
+    } else*/
+    if (exerciseSessionData.totalActiveTime != null) {
         val val1 = exerciseSessionData.totalActiveTime.seconds.toDouble()
         val val2 =
             Duration.ofSeconds(1).seconds.toDouble() // 1 --> 600: 1 point for every 10 min of workout

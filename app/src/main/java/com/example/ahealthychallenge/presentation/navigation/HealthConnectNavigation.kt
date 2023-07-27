@@ -163,7 +163,10 @@ fun HealthConnectNavigation(
             val runningLineData by viewModel.runningLineData
             val bikingLineData by viewModel.bikingLineData
             val workoutLineData by viewModel.workoutLineData
+            val pointStatScreenLoading by viewModel.pointStatScreenLoading
+
             PointStatScreen(
+                pointStatScreenLoading = pointStatScreenLoading,
                 navigationType = navigationType,
                 pieData = pieData,
                 pieDataMap = pieDataMap,

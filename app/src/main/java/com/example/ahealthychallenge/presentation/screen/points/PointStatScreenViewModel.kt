@@ -26,6 +26,9 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
         private set
     var pieDataMap: MutableState<Map<String, Int>> = mutableStateOf(mapOf("walking" to 0))
         private set
+
+    var pointStatScreenLoading: MutableState<Boolean> = mutableStateOf(true)
+
     var curveLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
     var walkingLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
     var runningLineData: MutableState<List<LineData>> = mutableStateOf(listOf())
@@ -35,6 +38,7 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
     var uid = FirebaseAuth.getInstance().currentUser?.uid
 
     init {
+        pointStatScreenLoading.value = true
         readPieChartData()
         readCurveLineData()
         readLineData("walkingLineData")
@@ -171,6 +175,7 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
                 Log.d("pointStats", "deserialized2: $lineDataList")
 
             }
+            pointStatScreenLoading.value = false
         }
     }
 }

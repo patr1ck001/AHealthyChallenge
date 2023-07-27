@@ -181,6 +181,8 @@ fun Nav(
             val runningLineData by viewModel.runningLineData
             val bikingLineData by viewModel.bikingLineData
             val workoutLineData by viewModel.workoutLineData
+            val pointStatScreenLoading by viewModel.pointStatScreenLoading
+
             PointStatScreen(
                 navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
                 pieData = pieData,
@@ -189,7 +191,8 @@ fun Nav(
                 walkingLineData = walkingLineData,
                 runningLineData = runningLineData,
                 bikingLineData = bikingLineData,
-                workoutLineData = workoutLineData
+                workoutLineData = workoutLineData,
+                pointStatScreenLoading = pointStatScreenLoading
             )
         }
 

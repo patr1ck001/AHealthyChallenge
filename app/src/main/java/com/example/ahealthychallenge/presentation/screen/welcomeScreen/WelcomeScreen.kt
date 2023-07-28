@@ -59,12 +59,16 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ahealthychallenge.data.HealthConnectManager
+import com.example.ahealthychallenge.presentation.navigation.UID_NAV_ARGUMENT
 import com.example.ahealthychallenge.presentation.screen.profile.ProfileScreen
 import com.example.ahealthychallenge.presentation.screen.profile.ProfileScreenViewModel
 import com.example.ahealthychallenge.presentation.screen.profile.ProfileScreenViewModelFactory
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModel
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModelFactory
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderBoadScreenDetails.LeaderBoardScreenDetails
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderBoadScreenDetails.LeaderBoardScreenDetailsViewModel
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderBoadScreenDetails.LeaderBoardScreenDetailsViewModelFactory
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderboardScreen.LeaderBoardScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderboardScreen.LeaderboardScreenViewModel
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderboardScreen.LeaderboardScreenViewModelFactory
@@ -235,8 +239,20 @@ fun Navigation(
 
             LeaderBoardScreen(
                 friends = friends,
-                currentUserPointsSheet = currentUserPointsSheet
+                currentUserPointsSheet = currentUserPointsSheet,
+                onDetailsClick = { username -> navController.navigate("LeaderBoardDetails/$username")}
             )
+        }
+
+        composable("LeaderBoardDetails/{$UID_NAV_ARGUMENT}") {
+            val username = it.arguments?.getString(UID_NAV_ARGUMENT)!!
+
+            val viewModel: LeaderBoardScreenDetailsViewModel = viewModel(
+                factory = LeaderBoardScreenDetailsViewModelFactory(username)
+            )
+            val userPointsSheet by viewModel.userPointsSheet
+
+            LeaderBoardScreenDetails(userPointsSheet)
         }
     }
 }

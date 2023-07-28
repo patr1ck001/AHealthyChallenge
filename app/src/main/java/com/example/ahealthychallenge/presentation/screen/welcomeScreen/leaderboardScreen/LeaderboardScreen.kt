@@ -1,7 +1,7 @@
 package com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderboardScreen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,11 +20,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -43,7 +41,8 @@ import com.example.ahealthychallenge.presentation.theme.HealthConnectSilver
 @Composable
 fun LeaderBoardScreen(
     friends: List<Friend>,
-    currentUserPointsSheet: UserPointsSheet
+    currentUserPointsSheet: UserPointsSheet,
+    onDetailsClick: (String?) -> Unit = {},
 ) {
 
     LazyColumn(
@@ -54,7 +53,10 @@ fun LeaderBoardScreen(
         val position: MutableState<Int> = mutableIntStateOf(1)
         friends.forEachIndexed { index, friend ->
             item {
-                Card() {
+                Card(
+                    modifier = Modifier.clickable { onDetailsClick(friend.username) }
+
+                ) {
                     Row(
                         modifier = Modifier
                     ) {

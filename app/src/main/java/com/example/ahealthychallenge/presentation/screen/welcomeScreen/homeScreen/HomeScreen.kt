@@ -1,6 +1,5 @@
 package com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen
 
-import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScaffoldState
@@ -31,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ahealthychallenge.R
-import com.example.ahealthychallenge.presentation.FriendsActivity
 import com.example.ahealthychallenge.presentation.component.CircularProgressBar
 import com.example.ahealthychallenge.presentation.navigation.Screen
 import com.example.ahealthychallenge.presentation.theme.HealthConnectBlue

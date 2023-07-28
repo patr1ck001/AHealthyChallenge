@@ -16,7 +16,6 @@
 package com.example.ahealthychallenge.presentation.screen.welcomeScreen
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,23 +54,20 @@ import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.HealthConnectAvailability
 import com.example.ahealthychallenge.presentation.bottomBar.NavItem
 import androidx.compose.material.*
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ahealthychallenge.data.Friend
 import com.example.ahealthychallenge.data.HealthConnectManager
-import com.example.ahealthychallenge.presentation.FriendsActivity
-import com.example.ahealthychallenge.presentation.SearchUserActivity
 import com.example.ahealthychallenge.presentation.screen.profile.ProfileScreen
 import com.example.ahealthychallenge.presentation.screen.profile.ProfileScreenViewModel
 import com.example.ahealthychallenge.presentation.screen.profile.ProfileScreenViewModelFactory
-import com.example.ahealthychallenge.presentation.screen.welcomeScreen.friendsScreen.FriendsScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreen
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModel
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.HomeScreenViewModelFactory
-import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderBoardScreen.LeaderBoardScreen
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderboardScreen.LeaderBoardScreen
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderboardScreen.LeaderboardScreenViewModel
+import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderboardScreen.LeaderboardScreenViewModelFactory
 import com.example.ahealthychallenge.presentation.utils.NavigationType
 import kotlinx.coroutines.CoroutineScope
 
@@ -219,18 +215,6 @@ fun Navigation(
             )
         }
         composable("profile") {
-
-            /*val context = LocalContext.current
-            val onAddFriend = {
-                val intent = Intent(context, SearchUserActivity::class.java)
-                context.startActivity(intent)
-            }
-            FriendsScreen(
-                onDetailsClick = { uid ->
-                    navController.navigate("detailsFriends/$uid")
-                },
-                onAddFriend = onAddFriend
-            )*/
             val viewModel: ProfileScreenViewModel = viewModel(
                 factory = ProfileScreenViewModelFactory()
             )
@@ -243,7 +227,16 @@ fun Navigation(
             )
         }
         composable("leaderBoard") {
-            LeaderBoardScreen()
+            val viewModel: LeaderboardScreenViewModel = viewModel(
+                factory = LeaderboardScreenViewModelFactory()
+            )
+            val friends by viewModel.friends
+            val currentUserPointsSheet by viewModel.currentUserPointsSheet
+
+            LeaderBoardScreen(
+                friends = friends,
+                currentUserPointsSheet = currentUserPointsSheet
+            )
         }
     }
 }
@@ -357,13 +350,3 @@ fun NavigationRailBar(
     }
 }
 
-
-@Composable
-fun LeaderBoardScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "leaderBoard screen")
-    }
-}

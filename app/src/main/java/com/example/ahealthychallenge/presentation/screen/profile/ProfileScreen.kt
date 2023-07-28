@@ -1,11 +1,8 @@
 package com.example.ahealthychallenge.presentation.screen.profile
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,10 +36,7 @@ import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.Friend
 import com.example.ahealthychallenge.presentation.SignInActivity
 import com.example.ahealthychallenge.presentation.component.CircularProgressBar
-import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.CompactHomeScreen
-import com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen.ExpendedAndMediumHomeScreen
 import com.example.ahealthychallenge.presentation.theme.HealthConnectBlue
-import com.example.ahealthychallenge.presentation.theme.HealthConnectGreen
 import com.example.ahealthychallenge.presentation.utils.FirebaseUtils
 import com.example.ahealthychallenge.presentation.utils.NavigationType
 

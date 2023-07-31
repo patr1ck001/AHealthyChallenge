@@ -99,7 +99,7 @@ class UserActivity: ComponentActivity() {
     private fun updateProfilePic(username: String) {
         storageReference = FirebaseStorage.getInstance().getReference("Users/$username")
         if(!flag) {
-            imageUri = Uri.parse("android.resource://$packageName/${R.drawable.ic_profile}")
+            imageUri = Uri.parse("android.resource://$packageName/${R.drawable.ic_profile_circle}")
             storageReference.putFile(imageUri).addOnCompleteListener {
                 Toast.makeText(this, "Profile successfully updated !", Toast.LENGTH_LONG).show()
             }.addOnFailureListener {

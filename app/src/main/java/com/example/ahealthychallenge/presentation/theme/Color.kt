@@ -16,6 +16,10 @@
 package com.example.ahealthychallenge.presentation.theme
 
 import androidx.compose.ui.graphics.Color
+import com.example.ahealthychallenge.data.HealthConnectManager
 
 val HealthConnectGreen = Color(0xFF3DDB85)
 val HealthConnectBlue = Color(0xFF4285F4)
+val HealthConnectGold = Color(0xFFD4AF37)
+val HealthConnectSilver = Color(0xFFC0C0C0)
+val HealthConnectBronze = Color(0xFFB08D57)

@@ -1,10 +1,7 @@
 package com.example.ahealthychallenge.presentation.largeScreenLayout
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
@@ -12,16 +9,13 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.window.layout.DisplayFeature
 import com.example.ahealthychallenge.data.HealthConnectManager
-import com.example.ahealthychallenge.presentation.navigation.Drawer
 import com.example.ahealthychallenge.presentation.navigation.Screen
 import com.example.ahealthychallenge.presentation.navigation.UID_NAV_ARGUMENT
 import com.example.ahealthychallenge.presentation.screen.SettingsScreen
@@ -181,19 +175,24 @@ fun Nav(
             )
 
             val pieData by viewModel.pieData
+            val pieDataMap by viewModel.pieDataMap
             val curveLineData by viewModel.curveLineData
             val walkingLineData by viewModel.walkingLineData
             val runningLineData by viewModel.runningLineData
             val bikingLineData by viewModel.bikingLineData
             val workoutLineData by viewModel.workoutLineData
+            val pointStatScreenLoading by viewModel.pointStatScreenLoading
+
             PointStatScreen(
                 navigationType = NavigationType.PERMANENT_NAVIGATION_DRAWER,
                 pieData = pieData,
+                pieDataMap = pieDataMap,
                 curveLineData = curveLineData,
                 walkingLineData = walkingLineData,
                 runningLineData = runningLineData,
                 bikingLineData = bikingLineData,
-                workoutLineData = workoutLineData
+                workoutLineData = workoutLineData,
+                pointStatScreenLoading = pointStatScreenLoading
             )
         }
 

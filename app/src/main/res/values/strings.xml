@@ -186,4 +186,5 @@
     <string name="al_fio">al_fio</string>
     <string name="delete">Delete</string>
     <string name="last_name">Last Name</string>
+    <string name="total_points">Total Points</string>
 </resources>

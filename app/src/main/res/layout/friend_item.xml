@@ -22,7 +22,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_profile" />
+            tools:src="@drawable/ic_profile_circle" />
 
         <TextView
             android:id="@+id/nam_surnam"

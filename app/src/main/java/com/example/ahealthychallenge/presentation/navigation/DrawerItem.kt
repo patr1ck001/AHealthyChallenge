@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
 
 /**
@@ -50,6 +51,7 @@ fun DrawerItem(
         Text(
             text = stringResource(item.titleId),
             style = MaterialTheme.typography.h5,
+            fontSize = 22.sp,
             color = if (selected) {
                 MaterialTheme.colors.primary
             } else {

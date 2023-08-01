@@ -1,7 +1,9 @@
 package com.example.ahealthychallenge.presentation
 
+import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.ComponentActivity
@@ -166,8 +168,9 @@ class SearchUserActivity : ComponentActivity() {
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun cancelRequest() {
-        lateinit var fnd: Friend
+         var fnd = Friend(username = null)
         firebaseRef.child(currentUsername).child(friendUsername).removeValue().addOnSuccessListener {
             firebaseRef.child(friendUsername).child(currentUsername).removeValue().addOnSuccessListener {
                 currentState = "not_friends"
@@ -185,10 +188,15 @@ class SearchUserActivity : ComponentActivity() {
                             fnd = friend
                         }
                     }
-                    list?.remove(fnd)
-                    ref.setValue(list)
+                    Log.d("PROVA", "primo")
+                    if(fnd.username != null) {
+                        Log.d("PROVA", "secondo")
+                        list?.remove(fnd)
+                        ref.setValue(list)
+                    }
                 }
             }
+        Log.d("PROVA", "arrivata?")
         val refer = leaderboardRef.child(friendUsername).child("friends")
         refer.get().addOnSuccessListener {
             if (it.exists()) {
@@ -198,12 +206,17 @@ class SearchUserActivity : ComponentActivity() {
                         fnd = friend
                     }
                 }
-                list?.remove(fnd)
-                refer.setValue(list)
+                Log.d("PROVA", "terzo")
+                if(fnd.username != null) {
+                    Log.d("PROVA", "quarto")
+                    list?.remove(fnd)
+                    refer.setValue(list)
+                }
             }
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun acceptRequest() {
         firebaseRef.child(currentUsername).child(friendUsername).child("request_type").setValue("friend").addOnSuccessListener {
             firebaseRef.child(friendUsername).child(currentUsername).child("request_type").setValue("friend").addOnSuccessListener {

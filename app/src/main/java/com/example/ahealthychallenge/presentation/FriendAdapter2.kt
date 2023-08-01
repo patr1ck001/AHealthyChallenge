@@ -13,11 +13,14 @@ import com.example.ahealthychallenge.data.Friend
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.getValue
 import de.hdodenhof.circleimageview.CircleImageView
 
 class FriendAdapter2(private val friendList: ArrayList<Friend>, private val context: Context): RecyclerView.Adapter<FriendAdapter2.MyViewHolder>(){
 
     private var firebaseRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("FriendRequests")
+    private var  leaderboardRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("leaderboard")
+    private var  firebase: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
 
     override fun getItemCount(): Int {
         return friendList.size
@@ -56,6 +59,38 @@ class FriendAdapter2(private val friendList: ArrayList<Friend>, private val cont
                 holder.image.visibility = View.GONE
                 holder.friendUsername.visibility = View.GONE
                 holder.deleteButton.visibility = View.GONE
+            }
+        }
+
+        lateinit var fnd: Friend
+        val ref = leaderboardRef.child(currentitem.currentUsername!!).child("friends")
+        ref.get().addOnSuccessListener {
+            if (it.exists()) {
+                val list =  it.getValue<MutableList<Friend>>()
+                list?.map{ friend ->
+                    if(friend.username == holder.friendUsername.text.toString()){
+                        fnd = friend
+                    }
+                }
+
+                list?.remove(fnd)
+                ref.setValue(list)
+
+            }
+        }
+        val refer = leaderboardRef.child(holder.friendUsername.text.toString()).child("friends")
+        refer.get().addOnSuccessListener {
+            if (it.exists()) {
+                val list =  it.getValue<MutableList<Friend>>()
+                list?.map{ friend ->
+                    if(friend.username == currentitem.currentUsername!!){
+                        fnd = friend
+                    }
+                }
+
+                list?.remove(fnd)
+                refer.setValue(list)
+
             }
         }
     }

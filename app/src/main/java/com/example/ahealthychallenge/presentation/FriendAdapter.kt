@@ -1,5 +1,6 @@
 package com.example.ahealthychallenge.presentation
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.Friend
+import com.example.ahealthychallenge.data.UserPointsSheet
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.getValue
@@ -56,55 +58,71 @@ class FriendAdapter(private val friendList: ArrayList<Friend>): RecyclerView.Ada
                 val ref = leaderboardRef.child(currentitem.currentUsername!!).child("friends")
                 firebase.child(holder.friendUsername.text.toString()).get().addOnSuccessListener{ friend ->
                     if(friend.exists()){
-                        ref.get().addOnSuccessListener {
-                            if(it.exists()) {
-                                val list =  it.getValue<MutableList<Friend>>()
-                                list?.add(
-                                    Friend(
-                                        firstName = friend.child("firstName").value.toString(),
-                                        lastName = friend.child("lastName").value.toString(),
-                                        username = holder.friendUsername.text.toString()
-                                    )
-                                )
-                                ref.setValue(list)
-                            }
-                            else{
-                                val list = mutableListOf(
-                                    Friend(
-                                        firstName = friend.child("firstName").value.toString(),
-                                        lastName = friend.child("lastName").value.toString(),
-                                        username = holder.friendUsername.text.toString()
-                                    )
-                                )
-                                ref.setValue(list)
+                        leaderboardRef.child(holder.friendUsername.text.toString()).child("pointsSheet").get().addOnSuccessListener { pnt ->
+                            if(pnt.exists()){
+                                val points = pnt.getValue<UserPointsSheet>()
+                                ref.get().addOnSuccessListener {
+                                    if(it.exists()) {
+                                        val list =  it.getValue<MutableList<Friend>>()
+                                        list?.add(
+                                            Friend(
+                                                firstName = friend.child("firstName").value.toString(),
+                                                lastName = friend.child("lastName").value.toString(),
+                                                username = holder.friendUsername.text.toString(),
+                                                pointsSheet = points
+                                            )
+                                        )
+                                        ref.setValue(list)
+                                    }
+                                    else{
+                                        val list = mutableListOf(
+                                            Friend(
+                                                firstName = friend.child("firstName").value.toString(),
+                                                lastName = friend.child("lastName").value.toString(),
+                                                username = holder.friendUsername.text.toString(),
+                                                pointsSheet = points
+                                            )
+                                        )
+                                        ref.setValue(list)
+                                    }
+                                }
                             }
                         }
+
                     }
                 }
                 val refer = leaderboardRef.child(holder.friendUsername.text.toString()).child("friends")
                 firebase.child(currentitem.currentUsername!!).get().addOnSuccessListener { friend ->
                     if(friend.exists()){
-                        refer.get().addOnSuccessListener {
-                            if(it.exists()) {
-                                val list =  it.getValue<MutableList<Friend>>()
-                                list?.add(
-                                    Friend(
-                                        firstName = friend.child("firstName").value.toString(),
-                                        lastName = friend.child("lastName").value.toString(),
-                                        username = currentitem.currentUsername!!
-                                    )
-                                )
-                                refer.setValue(list)
-                            }
-                            else{
-                                val list = mutableListOf(
-                                    Friend(
-                                        firstName = friend.child("firstName").value.toString(),
-                                        lastName = friend.child("lastName").value.toString(),
-                                        username = currentitem.currentUsername!!
-                                    )
-                                )
-                                refer.setValue(list)
+                        leaderboardRef.child(currentitem.currentUsername!!).child("pointsSheet").get().addOnSuccessListener { pnt ->
+                            if(pnt.exists()) {
+                                val points = pnt.getValue<UserPointsSheet>()
+                                Log.d("PROVA", points.toString())
+                                refer.get().addOnSuccessListener {
+                                    if(it.exists()) {
+                                        val list =  it.getValue<MutableList<Friend>>()
+                                        list?.add(
+                                            Friend(
+                                                firstName = friend.child("firstName").value.toString(),
+                                                lastName = friend.child("lastName").value.toString(),
+                                                username = currentitem.currentUsername!!,
+                                                pointsSheet = points
+                                            )
+                                        )
+                                        refer.setValue(list)
+                                    }
+                                    else{
+                                        val list = mutableListOf(
+                                            Friend(
+                                                firstName = friend.child("firstName").value.toString(),
+                                                lastName = friend.child("lastName").value.toString(),
+                                                username = currentitem.currentUsername!!,
+                                                pointsSheet = points
+                                            )
+                                        )
+                                        refer.setValue(list)
+                                    }
+                                }
                             }
                         }
                     }

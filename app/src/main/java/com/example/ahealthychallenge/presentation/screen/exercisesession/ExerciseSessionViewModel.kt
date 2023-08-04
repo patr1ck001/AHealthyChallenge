@@ -817,7 +817,33 @@ fun writePieDataOnTheDb(exerciseType: Int, newPoints: Int) {
             }
         }
 
-        //modifica degli amici
+        leaderboardRef.child(currentUsername).child("pointsSheet").get().addOnSuccessListener {
+            val pointsSheet = it.getValue<UserPointsSheet>()
+            leaderboardRef.child(currentUsername).child("friends").get().addOnSuccessListener { list ->
+                if(list.exists()){
+                    val listFriend = list.getValue<MutableList<Friend>>()
+                    if (listFriend != null) {
+                        for(friend in listFriend){
+                            leaderboardRef.child(friend.username.toString()).child("friends").get().addOnSuccessListener{ list2 ->
+                                if(list2.exists()){
+                                    val listFriend2 = list2.getValue<MutableList<Friend>>()
+                                    if (listFriend2 != null) {
+                                        for(friend2 in listFriend2){
+                                            if(friend2.username.toString() == currentUsername){
+                                                friend2.pointsSheet = pointsSheet
+                                            }
+                                        }
+                                        leaderboardRef.child(friend.username.toString()).child("friends").setValue(listFriend2)
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        }
     }
 }
 

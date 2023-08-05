@@ -115,6 +115,7 @@ class LeaderboardScreenViewModel() : ViewModel() {
                                         val userPointsSheet = currentUserPointsSheet.getValue<UserPointsSheet>()
                                         val currentUser = listOf(
                                             Friend(
+                                                firstName = "(me)",
                                                 username = currentUsername,
                                                 pointsSheet = userPointsSheet
                                             )
@@ -124,7 +125,8 @@ class LeaderboardScreenViewModel() : ViewModel() {
                                             "leaderboardDBUG",
                                             "the list of friend is: $leaderboardList"
                                         )
-                                        friends.value = leaderboardList!!
+                                        // sort in descending order
+                                        friends.value = leaderboardList!!.sortedByDescending { friend -> friend.pointsSheet?.totalPoints }
                                     }
                                 }
                         }

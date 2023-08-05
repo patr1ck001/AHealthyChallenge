@@ -59,6 +59,48 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
             .child(uid!!)
             .child("pieChart")
             .child("pieChartData")
+
+        val pieChartDataListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                //we check is the list of session on the database is up to date
+                val dbMap = snapshot.getValue<Map<String, Int>>()
+                if (dbMap != null) {
+                    if (dbMap["walking"] != null) {
+                        walkingPoints = dbMap["walking"]!!
+                    }
+
+                    if (dbMap["running"] != null) {
+                        runningPoints = dbMap["running"]!!
+
+                    }
+
+                    if (dbMap["cycling"] != null) {
+                        cyclingPoints = dbMap["cycling"]!!
+                    }
+
+                    if (dbMap["workout"] != null) {
+                        workoutPoints = dbMap["workout"]!!
+                    }
+
+                    pieData.value = listOf(
+                        PieData(walkingPoints.toFloat()),
+                        PieData(runningPoints.toFloat()),
+                        PieData(cyclingPoints.toFloat()),
+                        PieData(workoutPoints.toFloat())
+
+                    )
+                    pieDataMap.value = dbMap
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("cancel", "loadPost:onCancelled")
+            }
+
+        }
+
+        ref.addValueEventListener(pieChartDataListener)
+
         ref.get().addOnSuccessListener {
             //we check is the list of session on the database is up to date
             val dbMap = it.getValue<Map<String, Int>>()

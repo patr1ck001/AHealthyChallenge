@@ -255,8 +255,8 @@ fun ExpendedAndMediumHomeScreen(
     drawerNavController: NavController,
     drawerScope: CoroutineScope,
     scaffoldState: ScaffoldState,
-    positionInLeaderboard: Int = 1,
-    pointTHisMonth: Int = 0
+    positionInLeaderboard: Int,
+    pointTHisMonth: Int
 ) {
     val context = LocalContext.current
 

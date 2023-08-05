@@ -229,10 +229,16 @@ fun Navigation(
             )
             val currentUser by viewModel.currentUser
             val profileLoading by viewModel.profileLoading
+            val pointTHisMonth by viewModel.pointThisMonth
+            val positionInLeaderboard by viewModel.positionInLeaderboard
+            val totalFriends by viewModel.totalFriends
             ProfileScreen(
                 navigationType = navigationType,
                 currentUser = currentUser,
-                profileLoading = profileLoading
+                profileLoading = profileLoading,
+                pointTHisMonth = pointTHisMonth,
+                positionInLeaderboard = positionInLeaderboard,
+                totalFriends = totalFriends
             )
         }
         composable("leaderBoard") {

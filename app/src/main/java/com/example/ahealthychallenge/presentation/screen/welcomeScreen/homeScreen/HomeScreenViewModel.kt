@@ -29,7 +29,7 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
     private lateinit var database: DatabaseReference
     var lineData: MutableState<List<LineData>> = mutableStateOf(listOf())
     var homeScreenLoading: MutableState<Boolean> = mutableStateOf(true)
-    var positionInLeaderboard: MutableState<Int> = mutableIntStateOf(0)
+    var positionInLeaderboard: MutableState<Int> = mutableIntStateOf(1)
     var pointThisMonth: MutableState<Int> = mutableIntStateOf(0)
     var uid = FirebaseAuth.getInstance().currentUser?.uid
     private val leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard")
@@ -99,7 +99,6 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
             override fun onCancelled(error: DatabaseError) {
                 Log.w("cancel", "loadPost:onCancelled")
             }
-
         }
         refer.addValueEventListener(curveLineDataListener)
 

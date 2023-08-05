@@ -44,17 +44,27 @@ import com.example.ahealthychallenge.presentation.utils.NavigationType
 fun ProfileScreen(
     navigationType: NavigationType,
     currentUser: Friend,
-    profileLoading: Boolean
+    profileLoading: Boolean,
+    positionInLeaderboard: Int,
+    pointTHisMonth: Int,
+    totalFriends: Int
 ) {
     if (navigationType == NavigationType.BOTTOM_NAVIGATION) {
         CompactProfileScreen(
             currentUser = currentUser,
-            profileLoading = profileLoading
+            profileLoading = profileLoading,
+            positionInLeaderboard = positionInLeaderboard,
+            pointTHisMonth = pointTHisMonth,
+            totalFriends = totalFriends
         )
     } else {
         ExpendedAndMediumProfileScreen(
             currentUser = currentUser,
-            profileLoading = profileLoading
+            profileLoading = profileLoading,
+            positionInLeaderboard = positionInLeaderboard,
+            pointTHisMonth = pointTHisMonth,
+            totalFriends = totalFriends
+
         )
     }
 }
@@ -63,7 +73,10 @@ fun ProfileScreen(
 @Composable
 fun CompactProfileScreen(
     currentUser: Friend,
-    profileLoading: Boolean
+    profileLoading: Boolean,
+    positionInLeaderboard: Int,
+    pointTHisMonth: Int,
+    totalFriends: Int
 ) {
     val context = LocalContext.current
 
@@ -185,7 +198,7 @@ fun CompactProfileScreen(
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
-                            text = "3", // TODO: update hardcoded number
+                            text = "$totalFriends", // TODO: update hardcoded number
                             color = MaterialTheme.colors.primary,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
@@ -226,7 +239,7 @@ fun CompactProfileScreen(
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
-                            text = "100", // TODO: update hardcoded number
+                            text = "$pointTHisMonth", // TODO: update hardcoded number
                             color = MaterialTheme.colors.primary,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
@@ -265,7 +278,7 @@ fun CompactProfileScreen(
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
-                            text = "1", // TODO: update hardcoded number
+                            text = "$positionInLeaderboard", // TODO: update hardcoded number
                             color = MaterialTheme.colors.primary,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
@@ -301,7 +314,12 @@ fun CompactProfileScreen(
 }
 
 @Composable
-fun ExpendedAndMediumProfileScreen(currentUser: Friend, profileLoading: Boolean) {
+fun ExpendedAndMediumProfileScreen(
+    currentUser: Friend,
+    profileLoading: Boolean,
+    positionInLeaderboard: Int,
+    pointTHisMonth: Int,
+    totalFriends: Int) {
     val context = LocalContext.current
 
     if (!profileLoading) {
@@ -430,7 +448,7 @@ fun ExpendedAndMediumProfileScreen(currentUser: Friend, profileLoading: Boolean)
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
-                            text = "3", // TODO: update hardcoded number
+                            text = "$totalFriends",
                             color = MaterialTheme.colors.primary,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
@@ -472,7 +490,7 @@ fun ExpendedAndMediumProfileScreen(currentUser: Friend, profileLoading: Boolean)
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
-                            text = "100", // TODO: update hardcoded number
+                            text = "$pointTHisMonth", // TODO: update hardcoded number
                             color = MaterialTheme.colors.primary,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
@@ -512,7 +530,7 @@ fun ExpendedAndMediumProfileScreen(currentUser: Friend, profileLoading: Boolean)
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
-                            text = "1", // TODO: update hardcoded number
+                            text = "$positionInLeaderboard",
                             color = MaterialTheme.colors.primary,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,

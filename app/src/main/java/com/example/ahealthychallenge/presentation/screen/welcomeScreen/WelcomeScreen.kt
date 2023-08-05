@@ -250,9 +250,14 @@ fun Navigation(
             val viewModel: LeaderBoardScreenDetailsViewModel = viewModel(
                 factory = LeaderBoardScreenDetailsViewModelFactory(username)
             )
+            val leaderboardDetailLoading by viewModel.leaderboardDetailLoading
             val userPointsSheet by viewModel.userPointsSheet
 
-            LeaderBoardScreenDetails(userPointsSheet)
+            LeaderBoardScreenDetails(
+                userPointsSheet = userPointsSheet,
+                leaderboardDetailLoading = leaderboardDetailLoading
+
+                )
         }
     }
 }

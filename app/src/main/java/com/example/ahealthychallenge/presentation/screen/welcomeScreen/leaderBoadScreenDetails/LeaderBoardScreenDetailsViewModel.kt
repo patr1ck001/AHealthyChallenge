@@ -23,83 +23,10 @@ class LeaderBoardScreenDetailsViewModel(
     private val leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard")
     var uid = FirebaseAuth.getInstance().currentUser?.uid
     val database = Firebase.database.reference
-
-    private val mockDataFriend = listOf(
-        Friend(
-            firstName = "Patrick",
-            lastName = "Niantcho",
-            username = "Patatòche",
-            pointsSheet = UserPointsSheet(
-                pointsWalking = 10,
-                pointRunning = 22,
-                pointsCycling = 20,
-                pointsWorkout = 20,
-                totalPoints = 72
-            )
-        ),
-        Friend(
-            firstName = "Alessandra",
-            lastName = "Fiore",
-            username = "FiorelinaDelGiardino",
-            pointsSheet = UserPointsSheet(
-                pointsWalking = 5,
-                pointRunning = 5,
-                pointsCycling = 20,
-                pointsWorkout = 20,
-                totalPoints = 50
-            )
-        ),
-        Friend(
-            firstName = "Gill",
-            lastName = "Hunter",
-            username = "GilHunt",
-            pointsSheet = UserPointsSheet(
-                pointsWalking = 20,
-                pointRunning = 4,
-                pointsCycling = 20,
-                pointsWorkout = 5,
-                totalPoints = 49
-            )
-        ),
-        Friend(
-            firstName = "Josh",
-            lastName = "Salter",
-            username = "SaltyGuy",
-            pointsSheet = UserPointsSheet(
-                pointsWalking = 20,
-                pointRunning = 6,
-                pointsCycling = 7,
-                pointsWorkout = 7,
-                totalPoints = 40
-            )
-        ),
-        Friend(
-            firstName = "Micheal",
-            lastName = "Roberts",
-            username = "Miro",
-            pointsSheet = UserPointsSheet(
-                pointsWalking = 3,
-                pointRunning = 1,
-                pointsCycling = 30,
-                pointsWorkout = 1,
-                totalPoints = 35
-            )
-        ),
-        Friend(
-            firstName = "Vince",
-            lastName = "sky",
-            username = "skusku",
-            pointsSheet = UserPointsSheet(
-                pointsWalking = 1,
-                pointRunning = 10,
-                pointsCycling = 2,
-                pointsWorkout = 20,
-                totalPoints = 33
-            )
-        )
-    )
+    var leaderboardDetailLoading: MutableState<Boolean> = mutableStateOf(true)
 
     init {
+        leaderboardDetailLoading.value = true
         getUserPointsSheet()
     }
 
@@ -126,10 +53,7 @@ class LeaderBoardScreenDetailsViewModel(
                                         val currentFriend =
                                             leaderboardList?.filter { friend -> friend.username == username }
                                         userPointsSheet.value = currentFriend?.get(0)?.pointsSheet!!
-                                        Log.d(
-                                            "leaderboardDBUG",
-                                            "the list of friend is: ${currentFriend[0].pointsSheet!!}"
-                                        )
+                                        leaderboardDetailLoading.value = false
                                     }
                                 }
                         }

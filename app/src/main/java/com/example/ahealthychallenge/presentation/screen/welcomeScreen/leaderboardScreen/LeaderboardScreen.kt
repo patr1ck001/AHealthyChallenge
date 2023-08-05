@@ -1,5 +1,6 @@
 package com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderboardScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +45,6 @@ fun LeaderBoardScreen(
     currentUserPointsSheet: UserPointsSheet,
     onDetailsClick: (String?) -> Unit = {},
 ) {
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,
@@ -52,6 +52,7 @@ fun LeaderBoardScreen(
     ) {
         val position: MutableState<Int> = mutableIntStateOf(1)
         friends.forEachIndexed { index, friend ->
+            Log.d("leaderboardDBUG", "the friends are $friends")
             item {
                 Card(
                     modifier = Modifier.clickable { onDetailsClick(friend.username) }
@@ -80,7 +81,8 @@ fun LeaderBoardScreen(
                                     bitmap = bm.asImageBitmap(),
                                     contentDescription = "userImage",
                                     modifier = Modifier
-                                        .size(150.dp) // TODO: ADAPTABLE LAYOUT
+                                        .size(80.dp) // TODO: ADAPTABLE LAYOUT
+                                        .padding(8.dp)
                                         .clip(CircleShape),
                                     contentScale = ContentScale.Crop
                                 )

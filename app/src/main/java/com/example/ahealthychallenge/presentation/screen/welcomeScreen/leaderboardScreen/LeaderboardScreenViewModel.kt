@@ -1,5 +1,6 @@
 package com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderboardScreen
 
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +13,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import kotlin.math.log
+import com.google.firebase.storage.FirebaseStorage
+import java.io.File
 
 class LeaderboardScreenViewModel() : ViewModel() {
     val friends: MutableState<List<Friend>> = mutableStateOf(listOf())
@@ -20,6 +22,9 @@ class LeaderboardScreenViewModel() : ViewModel() {
     private val leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard")
     var uid = FirebaseAuth.getInstance().currentUser?.uid
     val database = Firebase.database.reference
+    private val dbRef = Firebase.database.reference.child("Users")
+    private var storage = FirebaseStorage.getInstance().getReference("Users")
+
 
     init {
         readFriends()
@@ -27,80 +32,7 @@ class LeaderboardScreenViewModel() : ViewModel() {
     }
 
     private fun readFriends() {
-        val mockDataFriend = listOf(
-            Friend(
-                firstName = "Patrick",
-                lastName = "Niantcho",
-                username = "Patatòche",
-                pointsSheet = UserPointsSheet(
-                    pointsWalking = 10,
-                    pointRunning = 22,
-                    pointsCycling = 20,
-                    pointsWorkout = 20,
-                    totalPoints = 72
-                )
-            ),
-            Friend(
-                firstName = "Alessandra",
-                lastName = "Fiore",
-                username = "FiorelinaDelGiardino",
-                pointsSheet = UserPointsSheet(
-                    pointsWalking = 5,
-                    pointRunning = 5,
-                    pointsCycling = 20,
-                    pointsWorkout = 20,
-                    totalPoints = 50
-                )
-            ),
-            Friend(
-                firstName = "Gill",
-                lastName = "Hunter",
-                username = "GilHunt",
-                pointsSheet = UserPointsSheet(
-                    pointsWalking = 20,
-                    pointRunning = 4,
-                    pointsCycling = 20,
-                    pointsWorkout = 5,
-                    totalPoints = 49
-                )
-            ),
-            Friend(
-                firstName = "Josh",
-                lastName = "Salter",
-                username = "SaltyGuy",
-                pointsSheet = UserPointsSheet(
-                    pointsWalking = 20,
-                    pointRunning = 6,
-                    pointsCycling = 7,
-                    pointsWorkout = 7,
-                    totalPoints = 40
-                )
-            ),
-            Friend(
-                firstName = "Micheal",
-                lastName = "Roberts",
-                username = "Miro",
-                pointsSheet = UserPointsSheet(
-                    pointsWalking = 3,
-                    pointRunning = 1,
-                    pointsCycling = 30,
-                    pointsWorkout = 1,
-                    totalPoints = 35
-                )
-            ),
-            Friend(
-                firstName = "Vince",
-                lastName = "sky",
-                username = "skusku",
-                pointsSheet = UserPointsSheet(
-                    pointsWalking = 1,
-                    pointRunning = 10,
-                    pointsCycling = 2,
-                    pointsWorkout = 20,
-                    totalPoints = 33
-                )
-            )
-        )
+        val localFile = File.createTempFile("tempImage", "jpeg")
 
         database.child("Users").child(uid!!).get().addOnSuccessListener { it ->
             if (it.exists()) {
@@ -112,7 +44,8 @@ class LeaderboardScreenViewModel() : ViewModel() {
                             leaderboardRef.child(currentUsername).child("pointsSheet").get()
                                 .addOnSuccessListener { currentUserPointsSheet ->
                                     if (currentUserPointsSheet.exists()) {
-                                        val userPointsSheet = currentUserPointsSheet.getValue<UserPointsSheet>()
+                                        val userPointsSheet =
+                                            currentUserPointsSheet.getValue<UserPointsSheet>()
                                         val currentUser = listOf(
                                             Friend(
                                                 firstName = "(me)",
@@ -120,13 +53,44 @@ class LeaderboardScreenViewModel() : ViewModel() {
                                                 pointsSheet = userPointsSheet
                                             )
                                         )
-                                        val leaderboardList = listFriend?.plus(currentUser)
-                                        Log.d(
-                                            "leaderboardDBUG",
-                                            "the list of friend is: $leaderboardList"
-                                        )
-                                        // sort in descending order
-                                        friends.value = leaderboardList!!.sortedByDescending { friend -> friend.pointsSheet?.totalPoints }
+                                        val leaderboardList =
+                                            listFriend?.plus(currentUser)?.toMutableList()
+                                        var i = 1
+                                        if (leaderboardList != null) {
+                                            for (friend in leaderboardList) {
+                                                friend.username?.let { it1 ->
+                                                    dbRef.child(it1).get()
+                                                        .addOnSuccessListener { user ->
+                                                            if (user.exists()) {
+                                                                //lateinit var bitmap: Bitmap
+                                                                storage.child(it1).getFile(localFile)
+                                                                    .addOnSuccessListener {
+                                                                        val bitmap =
+                                                                            BitmapFactory.decodeFile(
+                                                                                localFile.absolutePath
+                                                                            )
+                                                                        Log.d(
+                                                                            "leaderboardDBUG",
+                                                                            "the bitmap: $bitmap"
+                                                                        )
+                                                                        friend.bitmap = bitmap
+                                                                        Log.d("leaderboardDBUG", "i: $i size: ${leaderboardList.size}")
+                                                                        if(i == leaderboardList.size){
+                                                                            // sort in descending order
+                                                                            friends.value =
+                                                                                leaderboardList.sortedByDescending { friend -> friend.pointsSheet?.totalPoints }
+                                                                            Log.d(
+                                                                                "leaderboardDBUG",
+                                                                                "the bitmap: ${friends.value}"
+                                                                            )
+                                                                        }
+                                                                        i++
+                                                                    }
+                                                            }
+                                                        }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                         }

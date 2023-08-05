@@ -18,17 +18,18 @@ import java.io.File
 
 class LeaderboardScreenViewModel() : ViewModel() {
     val friends: MutableState<List<Friend>> = mutableStateOf(listOf())
-    val currentUserPointsSheet: MutableState<UserPointsSheet> = mutableStateOf(UserPointsSheet())
     private val leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard")
     var uid = FirebaseAuth.getInstance().currentUser?.uid
     val database = Firebase.database.reference
     private val dbRef = Firebase.database.reference.child("Users")
     private var storage = FirebaseStorage.getInstance().getReference("Users")
+    var leaderboardLoading: MutableState<Boolean> = mutableStateOf(true)
+
 
 
     init {
+        leaderboardLoading.value = true
         readFriends()
-        readCurrentUserPointsSheet()
     }
 
     private fun readFriends() {
@@ -69,20 +70,13 @@ class LeaderboardScreenViewModel() : ViewModel() {
                                                                             BitmapFactory.decodeFile(
                                                                                 localFile.absolutePath
                                                                             )
-                                                                        Log.d(
-                                                                            "leaderboardDBUG",
-                                                                            "the bitmap: $bitmap"
-                                                                        )
                                                                         friend.bitmap = bitmap
                                                                         Log.d("leaderboardDBUG", "i: $i size: ${leaderboardList.size}")
                                                                         if(i == leaderboardList.size){
                                                                             // sort in descending order
                                                                             friends.value =
                                                                                 leaderboardList.sortedByDescending { friend -> friend.pointsSheet?.totalPoints }
-                                                                            Log.d(
-                                                                                "leaderboardDBUG",
-                                                                                "the bitmap: ${friends.value}"
-                                                                            )
+                                                                            leaderboardLoading.value = false
                                                                         }
                                                                         i++
                                                                     }
@@ -100,15 +94,6 @@ class LeaderboardScreenViewModel() : ViewModel() {
         //friends.value = mockDataFriend
     }
 
-    private fun readCurrentUserPointsSheet() {
-        val pointsSheet = UserPointsSheet(
-            pointsWalking = 10,
-            pointRunning = 21,
-            pointsCycling = 43,
-            pointsWorkout = 12
-        )
-        currentUserPointsSheet.value = pointsSheet
-    }
 }
 
 class LeaderboardScreenViewModelFactory() : ViewModelProvider.Factory {

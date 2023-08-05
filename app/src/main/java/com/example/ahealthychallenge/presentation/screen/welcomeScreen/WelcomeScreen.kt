@@ -235,11 +235,11 @@ fun Navigation(
                 factory = LeaderboardScreenViewModelFactory()
             )
             val friends by viewModel.friends
-            val currentUserPointsSheet by viewModel.currentUserPointsSheet
+            val leaderboardLoading by viewModel.leaderboardLoading
 
             LeaderBoardScreen(
                 friends = friends,
-                currentUserPointsSheet = currentUserPointsSheet,
+                leaderboardLoading = leaderboardLoading,
                 onDetailsClick = { username -> navController.navigate("LeaderBoardDetails/$username")}
             )
         }

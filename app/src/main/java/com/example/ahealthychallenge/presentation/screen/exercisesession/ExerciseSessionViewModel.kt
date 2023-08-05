@@ -187,7 +187,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                 val exerciseType = record.exerciseType
                 writePieDataOnTheDb(exerciseType, newPoints)
                 writeCurveLineDataOnTheDb(newPoints)
-                val pathString = when(exerciseType) {
+                val pathString = when (exerciseType) {
                     8 -> "bikingLineData"
                     56 -> "runningLineData"
                     79 -> "walkingLineData"
@@ -716,134 +716,161 @@ fun writePieDataOnTheDb(exerciseType: Int, newPoints: Int) {
         .child("pieChart")
         .child("pieChartData")
 
-    firebase.child(FirebaseAuth.getInstance().currentUser?.uid!!).get().addOnSuccessListener {  user ->
-        val currentUsername = user.value.toString()
+    firebase.child(FirebaseAuth.getInstance().currentUser?.uid!!).get()
+        .addOnSuccessListener { user ->
+            val currentUsername = user.value.toString()
 
-        when (exerciseType) {
-            56 -> {
-                ref.child("running").get().addOnSuccessListener {
-                    if (it.exists()) {
-                        val runningPoints = it.getValue<Int>()
-                        if (runningPoints != null) {
-                            ref.child("running").setValue(runningPoints + newPoints)
-                            leaderboardRef.child(currentUsername).child("pointsSheet").child("pointRunning").setValue(runningPoints + newPoints)
-                        }
-                    } else {
-                        ref.child("running").setValue(newPoints)
-                        leaderboardRef.child(currentUsername).child("pointsSheet").child("pointRunning").setValue(newPoints)
-                    }
+            fun updateFriends() {
+                leaderboardRef.child(currentUsername).child("pointsSheet").get()
+                    .addOnSuccessListener {
+                        val pointsSheet = it.getValue<UserPointsSheet>()
+                        leaderboardRef.child(currentUsername).child("friends").get()
+                            .addOnSuccessListener { list ->
+                                if (list.exists()) {
+                                    val listFriend = list.getValue<MutableList<Friend>>()
+                                    if (listFriend != null) {
+                                        for (friend in listFriend) {
+                                            leaderboardRef.child(friend.username.toString())
+                                                .child("friends").get()
+                                                .addOnSuccessListener { list2 ->
+                                                    if (list2.exists()) {
+                                                        val listFriend2 =
+                                                            list2.getValue<MutableList<Friend>>()
+                                                        if (listFriend2 != null) {
+                                                            for (friend2 in listFriend2) {
+                                                                if (friend2.username.toString() == currentUsername) {
+                                                                    friend2.pointsSheet =
+                                                                        pointsSheet
+                                                                }
+                                                            }
+                                                            leaderboardRef.child(friend.username.toString())
+                                                                .child("friends")
+                                                                .setValue(listFriend2)
+                                                        }
+                                                    }
+                                                }
 
-                    leaderboardRef.child(currentUsername).child("pointsSheet").child("totalPoints").get().addOnSuccessListener { points ->
-                        val totalPoints = points.getValue<Int>()
-                        if (totalPoints != null) {
-                            leaderboardRef.child(currentUsername).child("pointsSheet").child("totalPoints").setValue(totalPoints + newPoints)
-                        }
-
-                    }
-
-                }
-            }
-
-            79 -> {
-                ref.child("walking").get().addOnSuccessListener {
-                    if (it.exists()) {
-                        val walkingPoints = it.getValue<Int>()
-                        if (walkingPoints != null) {
-                            ref.child("walking").setValue(walkingPoints + newPoints)
-                            leaderboardRef.child(currentUsername).child("pointsSheet").child("pointsWalking").setValue(walkingPoints + newPoints)
-                        }
-                    } else {
-                        ref.child("walking").setValue(newPoints)
-                        leaderboardRef.child(currentUsername).child("pointsSheet").child("pointsWalking").setValue(newPoints)
-                    }
-
-                    leaderboardRef.child(currentUsername).child("pointsSheet").child("totalPoints").get().addOnSuccessListener { points ->
-                        val totalPoints = points.getValue<Int>()
-                        if (totalPoints != null) {
-                            leaderboardRef.child(currentUsername).child("pointsSheet").child("totalPoints").setValue(totalPoints + newPoints)
-                        }
-
-                    }
-
-                }
-            }
-
-            8 -> {
-                ref.child("cycling").get().addOnSuccessListener {
-                    if (it.exists()) {
-                        val cyclingPoints = it.getValue<Int>()
-                        if (cyclingPoints != null) {
-                            ref.child("cycling").setValue(cyclingPoints + newPoints)
-                            leaderboardRef.child(currentUsername).child("pointsSheet").child("pointsCycling").setValue(cyclingPoints + newPoints)
-                        }
-                    } else {
-                        ref.child("cycling").setValue(newPoints)
-                        leaderboardRef.child(currentUsername).child("pointsSheet").child("pointsCycling").setValue(newPoints)
-                    }
-
-                    leaderboardRef.child(currentUsername).child("pointsSheet").child("totalPoints").get().addOnSuccessListener { points ->
-                        val totalPoints = points.getValue<Int>()
-                        if (totalPoints != null) {
-                            leaderboardRef.child(currentUsername).child("pointsSheet").child("totalPoints").setValue(totalPoints + newPoints)
-                        }
-
-                    }
-
-                }
-            }
-
-            else -> {
-                ref.child("workout").get().addOnSuccessListener {
-                    if (it.exists()) {
-                        val workoutPoints = it.getValue<Int>()
-                        if (workoutPoints != null) {
-                            ref.child("workout").setValue(workoutPoints + newPoints)
-                            leaderboardRef.child(currentUsername).child("pointsSheet").child("pointsWorkout").setValue(workoutPoints + newPoints)
-                        }
-                    } else {
-                        ref.child("workout").setValue(newPoints)
-                        leaderboardRef.child(currentUsername).child("pointsSheet").child("pointsWorkout").setValue(newPoints)
-                    }
-
-                    leaderboardRef.child(currentUsername).child("pointsSheet").child("totalPoints").get().addOnSuccessListener { points ->
-                        val totalPoints = points.getValue<Int>()
-                        if (totalPoints != null) {
-                            leaderboardRef.child(currentUsername).child("pointsSheet").child("totalPoints").setValue(totalPoints + newPoints)
-                        }
-
-                    }
-
-                }
-            }
-        }
-
-        leaderboardRef.child(currentUsername).child("pointsSheet").get().addOnSuccessListener {
-            val pointsSheet = it.getValue<UserPointsSheet>()
-            leaderboardRef.child(currentUsername).child("friends").get().addOnSuccessListener { list ->
-                if(list.exists()){
-                    val listFriend = list.getValue<MutableList<Friend>>()
-                    if (listFriend != null) {
-                        for(friend in listFriend){
-                            leaderboardRef.child(friend.username.toString()).child("friends").get().addOnSuccessListener{ list2 ->
-                                if(list2.exists()){
-                                    val listFriend2 = list2.getValue<MutableList<Friend>>()
-                                    if (listFriend2 != null) {
-                                        for(friend2 in listFriend2){
-                                            if(friend2.username.toString() == currentUsername){
-                                                friend2.pointsSheet = pointsSheet
-                                            }
                                         }
-                                        leaderboardRef.child(friend.username.toString()).child("friends").setValue(listFriend2)
                                     }
                                 }
                             }
+                    }
+            }
 
+
+            when (exerciseType) {
+                56 -> {
+                    ref.child("running").get().addOnSuccessListener {
+                        if (it.exists()) {
+                            val runningPoints = it.getValue<Int>()
+                            if (runningPoints != null) {
+                                ref.child("running").setValue(runningPoints + newPoints)
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("pointRunning").setValue(runningPoints + newPoints)
+                            }
+                        } else {
+                            ref.child("running").setValue(newPoints)
+                            leaderboardRef.child(currentUsername).child("pointsSheet")
+                                .child("pointRunning").setValue(newPoints)
                         }
+
+                        leaderboardRef.child(currentUsername).child("pointsSheet")
+                            .child("totalPoints").get().addOnSuccessListener { points ->
+                            val totalPoints = points.getValue<Int>()
+                            if (totalPoints != null) {
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("totalPoints").setValue(totalPoints + newPoints)
+                            }
+                        }
+                        updateFriends()
                     }
                 }
 
+                79 -> {
+                    ref.child("walking").get().addOnSuccessListener {
+                        if (it.exists()) {
+                            val walkingPoints = it.getValue<Int>()
+                            if (walkingPoints != null) {
+                                ref.child("walking").setValue(walkingPoints + newPoints)
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("pointsWalking").setValue(walkingPoints + newPoints)
+                            }
+                        } else {
+                            ref.child("walking").setValue(newPoints)
+                            leaderboardRef.child(currentUsername).child("pointsSheet")
+                                .child("pointsWalking").setValue(newPoints)
+                        }
+
+                        leaderboardRef.child(currentUsername).child("pointsSheet")
+                            .child("totalPoints").get().addOnSuccessListener { points ->
+                            val totalPoints = points.getValue<Int>()
+                            if (totalPoints != null) {
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("totalPoints").setValue(totalPoints + newPoints)
+                            }
+
+                        }
+                        updateFriends()
+                    }
+                }
+
+                8 -> {
+                    ref.child("cycling").get().addOnSuccessListener {
+                        if (it.exists()) {
+                            val cyclingPoints = it.getValue<Int>()
+                            if (cyclingPoints != null) {
+                                ref.child("cycling").setValue(cyclingPoints + newPoints)
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("pointsCycling").setValue(cyclingPoints + newPoints)
+                            }
+                        } else {
+                            ref.child("cycling").setValue(newPoints)
+                            leaderboardRef.child(currentUsername).child("pointsSheet")
+                                .child("pointsCycling").setValue(newPoints)
+                        }
+
+                        leaderboardRef.child(currentUsername).child("pointsSheet")
+                            .child("totalPoints").get().addOnSuccessListener { points ->
+                            val totalPoints = points.getValue<Int>()
+                            if (totalPoints != null) {
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("totalPoints").setValue(totalPoints + newPoints)
+                            }
+
+                        }
+                        updateFriends()
+                    }
+                }
+
+                else -> {
+                    ref.child("workout").get().addOnSuccessListener {
+                        if (it.exists()) {
+                            val workoutPoints = it.getValue<Int>()
+                            if (workoutPoints != null) {
+                                ref.child("workout").setValue(workoutPoints + newPoints)
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("pointsWorkout").setValue(workoutPoints + newPoints)
+                            }
+                        } else {
+                            ref.child("workout").setValue(newPoints)
+                            leaderboardRef.child(currentUsername).child("pointsSheet")
+                                .child("pointsWorkout").setValue(newPoints)
+                        }
+
+                        leaderboardRef.child(currentUsername).child("pointsSheet")
+                            .child("totalPoints").get().addOnSuccessListener { points ->
+                            val totalPoints = points.getValue<Int>()
+                            if (totalPoints != null) {
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("totalPoints").setValue(totalPoints + newPoints)
+                            }
+
+                        }
+                        updateFriends()
+                    }
+                }
             }
+
         }
-    }
 }
 

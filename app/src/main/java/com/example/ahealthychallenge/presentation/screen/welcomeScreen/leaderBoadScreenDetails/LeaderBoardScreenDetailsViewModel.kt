@@ -1,5 +1,6 @@
 package com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderBoadScreenDetails
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,11 +10,19 @@ import com.example.ahealthychallenge.data.HealthConnectManager
 import com.example.ahealthychallenge.data.UserPointsSheet
 import com.example.ahealthychallenge.presentation.screen.exercisesessiondetail.ExerciseSessionDetailViewModel
 import com.example.ahealthychallenge.presentation.screen.welcomeScreen.leaderboardScreen.LeaderboardScreenViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
 
 class LeaderBoardScreenDetailsViewModel(
     private val username: String,
 ) : ViewModel() {
     val userPointsSheet: MutableState<UserPointsSheet> = mutableStateOf(UserPointsSheet())
+    private val leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard")
+    var uid = FirebaseAuth.getInstance().currentUser?.uid
+    val database = Firebase.database.reference
 
     private val mockDataFriend = listOf(
         Friend(
@@ -90,13 +99,43 @@ class LeaderBoardScreenDetailsViewModel(
         )
     )
 
-    init{
+    init {
         getUserPointsSheet()
     }
 
     private fun getUserPointsSheet() {
-        val currentFriend = mockDataFriend.filter { friend -> friend.username == username }
-        userPointsSheet.value = currentFriend[0].pointsSheet!!
+        database.child("Users").child(uid!!).get().addOnSuccessListener { it ->
+            if (it.exists()) {
+                val currentUsername = it.value.toString()
+                leaderboardRef.child(currentUsername).child("friends").get()
+                    .addOnSuccessListener { list ->
+                        if (list.exists()) {
+                            val listFriend = list.getValue<List<Friend>>()
+
+                            leaderboardRef.child(currentUsername).child("pointsSheet").get()
+                                .addOnSuccessListener { currentUserPointsSheet ->
+                                    if (currentUserPointsSheet.exists()) {
+                                        val userPoints = currentUserPointsSheet.getValue<UserPointsSheet>()
+                                        val currentUser = listOf(
+                                            Friend(
+                                                username = currentUsername,
+                                                pointsSheet = userPoints
+                                            )
+                                        )
+                                        val leaderboardList = listFriend?.plus(currentUser)
+                                        val currentFriend =
+                                            leaderboardList?.filter { friend -> friend.username == username }
+                                        userPointsSheet.value = currentFriend?.get(0)?.pointsSheet!!
+                                        Log.d(
+                                            "leaderboardDBUG",
+                                            "the list of friend is: ${currentFriend[0].pointsSheet!!}"
+                                        )
+                                    }
+                                }
+                        }
+                    }
+            }
+        }
     }
 }
 

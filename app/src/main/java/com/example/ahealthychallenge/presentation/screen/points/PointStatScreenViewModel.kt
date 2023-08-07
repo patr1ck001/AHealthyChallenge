@@ -158,17 +158,6 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
 
         }
         refer.addValueEventListener(curveLineDataListener)
-
-        refer.get().addOnSuccessListener {
-            val curveLineDataDb = it.getValue<List<LineDataSerializable>>()
-            if (curveLineDataDb != null) {
-                val curveLineList = curveLineDataDb.map { lineData ->
-                    SerializableFactory.getLineData(lineData)
-                }
-                curveLineData.value = curveLineList
-            }
-        }
-
     }
 
     private fun readLineData(pathName: String) {
@@ -178,18 +167,13 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
             .child(pathName)
 
 
-        Log.d("pointStats", "refer $refer")
-        Log.d("pointStats", "refer $uid")
         val lineDataListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("pointStats", "enter")
                 val lineDataDb = snapshot.getValue<List<LineDataSerializable>>()
-                Log.d("pointStats", "deserialized: $lineDataDb")
                 if (lineDataDb != null) {
                     val lineDataList = lineDataDb.map { lineData ->
                         SerializableFactory.getLineData(lineData)
                     }
-                    Log.d("pointStats", "deserialized2: $lineDataList")
 
                     when (pathName) {
                         "walkingLineData" -> walkingLineData.value = lineDataList
@@ -207,9 +191,7 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
         }
         refer.addValueEventListener(lineDataListener)
         refer.get().addOnSuccessListener {
-            Log.d("pointStats", "enter")
             val lineDataDb = it.getValue<List<LineDataSerializable>>()
-            Log.d("pointStats", "deserialized: $lineDataDb")
             if (lineDataDb != null) {
                 val lineDataList = lineDataDb.map { lineData ->
                     SerializableFactory.getLineData(lineData)

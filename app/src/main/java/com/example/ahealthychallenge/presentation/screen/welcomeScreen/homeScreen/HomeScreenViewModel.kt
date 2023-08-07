@@ -2,7 +2,6 @@ package com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScre
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -46,28 +45,23 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
             .child("curveLine")
             .child("curveLineData")
 
-        Log.d("curve", "refer $refer")
+        database.child("Users").child(uid!!).get().addOnSuccessListener { ds ->
+            if (ds.exists()) {
+                val currentUsername = ds.value.toString()
+                val userReference = database
+                    .child("leaderboard")
+                    .child(currentUsername)
 
-        val curveLineDataListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val lineDataDb = snapshot.getValue<List<LineDataSerializable>>()
-                Log.d("curve", "deserialized: $lineDataDb")
-                if (lineDataDb != null) {
-                    val lineDataList = lineDataDb.map { lineData ->
-                        SerializableFactory.getLineData(lineData)
-                    }
-                    Log.d("curve", "deserialized2: $lineDataList")
-                    lineData.value = lineDataList
-                    pointThisMonth.value = lineDataList.map { point -> point.yValue.toInt() }.fold(0) { sum, element -> sum + element }
-
-                    database.child("Users").child(uid!!).get().addOnSuccessListener { ds ->
-                        if (ds.exists()) {
-                            val currentUsername = ds.value.toString()
+                val homePositionButtonDataListener = object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val userData = snapshot.value
+                        if (userData != null) {
                             leaderboardRef.child(currentUsername).child("friends").get()
                                 .addOnSuccessListener { list ->
                                     if (list.exists()) {
                                         val listFriend = list.getValue<List<Friend>>()
-                                        leaderboardRef.child(currentUsername).child("pointsSheet").get()
+                                        leaderboardRef.child(currentUsername).child("pointsSheet")
+                                            .get()
                                             .addOnSuccessListener { currentUserPointsSheet ->
                                                 if (currentUserPointsSheet.exists()) {
                                                     val userPointsSheet =
@@ -81,18 +75,46 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
                                                     )
                                                     val leaderboardList =
                                                         listFriend?.plus(currentUser)
-                                                    positionInLeaderboard.value = leaderboardList?.sortedByDescending { friend -> friend.pointsSheet?.totalPoints }?.indexOf(Friend(
-                                                        firstName = "(me)",
-                                                        username = currentUsername,
-                                                        pointsSheet = userPointsSheet
-                                                    ))!! + 1
+                                                    positionInLeaderboard.value =
+                                                        leaderboardList?.sortedByDescending { friend -> friend.pointsSheet?.totalPoints }
+                                                            ?.indexOf(
+                                                                Friend(
+                                                                    firstName = "(me)",
+                                                                    username = currentUsername,
+                                                                    pointsSheet = userPointsSheet
+                                                                )
+                                                            )!! + 1
                                                     homeScreenLoading.value = false
                                                 }
                                             }
                                     }
                                 }
+                        } else {
+                            homeScreenLoading.value = false
                         }
                     }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w("cancel", "loadPost:onCancelled")
+                    }
+                }
+                userReference.addValueEventListener(homePositionButtonDataListener)
+            }
+        }
+
+        val userMonthlyPointsDataListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val lineDataDb = snapshot.getValue<List<LineDataSerializable>>()
+                Log.d("curve", "deserialized: $lineDataDb")
+                if (lineDataDb != null) {
+                    val lineDataList = lineDataDb.map { lineData ->
+                        SerializableFactory.getLineData(lineData)
+                    }
+                    Log.d("curve", "deserialized2: $lineDataList")
+                    lineData.value = lineDataList
+                    pointThisMonth.value = lineDataList.map { point -> point.yValue.toInt() }
+                        .fold(0) { sum, element -> sum + element }
+
                 } else {
                     homeScreenLoading.value = false
                 }
@@ -102,7 +124,7 @@ class HomeScreenViewModel(private val healthConnectManager: HealthConnectManager
                 Log.w("cancel", "loadPost:onCancelled")
             }
         }
-        refer.addValueEventListener(curveLineDataListener)
+        refer.addValueEventListener(userMonthlyPointsDataListener)
     }
 }
 

@@ -721,9 +721,9 @@ fun writePieDataOnTheDb(exerciseType: Int, newPoints: Int) {
             val currentUsername = user.value.toString()
 
             fun updateFriends() {
-                leaderboardRef.child(currentUsername).child("pointsSheet").get()
-                    .addOnSuccessListener {
-                        val pointsSheet = it.getValue<UserPointsSheet>()
+                val pointsDataListener = object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val pointsSheet = snapshot.getValue<UserPointsSheet>()
                         leaderboardRef.child(currentUsername).child("friends").get()
                             .addOnSuccessListener { list ->
                                 if (list.exists()) {
@@ -749,12 +749,17 @@ fun writePieDataOnTheDb(exerciseType: Int, newPoints: Int) {
                                                         }
                                                     }
                                                 }
-
                                         }
                                     }
                                 }
                             }
                     }
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w("cancel", "loadPost:onCancelled")
+                    }
+                }
+                val pointRef = leaderboardRef.child(currentUsername).child("pointsSheet")
+                pointRef.addValueEventListener(pointsDataListener)
             }
 
 

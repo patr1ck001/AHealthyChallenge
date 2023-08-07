@@ -49,6 +49,8 @@ fun HomeScreen(
     drawerNavController: NavController,
     drawerScope: CoroutineScope,
     scaffoldState: ScaffoldState,
+    positionInLeaderboard: Int,
+    pointTHisMonth: Int
 ) {
     if (navigationType == NavigationType.BOTTOM_NAVIGATION) {
         CompactHomeScreen(
@@ -56,7 +58,9 @@ fun HomeScreen(
             lineData = lineData,
             drawerNavController = drawerNavController,
             drawerScope = drawerScope,
-            scaffoldState = scaffoldState
+            scaffoldState = scaffoldState,
+            positionInLeaderboard = positionInLeaderboard,
+            pointTHisMonth = pointTHisMonth
         )
     } else {
         ExpendedAndMediumHomeScreen(
@@ -64,7 +68,9 @@ fun HomeScreen(
             lineData = lineData,
             drawerNavController = drawerNavController,
             drawerScope = drawerScope,
-            scaffoldState = scaffoldState
+            scaffoldState = scaffoldState,
+            positionInLeaderboard = positionInLeaderboard,
+            pointTHisMonth = pointTHisMonth
         )
     }
 }
@@ -75,7 +81,9 @@ fun CompactHomeScreen(
     lineData: List<LineData>,
     drawerNavController: NavController,
     drawerScope: CoroutineScope,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    positionInLeaderboard: Int,
+    pointTHisMonth: Int
 ) {
 
     val context = LocalContext.current
@@ -198,7 +206,7 @@ fun CompactHomeScreen(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "1",
+                            text = "$positionInLeaderboard",
                             fontSize = 30.sp,
                             textAlign = TextAlign.Center
                         )
@@ -224,7 +232,7 @@ fun CompactHomeScreen(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "10",
+                            text = "$pointTHisMonth",
                             fontSize = 30.sp,
                             textAlign = TextAlign.Center
                         )
@@ -246,7 +254,9 @@ fun ExpendedAndMediumHomeScreen(
     lineData: List<LineData>,
     drawerNavController: NavController,
     drawerScope: CoroutineScope,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    positionInLeaderboard: Int,
+    pointTHisMonth: Int
 ) {
     val context = LocalContext.current
 
@@ -382,7 +392,7 @@ fun ExpendedAndMediumHomeScreen(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "1",
+                            text ="$positionInLeaderboard",
                             fontSize = 30.sp,
                             textAlign = TextAlign.Center
                         )
@@ -408,7 +418,7 @@ fun ExpendedAndMediumHomeScreen(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "10",
+                            text = "$pointTHisMonth",
                             fontSize = 30.sp,
                             textAlign = TextAlign.Center
                         )

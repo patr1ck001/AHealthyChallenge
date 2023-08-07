@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.data.User
+import com.example.ahealthychallenge.data.UserPointsSheet
 import com.example.ahealthychallenge.databinding.ActivityUserBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -24,6 +25,7 @@ class UserActivity: ComponentActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
+    private lateinit var leaderboardRef: DatabaseReference
     private lateinit var storageReference: StorageReference
     private lateinit var imageUri: Uri
     private lateinit var  fileInBytes: ByteArray
@@ -37,6 +39,7 @@ class UserActivity: ComponentActivity() {
 
         auth = FirebaseAuth.getInstance()
         val uid = auth.currentUser?.uid
+        leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard")
         databaseReference = FirebaseDatabase.getInstance().getReference("Users")
 
         circleImageView = binding.profileImage
@@ -65,6 +68,9 @@ class UserActivity: ComponentActivity() {
                         databaseReference.child(username).setValue(user).addOnCompleteListener {
 
                             if(it.isSuccessful){
+                                leaderboardRef.child(username).child("pointsSheet").setValue(
+                                    UserPointsSheet()
+                                )
                                 updateProfilePic(username)
                                 startActivity(Intent(this, HomeActivity::class.java))
                             }else{

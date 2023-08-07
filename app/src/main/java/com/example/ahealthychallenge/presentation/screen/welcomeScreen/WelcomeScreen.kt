@@ -138,7 +138,8 @@ fun WelcomeScreen(
     val navController = rememberNavController()
 
     if (navigationType == NavigationType.BOTTOM_NAVIGATION ||
-        navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER) {
+        navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER
+    ) {
         Scaffold(
             bottomBar = {
                 BottomNavigationBar(
@@ -209,13 +210,17 @@ fun Navigation(
             )
             val curveLineData by viewModel.lineData
             val homeScreenLoading by viewModel.homeScreenLoading
+            val pointTHisMonth by viewModel.pointThisMonth
+            val positionInLeaderboard by viewModel.positionInLeaderboard
             HomeScreen(
                 homeScreenLoading = homeScreenLoading,
                 navigationType = navigationType,
                 lineData = curveLineData,
                 drawerNavController = drawerNavController,
                 drawerScope = drawerScope,
-                scaffoldState = scaffoldState
+                scaffoldState = scaffoldState,
+                pointTHisMonth = pointTHisMonth,
+                positionInLeaderboard = positionInLeaderboard
             )
         }
         composable("profile") {
@@ -224,10 +229,16 @@ fun Navigation(
             )
             val currentUser by viewModel.currentUser
             val profileLoading by viewModel.profileLoading
+            val pointTHisMonth by viewModel.pointThisMonth
+            val positionInLeaderboard by viewModel.positionInLeaderboard
+            val totalFriends by viewModel.totalFriends
             ProfileScreen(
                 navigationType = navigationType,
                 currentUser = currentUser,
-                profileLoading = profileLoading
+                profileLoading = profileLoading,
+                pointTHisMonth = pointTHisMonth,
+                positionInLeaderboard = positionInLeaderboard,
+                totalFriends = totalFriends
             )
         }
         composable("leaderBoard") {
@@ -235,12 +246,12 @@ fun Navigation(
                 factory = LeaderboardScreenViewModelFactory()
             )
             val friends by viewModel.friends
-            val currentUserPointsSheet by viewModel.currentUserPointsSheet
+            val leaderboardLoading by viewModel.leaderboardLoading
 
             LeaderBoardScreen(
                 friends = friends,
-                currentUserPointsSheet = currentUserPointsSheet,
-                onDetailsClick = { username -> navController.navigate("LeaderBoardDetails/$username")}
+                leaderboardLoading = leaderboardLoading,
+                onDetailsClick = { username -> navController.navigate("LeaderBoardDetails/$username") }
             )
         }
 
@@ -250,9 +261,14 @@ fun Navigation(
             val viewModel: LeaderBoardScreenDetailsViewModel = viewModel(
                 factory = LeaderBoardScreenDetailsViewModelFactory(username)
             )
+            val leaderboardDetailLoading by viewModel.leaderboardDetailLoading
             val userPointsSheet by viewModel.userPointsSheet
 
-            LeaderBoardScreenDetails(userPointsSheet)
+            LeaderBoardScreenDetails(
+                userPointsSheet = userPointsSheet,
+                leaderboardDetailLoading = leaderboardDetailLoading
+
+            )
         }
     }
 }
@@ -280,14 +296,14 @@ fun BottomNavigationBar(
                 unselectedContentColor = MaterialTheme.colors.secondary,
                 icon = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                imageVector = item.icon,
-                                contentDescription = item.name,
-                                modifier = Modifier
-                                    .height(30.dp)
-                                    .width(30.dp)
-                                    .testTag("bottomNav")
-                            )
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = item.name,
+                            modifier = Modifier
+                                .height(30.dp)
+                                .width(30.dp)
+                                .testTag("bottomNav")
+                        )
 
                         if (selected) {
                             Text(
@@ -334,13 +350,13 @@ fun NavigationRailBar(
                     unselectedContentColor = MaterialTheme.colors.secondary,
                     icon = {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(
-                                    imageVector = item.icon,
-                                    contentDescription = item.name,
-                                    modifier = Modifier
-                                        .height(30.dp)
-                                        .width(30.dp)
-                                )
+                            Icon(
+                                imageVector = item.icon,
+                                contentDescription = item.name,
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .width(30.dp)
+                            )
 
                             if (selected) {
                                 Text(

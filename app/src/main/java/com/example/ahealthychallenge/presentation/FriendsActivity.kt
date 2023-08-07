@@ -32,7 +32,6 @@ class FriendsActivity : ComponentActivity() {
     private lateinit var progressBar: ProgressBar
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityFriendsBinding.inflate(layoutInflater)
@@ -154,8 +153,8 @@ class FriendsActivity : ComponentActivity() {
                         }
                     }
                 }
-                progressBar.visibility = View.GONE
             }
+            progressBar.visibility = View.GONE
         }
     }
 }

@@ -1,20 +1,22 @@
 package com.example.ahealthychallenge.presentation
 
-import android.app.AlertDialog
-import android.content.DialogInterface
+import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.ComponentActivity
-import androidx.compose.material.AlertDialog
-import androidx.compose.ui.graphics.Color
 import com.example.ahealthychallenge.R
+import com.example.ahealthychallenge.data.Friend
+import com.example.ahealthychallenge.data.UserPointsSheet
+import com.example.ahealthychallenge.data.serializables.LineDataSerializable
 import com.example.ahealthychallenge.databinding.ActivitySearchUserBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.storage.FirebaseStorage
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
@@ -30,6 +32,8 @@ class SearchUserActivity : ComponentActivity() {
     private lateinit var currentUsername: String
     private lateinit var friendUsername: String
     private lateinit var firebaseRef: DatabaseReference
+    private lateinit var leaderboardRef: DatabaseReference
+    private lateinit var firebase: DatabaseReference
     private lateinit var progressBar: ProgressBar
     private var currentState = "not_friends"
 
@@ -38,9 +42,10 @@ class SearchUserActivity : ComponentActivity() {
         val binding = ActivitySearchUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        val firebase = FirebaseDatabase.getInstance().getReference("Users")
+        firebase = FirebaseDatabase.getInstance().getReference("Users")
         val storage = FirebaseStorage.getInstance().getReference("Users")
         firebaseRef = FirebaseDatabase.getInstance().getReference("FriendRequests")
+        leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard")
         val localfile = File.createTempFile("tempImage", "jpeg")
         val user = FirebaseAuth.getInstance().currentUser?.uid
 
@@ -164,7 +169,9 @@ class SearchUserActivity : ComponentActivity() {
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun cancelRequest() {
+         var fnd = Friend(username = null)
         firebaseRef.child(currentUsername).child(friendUsername).removeValue().addOnSuccessListener {
             firebaseRef.child(friendUsername).child(currentUsername).removeValue().addOnSuccessListener {
                 currentState = "not_friends"
@@ -172,14 +179,119 @@ class SearchUserActivity : ComponentActivity() {
                 refuseBtn.visibility = View.GONE
             }
         }
+
+        val ref = leaderboardRef.child(currentUsername).child("friends")
+            ref.get().addOnSuccessListener {
+                if (it.exists()) {
+                    val list =  it.getValue<MutableList<Friend>>()
+                    list?.map{ friend ->
+                        if(friend.username == friendUsername){
+                            fnd = friend
+                        }
+                    }
+
+                    if(fnd.username != null) {
+                        list?.remove(fnd)
+                        ref.setValue(list)
+                    }
+                }
+            }
+        val refer = leaderboardRef.child(friendUsername).child("friends")
+        refer.get().addOnSuccessListener {
+            if (it.exists()) {
+                val list =  it.getValue<MutableList<Friend>>()
+                list?.map{ friend ->
+                    if(friend.username == currentUsername){
+                        fnd = friend
+                    }
+                }
+
+                if(fnd.username != null) {
+                    list?.remove(fnd)
+                    refer.setValue(list)
+                }
+            }
+        }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun acceptRequest() {
         firebaseRef.child(currentUsername).child(friendUsername).child("request_type").setValue("friend").addOnSuccessListener {
             firebaseRef.child(friendUsername).child(currentUsername).child("request_type").setValue("friend").addOnSuccessListener {
                 requestBtn.text = "Delete"
                 refuseBtn.visibility = View.GONE
                 currentState = "friend"
+            }
+        }
+
+        val ref = leaderboardRef.child(currentUsername).child("friends")
+        firebase.child(friendUsername).get().addOnSuccessListener{ friend ->
+            if(friend.exists()){
+                leaderboardRef.child(friendUsername).child("pointsSheet").get().addOnSuccessListener { pnt ->
+                    if (pnt.exists()) {
+                        val points = pnt.getValue<UserPointsSheet>()
+                        ref.get().addOnSuccessListener {
+                            if(it.exists()) {
+                                val list =  it.getValue<MutableList<Friend>>()
+                                list?.add(
+                                    Friend(
+                                        firstName = friend.child("firstName").value.toString(),
+                                        lastName = friend.child("lastName").value.toString(),
+                                        username = friendUsername,
+                                        pointsSheet = points
+                                    )
+                                )
+                                ref.setValue(list)
+                            }
+                            else{
+                                val list = mutableListOf(
+                                    Friend(
+                                        firstName = friend.child("firstName").value.toString(),
+                                        lastName = friend.child("lastName").value.toString(),
+                                        username = friendUsername,
+                                        pointsSheet = points
+                                    )
+                                )
+                                ref.setValue(list)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        val refer = leaderboardRef.child(friendUsername).child("friends")
+        firebase.child(currentUsername).get().addOnSuccessListener { friend ->
+            if(friend.exists()){
+                leaderboardRef.child(currentUsername).child("pointsSheet").get().addOnSuccessListener { pnt ->
+                    if (pnt.exists()) {
+                        val points = pnt.getValue<UserPointsSheet>()
+                        refer.get().addOnSuccessListener {
+                            if(it.exists()) {
+                                val list =  it.getValue<MutableList<Friend>>()
+                                list?.add(
+                                    Friend(
+                                        firstName = friend.child("firstName").value.toString(),
+                                        lastName = friend.child("lastName").value.toString(),
+                                        username = currentUsername,
+                                        pointsSheet = points
+                                    )
+                                )
+                                refer.setValue(list)
+                            }
+                            else{
+                                val list = mutableListOf(
+                                    Friend(
+                                        firstName = friend.child("firstName").value.toString(),
+                                        lastName = friend.child("lastName").value.toString(),
+                                        username = currentUsername,
+                                        pointsSheet = points
+                                    )
+                                )
+                                refer.setValue(list)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

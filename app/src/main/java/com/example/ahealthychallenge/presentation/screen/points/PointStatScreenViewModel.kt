@@ -59,6 +59,48 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
             .child(uid!!)
             .child("pieChart")
             .child("pieChartData")
+
+        val pieChartDataListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                //we check is the list of session on the database is up to date
+                val dbMap = snapshot.getValue<Map<String, Int>>()
+                if (dbMap != null) {
+                    if (dbMap["walking"] != null) {
+                        walkingPoints = dbMap["walking"]!!
+                    }
+
+                    if (dbMap["running"] != null) {
+                        runningPoints = dbMap["running"]!!
+
+                    }
+
+                    if (dbMap["cycling"] != null) {
+                        cyclingPoints = dbMap["cycling"]!!
+                    }
+
+                    if (dbMap["workout"] != null) {
+                        workoutPoints = dbMap["workout"]!!
+                    }
+
+                    pieData.value = listOf(
+                        PieData(walkingPoints.toFloat()),
+                        PieData(runningPoints.toFloat()),
+                        PieData(cyclingPoints.toFloat()),
+                        PieData(workoutPoints.toFloat())
+
+                    )
+                    pieDataMap.value = dbMap
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("cancel", "loadPost:onCancelled")
+            }
+
+        }
+
+        ref.addValueEventListener(pieChartDataListener)
+
         ref.get().addOnSuccessListener {
             //we check is the list of session on the database is up to date
             val dbMap = it.getValue<Map<String, Int>>()
@@ -116,17 +158,6 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
 
         }
         refer.addValueEventListener(curveLineDataListener)
-
-        refer.get().addOnSuccessListener {
-            val curveLineDataDb = it.getValue<List<LineDataSerializable>>()
-            if (curveLineDataDb != null) {
-                val curveLineList = curveLineDataDb.map { lineData ->
-                    SerializableFactory.getLineData(lineData)
-                }
-                curveLineData.value = curveLineList
-            }
-        }
-
     }
 
     private fun readLineData(pathName: String) {
@@ -136,18 +167,13 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
             .child(pathName)
 
 
-        Log.d("pointStats", "refer $refer")
-        Log.d("pointStats", "refer $uid")
         val lineDataListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("pointStats", "enter")
                 val lineDataDb = snapshot.getValue<List<LineDataSerializable>>()
-                Log.d("pointStats", "deserialized: $lineDataDb")
                 if (lineDataDb != null) {
                     val lineDataList = lineDataDb.map { lineData ->
                         SerializableFactory.getLineData(lineData)
                     }
-                    Log.d("pointStats", "deserialized2: $lineDataList")
 
                     when (pathName) {
                         "walkingLineData" -> walkingLineData.value = lineDataList
@@ -165,9 +191,7 @@ class PointStatScreenViewModel(private val healthConnectManager: HealthConnectMa
         }
         refer.addValueEventListener(lineDataListener)
         refer.get().addOnSuccessListener {
-            Log.d("pointStats", "enter")
             val lineDataDb = it.getValue<List<LineDataSerializable>>()
-            Log.d("pointStats", "deserialized: $lineDataDb")
             if (lineDataDb != null) {
                 val lineDataList = lineDataDb.map { lineData ->
                     SerializableFactory.getLineData(lineData)

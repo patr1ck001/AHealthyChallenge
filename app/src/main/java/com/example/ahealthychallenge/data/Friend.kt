@@ -10,5 +10,5 @@ data class Friend(
     var bitmap: Bitmap? = null,
     var username: String? = null,
     var currentUsername: String? = null,
-    val pointsSheet: UserPointsSheet? = null,
+    var pointsSheet: UserPointsSheet? = null,
 )

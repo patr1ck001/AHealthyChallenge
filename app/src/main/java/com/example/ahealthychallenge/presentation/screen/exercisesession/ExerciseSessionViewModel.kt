@@ -187,7 +187,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                 val exerciseType = record.exerciseType
                 writePieDataOnTheDb(exerciseType, newPoints)
                 writeCurveLineDataOnTheDb(newPoints)
-                val pathString = when(exerciseType) {
+                val pathString = when (exerciseType) {
                     8 -> "bikingLineData"
                     56 -> "runningLineData"
                     79 -> "walkingLineData"
@@ -198,46 +198,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             writeLastInstantInDb(SerializableFactory.getInstantSerializable(Instant.now()))
         }
 
-        /*val curveLineData = listOf(
-            LineDataSerializable(1, 3F),
-            LineDataSerializable(2, 15F),
-            LineDataSerializable(3, 9F),
-            LineDataSerializable(4, 3F),
-            LineDataSerializable(5, 34F),
-            LineDataSerializable(6, 23F),
-            LineDataSerializable(7, 19F),
-            LineDataSerializable(8, 20F),
-            LineDataSerializable(9, 15F),
-            LineDataSerializable(10, 17F),
-            LineDataSerializable(11, 17F),
-            LineDataSerializable(12, 13F),
-            LineDataSerializable(13, 20F),
-            LineDataSerializable(14, 22F),
-            LineDataSerializable(15, 23F),
-            LineDataSerializable(16, 10F),
-            LineDataSerializable(17, 14F),
-            LineDataSerializable(18, 23F),
-        )
-
-        database.child("pointStats")
-            .child("userID")
-            .child("workoutLineData")
-            .setValue(curveLineData)
-
-        Log.d("curve", "success")
-        val refer = database.child("pointStats")
-            .child("userID")
-            .child("workoutLineData")
-
-        refer.get().addOnSuccessListener {
-            val curveLineDataDb = it.getValue<List<LineDataSerializable>>()
-            if (curveLineDataDb != null) {
-                val curveLineList = curveLineDataDb.map { lineData ->
-                    SerializableFactory.getLineData(lineData)
-                }
-                Log.d("curve", "the data are: $curveLineList")
-            }
-        }*/
         var dailyDuration = Duration.ofSeconds(0)
         var dailyPoints = 0
         sessions.forEach {
@@ -247,74 +207,8 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
 
         val dailySessionsSummary = DailySessionsSummary(today, dailyDuration, dailyPoints)
         val todaySessionsList = DailySessionsList(dailySessionsSummary, sessions)
-
-        Log.d("exooo", "session $sessionsList")
-
         val todaySessionsListSerializable =
             SerializableFactory.getDailySessionsListSerializable(todaySessionsList)
-        // write in the realtime database
-        //TODO: add a loading animation when the data is retrieved
-        //TODO: update the database with the sessionsList of today at the position of a list of
-        // DailySessionsList, and then retrieve from the database a list of DailySessionsList
-
-        // set the database for the first time
-        /*// we need to have a list of key, so we push at least 2 sessions
-        // first session
-        val dailySessionsSummary1 = DailySessionsSummary(today.minusDays(2), dailyDuration)
-        val todaySessionsList1 = DailySessionsList(dailySessionsSummary1, sessions)
-        val todaySessionsListSerializable1 =
-            SerializableFactory.getDailySessionsListSerializable(todaySessionsList1)
-
-        // push
-        val ref = database.child("exerciseSessions")
-            .child("userID")
-            .child("exerciseSessions")
-
-        val newChildRef1 = ref.push()
-        val newKey1 = newChildRef1.key
-        if (newKey1 != null) {
-            // push today sessions
-            newChildRef1.setValue(todaySessionsListSerializable1)
-
-            // add the list of keys
-            val newDailyExerciseSessionKey1 = DailyExerciseSessionKey(today.minusDays(2), newKey1)
-            val newDailyExerciseSessionKeySerializable1 =
-                SerializableFactory.getDailyExerciseSessionKeySerializable(
-                    newDailyExerciseSessionKey1
-                )
-            database.child("exerciseSessions")
-                .child("userID")
-                .child("keys")
-                .child("0")
-                .setValue(newDailyExerciseSessionKeySerializable1)
-        }
-
-        // second session
-        val dailySessionsSummary2 = DailySessionsSummary(today.minusDays(1), dailyDuration)
-        val todaySessionsList2 = DailySessionsList(dailySessionsSummary2, sessions)
-        val todaySessionsListSerializable2 =
-            SerializableFactory.getDailySessionsListSerializable(todaySessionsList2)
-
-
-        val newChildRef2 = ref.push()
-        val newKey2 = newChildRef2.key
-        if (newKey2 != null) {
-            // push today sessions
-            newChildRef2.setValue(todaySessionsListSerializable2)
-
-            // add the list of keys
-            val newDailyExerciseSessionKey2 = DailyExerciseSessionKey(today.minusDays(1), newKey2)
-            val newDailyExerciseSessionKeySerializable2 =
-                SerializableFactory.getDailyExerciseSessionKeySerializable(
-                    newDailyExerciseSessionKey2
-                )
-            database.child("exerciseSessions")
-                .child("userID")
-                .child("keys")
-                .child("1")
-                .setValue(newDailyExerciseSessionKeySerializable2)
-        }*/
-
 
         database.child("exerciseSessions")
             .child(uid!!)
@@ -357,8 +251,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                                             .setValue(todaySessionsListSerializable)
                                     }
                                 }
-                            }.addOnFailureListener {
-                                Log.e(TAG, "Error getting data", it)
                             }
                         loading.value = false
                     } else {
@@ -408,54 +300,6 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                         newUserRef.child("keys").setValue(userDbKeys)
                     }
                 }
-
-
-                // log for testing purpose
-                /*database.child("exerciseSessions").child(uid!!).child("keys").get()
-                    .addOnSuccessListener {
-                        val dbKeysTest =
-                            it.getValue<MutableList<DailyExerciseSessionKeySerializable>>()
-                        if (dbKeysTest != null) {
-                            Log.d("dbKey", "the keys of the db are: $dbKeysTest")
-                            //Deserialize
-                            val keys: List<DailyExerciseSessionKey> = dbKeysTest.map { key ->
-                                SerializableFactory.getDailyExerciseSessionKey(key)
-                            }
-                            // verify if we already pushed a key today
-                            val todaySKey = keys.filter {
-                                it.date == today
-                            }
-                            if (todaySKey.size == 1) {
-                                isTodaySessionPushed = true
-                                todaySessionKey = todaySKey[0].key
-                                Log.d("dbKey", "today key already uploaded: $todaySessionKey")
-                            }
-
-                            //retrieve the session with the corresponding key
-                            val ref = database
-                                .child("exerciseSessions")
-                                .child(uid!!)
-                                .child("exerciseSessions")
-
-                            if (isTodaySessionPushed) {
-                                ref.child(todaySessionKey).get().addOnSuccessListener {
-                                    //we check is the list of session on the database is up to date
-                                    val dbTodaySession =
-                                        it.getValue<DailySessionsListSerializable>()
-                                    if (dbTodaySession != null) {
-                                        Log.d(
-                                            "dbKey",
-                                            "summary: ${dbTodaySession.dailySessionsSummary}"
-                                        )
-                                        Log.d(
-                                            "dbKey",
-                                            "exercises: ${dbTodaySession.exerciseSessions}"
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }*/
             }
 
 
@@ -590,15 +434,11 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             .child("curveLine")
             .child("curveLineData")
 
-        Log.d("curve", "1")
         refer.get().addOnSuccessListener {
-            Log.d("curve", "3")
-            Log.d("curve", "before")
             val dayOfMonth = ZonedDateTime.now().dayOfMonth
             var isTodayPresent = false
             if (it.exists()) {
                 val curveLineDataDb = it.getValue<MutableList<LineDataSerializable>>()
-                Log.d("curve", "deserialized: $curveLineDataDb")
                 if (curveLineDataDb != null) {
                     curveLineDataDb.map { lineData ->
                         if (lineData.xvalue == dayOfMonth) {
@@ -611,7 +451,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
                     if (!isTodayPresent) {
                         curveLineDataDb.add(LineDataSerializable(dayOfMonth, newPoints.toFloat()))
                     }
-                    Log.d("curve", "about to serialize: $curveLineDataDb")
+                    Log.d("lineDataCurve", "about to serialize: $curveLineDataDb")
 
                     refer.setValue(curveLineDataDb)
                 }
@@ -708,69 +548,175 @@ fun getPoints(exerciseSessionData: ExerciseSessionData): Int {
 }
 
 fun writePieDataOnTheDb(exerciseType: Int, newPoints: Int) {
+    val firebase = FirebaseDatabase.getInstance().getReference("Users")
+    val leaderboardRef = FirebaseDatabase.getInstance().getReference("leaderboard")
     val database = Firebase.database.reference
     val ref = database.child("pointStats")
         .child(FirebaseAuth.getInstance().currentUser?.uid!!)
         .child("pieChart")
         .child("pieChartData")
 
-    when (exerciseType) {
-        56 -> {
-            ref.child("running").get().addOnSuccessListener {
-                if (it.exists()) {
-                    val runningPoints = it.getValue<Int>()
-                    if (runningPoints != null) {
-                        ref.child("running").setValue(runningPoints + newPoints)
+    firebase.child(FirebaseAuth.getInstance().currentUser?.uid!!).get()
+        .addOnSuccessListener { user ->
+            val currentUsername = user.value.toString()
+
+            fun updateFriends() {
+                val pointsDataListener = object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val pointsSheet = snapshot.getValue<UserPointsSheet>()
+                        leaderboardRef.child(currentUsername).child("friends").get()
+                            .addOnSuccessListener { list ->
+                                if (list.exists()) {
+                                    val listFriend = list.getValue<MutableList<Friend>>()
+                                    if (listFriend != null) {
+                                        for (friend in listFriend) {
+                                            leaderboardRef.child(friend.username.toString())
+                                                .child("friends").get()
+                                                .addOnSuccessListener { list2 ->
+                                                    if (list2.exists()) {
+                                                        val listFriend2 =
+                                                            list2.getValue<MutableList<Friend>>()
+                                                        if (listFriend2 != null) {
+                                                            for (friend2 in listFriend2) {
+                                                                if (friend2.username.toString() == currentUsername) {
+                                                                    friend2.pointsSheet =
+                                                                        pointsSheet
+                                                                }
+                                                            }
+                                                            leaderboardRef.child(friend.username.toString())
+                                                                .child("friends")
+                                                                .setValue(listFriend2)
+                                                        }
+                                                    }
+                                                }
+                                        }
+                                    }
+                                }
+                            }
                     }
-                } else {
-                    ref.child("running").setValue(newPoints)
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w("cancel", "loadPost:onCancelled")
+                    }
+                }
+                val pointRef = leaderboardRef.child(currentUsername).child("pointsSheet")
+                pointRef.addValueEventListener(pointsDataListener)
+            }
+
+
+            when (exerciseType) {
+                56 -> {
+                    ref.child("running").get().addOnSuccessListener {
+                        if (it.exists()) {
+                            val runningPoints = it.getValue<Int>()
+                            if (runningPoints != null) {
+                                ref.child("running").setValue(runningPoints + newPoints)
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("pointRunning").setValue(runningPoints + newPoints)
+                            }
+                        } else {
+                            ref.child("running").setValue(newPoints)
+                            leaderboardRef.child(currentUsername).child("pointsSheet")
+                                .child("pointRunning").setValue(newPoints)
+                        }
+
+                        leaderboardRef.child(currentUsername).child("pointsSheet")
+                            .child("totalPoints").get().addOnSuccessListener { points ->
+                                val totalPoints = points.getValue<Int>()
+                                if (totalPoints != null) {
+                                    leaderboardRef.child(currentUsername).child("pointsSheet")
+                                        .child("totalPoints").setValue(totalPoints + newPoints)
+                                }
+                            }
+                        updateFriends()
+                    }
                 }
 
-            }
-        }
+                79 -> {
+                    ref.child("walking").get().addOnSuccessListener {
+                        if (it.exists()) {
+                            val walkingPoints = it.getValue<Int>()
+                            if (walkingPoints != null) {
+                                ref.child("walking").setValue(walkingPoints + newPoints)
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("pointsWalking").setValue(walkingPoints + newPoints)
+                            }
+                        } else {
+                            ref.child("walking").setValue(newPoints)
+                            leaderboardRef.child(currentUsername).child("pointsSheet")
+                                .child("pointsWalking").setValue(newPoints)
+                        }
 
-        79 -> {
-            ref.child("walking").get().addOnSuccessListener {
-                if (it.exists()) {
-                    val walkingPoints = it.getValue<Int>()
-                    if (walkingPoints != null) {
-                        ref.child("walking").setValue(walkingPoints + newPoints)
+                        leaderboardRef.child(currentUsername).child("pointsSheet")
+                            .child("totalPoints").get().addOnSuccessListener { points ->
+                                val totalPoints = points.getValue<Int>()
+                                if (totalPoints != null) {
+                                    leaderboardRef.child(currentUsername).child("pointsSheet")
+                                        .child("totalPoints").setValue(totalPoints + newPoints)
+                                }
+
+                            }
+                        updateFriends()
                     }
-                } else {
-                    ref.child("walking").setValue(newPoints)
                 }
 
-            }
-        }
+                8 -> {
+                    ref.child("cycling").get().addOnSuccessListener {
+                        if (it.exists()) {
+                            val cyclingPoints = it.getValue<Int>()
+                            if (cyclingPoints != null) {
+                                ref.child("cycling").setValue(cyclingPoints + newPoints)
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("pointsCycling").setValue(cyclingPoints + newPoints)
+                            }
+                        } else {
+                            ref.child("cycling").setValue(newPoints)
+                            leaderboardRef.child(currentUsername).child("pointsSheet")
+                                .child("pointsCycling").setValue(newPoints)
+                        }
 
-        8 -> {
-            ref.child("cycling").get().addOnSuccessListener {
-                if (it.exists()) {
-                    val cyclingPoints = it.getValue<Int>()
-                    if (cyclingPoints != null) {
-                        ref.child("cycling").setValue(cyclingPoints + newPoints)
+                        leaderboardRef.child(currentUsername).child("pointsSheet")
+                            .child("totalPoints").get().addOnSuccessListener { points ->
+                                val totalPoints = points.getValue<Int>()
+                                if (totalPoints != null) {
+                                    leaderboardRef.child(currentUsername).child("pointsSheet")
+                                        .child("totalPoints").setValue(totalPoints + newPoints)
+                                }
+
+                            }
+                        updateFriends()
                     }
-                } else {
-                    ref.child("cycling").setValue(newPoints)
                 }
 
-            }
-        }
+                else -> {
+                    ref.child("workout").get().addOnSuccessListener {
+                        if (it.exists()) {
+                            val workoutPoints = it.getValue<Int>()
+                            if (workoutPoints != null) {
+                                ref.child("workout").setValue(workoutPoints + newPoints)
+                                leaderboardRef.child(currentUsername).child("pointsSheet")
+                                    .child("pointsWorkout").setValue(workoutPoints + newPoints)
+                            }
+                        } else {
+                            ref.child("workout").setValue(newPoints)
+                            leaderboardRef.child(currentUsername).child("pointsSheet")
+                                .child("pointsWorkout").setValue(newPoints)
+                        }
 
-        else -> {
-            ref.child("workout").get().addOnSuccessListener {
-                if (it.exists()) {
-                    val workoutPoints = it.getValue<Int>()
-                    if (workoutPoints != null) {
-                        ref.child("workout").setValue(workoutPoints + newPoints)
+                        leaderboardRef.child(currentUsername).child("pointsSheet")
+                            .child("totalPoints").get().addOnSuccessListener { points ->
+                                val totalPoints = points.getValue<Int>()
+                                if (totalPoints != null) {
+                                    leaderboardRef.child(currentUsername).child("pointsSheet")
+                                        .child("totalPoints").setValue(totalPoints + newPoints)
+                                }
+
+                            }
+                        updateFriends()
                     }
-                } else {
-                    ref.child("workout").setValue(newPoints)
                 }
-
             }
+
         }
-    }
-    Log.d("write", "write in db $exerciseType")
 }
 

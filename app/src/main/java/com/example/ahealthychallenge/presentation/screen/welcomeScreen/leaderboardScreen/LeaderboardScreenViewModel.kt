@@ -26,7 +26,6 @@ class LeaderboardScreenViewModel() : ViewModel() {
     var leaderboardLoading: MutableState<Boolean> = mutableStateOf(true)
 
 
-
     init {
         leaderboardLoading.value = true
         readFriends()
@@ -64,19 +63,24 @@ class LeaderboardScreenViewModel() : ViewModel() {
                                                         .addOnSuccessListener { user ->
                                                             if (user.exists()) {
                                                                 //lateinit var bitmap: Bitmap
-                                                                storage.child(it1).getFile(localFile)
+                                                                storage.child(it1)
+                                                                    .getFile(localFile)
                                                                     .addOnSuccessListener {
                                                                         val bitmap =
                                                                             BitmapFactory.decodeFile(
                                                                                 localFile.absolutePath
                                                                             )
                                                                         friend.bitmap = bitmap
-                                                                        Log.d("leaderboardDBUG", "i: $i size: ${leaderboardList.size}")
-                                                                        if(i == leaderboardList.size){
+                                                                        Log.d(
+                                                                            "leaderboardDBUG",
+                                                                            "i: $i size: ${leaderboardList.size}"
+                                                                        )
+                                                                        if (i == leaderboardList.size) {
                                                                             // sort in descending order
                                                                             friends.value =
                                                                                 leaderboardList.sortedByDescending { friend -> friend.pointsSheet?.totalPoints }
-                                                                            leaderboardLoading.value = false
+                                                                            leaderboardLoading.value =
+                                                                                false
                                                                         }
                                                                         i++
                                                                     }
@@ -87,11 +91,12 @@ class LeaderboardScreenViewModel() : ViewModel() {
                                         }
                                     }
                                 }
+                        } else {
+                            leaderboardLoading.value = false
                         }
                     }
             }
         }
-        //friends.value = mockDataFriend
     }
 
 }

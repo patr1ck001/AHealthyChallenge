@@ -46,7 +46,9 @@ class PointStatScreenKtTest {
                 walkingLineData = lineChartData,
                 runningLineData = lineChartData,
                 bikingLineData = lineChartData,
-                workoutLineData = lineChartData
+                workoutLineData = lineChartData,
+                pointStatScreenLoading = false,
+                pieDataMap = mapOf()
             )
         }
         composeTestRule.onNode(hasText("Points per exercise type")).assertExists()
@@ -64,7 +66,9 @@ class PointStatScreenKtTest {
                 walkingLineData = lineChartData,
                 runningLineData = lineChartData,
                 bikingLineData = lineChartData,
-                workoutLineData = lineChartData
+                workoutLineData = lineChartData,
+                pointStatScreenLoading = false,
+                pieDataMap = mapOf()
             )
         }
         composeTestRule.onNode(hasScrollToIndexAction()).performScrollToKey(4)
@@ -83,7 +87,9 @@ class PointStatScreenKtTest {
                 walkingLineData = lineChartData,
                 runningLineData = lineChartData,
                 bikingLineData = lineChartData,
-                workoutLineData = lineChartData
+                workoutLineData = lineChartData,
+                pointStatScreenLoading = false,
+                pieDataMap = mapOf()
             )
         }
         composeTestRule.onNode(hasScrollToIndexAction()).performScrollToKey(6)
@@ -103,7 +109,9 @@ class PointStatScreenKtTest {
                 walkingLineData = lineChartData,
                 runningLineData = lineChartData,
                 bikingLineData = lineChartData,
-                workoutLineData = lineChartData
+                workoutLineData = lineChartData,
+                pointStatScreenLoading = false,
+                pieDataMap = mapOf()
             )
         }
         composeTestRule.onNode(hasScrollToIndexAction()).performScrollToKey(8)
@@ -122,7 +130,9 @@ class PointStatScreenKtTest {
                 walkingLineData = lineChartData,
                 runningLineData = lineChartData,
                 bikingLineData = lineChartData,
-                workoutLineData = lineChartData
+                workoutLineData = lineChartData,
+                pointStatScreenLoading = false,
+                pieDataMap = mapOf()
             )
         }
         composeTestRule.onNode(hasScrollToIndexAction()).performScrollToKey(10)
@@ -140,7 +150,9 @@ class PointStatScreenKtTest {
                 walkingLineData = lineChartData,
                 runningLineData = lineChartData,
                 bikingLineData = lineChartData,
-                workoutLineData = lineChartData
+                workoutLineData = lineChartData,
+                pointStatScreenLoading = false,
+                pieDataMap = mapOf()
             )
         }
         composeTestRule.onNode(hasScrollToIndexAction()).performScrollToKey(12)

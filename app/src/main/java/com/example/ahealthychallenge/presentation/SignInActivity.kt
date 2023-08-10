@@ -20,8 +20,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 
-class SignInActivity:  ComponentActivity() {
+class SignInActivity:  ComponentActivity(), ToastHelper {
 
+
+    //var for test only
+    var toastHelper: ToastHelper? = null
 
     val RC_SIGN_IN: Int = 1
     lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -84,11 +87,11 @@ class SignInActivity:  ComponentActivity() {
                             databaseReference.child(user.uid).get().addOnSuccessListener { it ->
                                 if(it.exists() && user.isEmailVerified){
                                     startActivity(Intent(this, HomeActivity::class.java))
-                                    Toast.makeText(this, "signed in successfully", Toast.LENGTH_LONG).show()
+                                    showToast("signed in successfully")
                                     finish()
                                 }
                                 else if(!(user.isEmailVerified)){
-                                    Toast.makeText(this, "User isn't verified. Check your email !", Toast.LENGTH_SHORT).show();
+                                   showToast("User isn't verified. Check your email !")
                                 }
                                 else {
                                     val intent = Intent(this, UserActivity::class.java)
@@ -97,7 +100,7 @@ class SignInActivity:  ComponentActivity() {
                             }
                         }
                     } else {
-                        Toast.makeText(this, "sign in failed", Toast.LENGTH_LONG).show()
+                        showToast("sign in failed")
                     }
                 }
         } else {
@@ -120,7 +123,7 @@ class SignInActivity:  ComponentActivity() {
                 if (it.exists()) {
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
-                    Toast.makeText(this, "welcome back", Toast.LENGTH_LONG).show()
+                    showToast("welcome back")
                     finish()
                 }
             }
@@ -180,6 +183,13 @@ class SignInActivity:  ComponentActivity() {
                 Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    override fun showToast(message: String) {
+        //for test only
+        toastHelper?.showToast(message)
+
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
 }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id = "@+id/signInActivity"
     tools:context="com.example.ahealthychallenge.presentation.SignInActivity"
     tools:ignore="Autofill, LabelFor">
 

@@ -1,4 +1,4 @@
-package com.example.ahealthychallenge.presentation.screen.points
+package com.example.ahealthychallenge.presentation.screen.welcomeScreen.homeScreen
 
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,8 +39,9 @@ class HomeScreenTest {
         LineData(20F, 25F),
     )
 
+    /*does work*/
     @Test
-    fun pointMonthTextTest() {
+    fun pointMonthAndPositionTextTest() {
         composeTestRule.setContent {
             val navController = rememberNavController()
             val scope = rememberCoroutineScope()
@@ -50,10 +51,14 @@ class HomeScreenTest {
                 lineData = lineChartData,
                 drawerNavController = navController,
                 drawerScope = scope,
-                scaffoldState = scaffoldState
+                scaffoldState = scaffoldState,
+                homeScreenLoading = false,
+                pointTHisMonth = 10,
+                positionInLeaderboard = 1
             )
         }
-        composeTestRule.onNode(hasText("Points this month")).assertExists()
+        composeTestRule.onNode(hasText("10")).assertExists()
+        composeTestRule.onNode(hasText("1")).assertExists()
         composeTestRule.onRoot().printToLog("currentLabelExists")
     }
 
@@ -68,7 +73,10 @@ class HomeScreenTest {
                 lineData = lineChartData,
                 drawerNavController = navController,
                 drawerScope = scope,
-                scaffoldState = scaffoldState
+                scaffoldState = scaffoldState,
+                homeScreenLoading = false,
+                pointTHisMonth = 10,
+                positionInLeaderboard = 1
             )
         }
 

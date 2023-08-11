@@ -1,4 +1,4 @@
-package com.example.ahealthychallenge.presentation.screen.points
+package com.example.ahealthychallenge.presentation.screen.welcomeScreen
 
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.getValue
@@ -42,7 +42,7 @@ class WelcomeScreenTest {
 
         composeTestRule.onNode(hasContentDescription("Home")).performClick().assertExists()
         composeTestRule.onNode(hasContentDescription("LeaderBoard")).performClick().assertExists()
-        composeTestRule.onNode(hasContentDescription("Friends")).performClick().assertExists()
+        composeTestRule.onNode(hasContentDescription("Profile")).performClick().assertExists()
         composeTestRule.onRoot().printToLog("currentLabelExists")
     }
 }

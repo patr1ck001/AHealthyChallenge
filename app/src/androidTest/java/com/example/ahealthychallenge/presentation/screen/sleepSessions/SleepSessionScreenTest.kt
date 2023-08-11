@@ -1,18 +1,10 @@
-package com.example.ahealthychallenge.presentation.screen.screens
+package com.example.ahealthychallenge.presentation.screen.sleepSessions
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.printToLog
-import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.SleepStageRecord
-import androidx.health.connect.client.records.SpeedRecord
-import androidx.health.connect.client.units.Energy
-import androidx.health.connect.client.units.Length
-import androidx.health.connect.client.units.Velocity
-import com.example.ahealthychallenge.data.ExerciseSessionData
 import com.example.ahealthychallenge.data.SleepSessionData
-import com.example.ahealthychallenge.presentation.screen.exercisesessiondetail.ExerciseSessionDetailScreen
-import com.example.ahealthychallenge.presentation.screen.exercisesessiondetail.ExerciseSessionDetailViewModel
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionScreen
 import com.example.ahealthychallenge.presentation.screen.sleepsession.SleepSessionViewModel
 import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
@@ -20,8 +12,6 @@ import org.junit.Rule
 import org.junit.Test
 import java.time.Duration
 import java.time.ZonedDateTime
-import java.util.UUID
-import kotlin.random.Random
 
 class SleepSessionScreenTest {
 

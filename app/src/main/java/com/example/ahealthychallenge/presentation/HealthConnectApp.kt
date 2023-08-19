@@ -79,7 +79,8 @@ const val TAG = "Health Connect sample"
 @Composable
 fun HealthConnectApp(
     healthConnectManager: HealthConnectManager,
-    activity: Activity
+    activity: Activity,
+    hasFriendRequest: Boolean
 ) {
     val windowSize = calculateWindowSizeClass(activity).widthSizeClass
     val navigationType: NavigationType
@@ -117,10 +118,15 @@ fun HealthConnectApp(
         val scope = rememberCoroutineScope()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
+        var icon = R.drawable.group_svgrepo_com
 
         val availability by healthConnectManager.availability
         var mDisplayMenu by remember { mutableStateOf(false) }
         val context = LocalContext.current
+
+        if(hasFriendRequest){
+            icon = R.drawable.group_outline_badged_svgrepo_com
+        }
 
         if (navigationType != NavigationType.PERMANENT_NAVIGATION_DRAWER) {
             Scaffold(
@@ -162,7 +168,7 @@ fun HealthConnectApp(
                             }
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.ic_friends),
+                                    painter = painterResource(id = icon),
                                     stringResource(id = R.string.add_friend),
                                     modifier = Modifier.height(45.dp),
                                     tint = Color.White

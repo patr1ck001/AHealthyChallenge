@@ -439,6 +439,7 @@ class ExerciseSessionViewModel(private val healthConnectManager: HealthConnectMa
             var isTodayPresent = false
             if (it.exists()) {
                 val curveLineDataDb = it.getValue<MutableList<LineDataSerializable>>()
+                Log.d("debugExercise","the curve is: $curveLineDataDb")
                 if (curveLineDataDb != null) {
                     curveLineDataDb.map { lineData ->
                         if (lineData.xvalue == dayOfMonth) {

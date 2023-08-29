@@ -117,7 +117,7 @@ fun LeaderBoardScreen(
                                             Text(
                                                 text = username,
                                                 textAlign = TextAlign.Center,
-                                                color = HealthConnectBlue,
+                                                color = MaterialTheme.colors.primary,
                                                 fontSize = 20.sp,
                                                 fontWeight = FontWeight.Bold
                                             )

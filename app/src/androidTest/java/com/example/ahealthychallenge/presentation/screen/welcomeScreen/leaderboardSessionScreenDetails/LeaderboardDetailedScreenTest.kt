@@ -22,7 +22,7 @@ class LeaderboardDetailedScreenTest {
                 userPointsSheet = UserPointsSheet(
                     pointsWalking = 2,
                     pointsCycling = 5,
-                    totalPoints = 15,
+                    totalPoints = 7,
                 ),
                 leaderboardDetailLoading = false
             )

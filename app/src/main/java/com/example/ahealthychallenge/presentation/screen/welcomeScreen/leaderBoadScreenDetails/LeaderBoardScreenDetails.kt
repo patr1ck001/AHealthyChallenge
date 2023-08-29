@@ -50,15 +50,16 @@ fun LeaderBoardScreenDetails(
                 .padding(start = 16.dp),
         ) {
 
+            Spacer(modifier = Modifier.height(30.dp))
             Column(
                 modifier = Modifier.weight(1f),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (userPointsSheet.pointsWalking != 0) {
+                if (userPointsSheet.pointsWalking != 0) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Card(
                             elevation = 10.dp,
                             shape = CircleShape,

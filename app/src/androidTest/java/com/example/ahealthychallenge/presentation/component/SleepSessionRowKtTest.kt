@@ -14,6 +14,7 @@ import com.example.ahealthychallenge.presentation.theme.HealthConnectTheme
 import org.junit.Rule
 import org.junit.Test
 import java.time.Duration
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class SleepSessionRowKtTest {
@@ -25,7 +26,7 @@ class SleepSessionRowKtTest {
     fun dateTextIsDisplayed() {
         composeTestRule.setContent {
             HealthConnectTheme {
-                val end = ZonedDateTime.now()
+                val end = ZonedDateTime.of(2023, 8, 9, 12, 0, 0, 0,  ZonedDateTime.now().zone)
                 val start = end.minusHours(1)
                 Column {
                     SleepSessionRow(
@@ -54,7 +55,7 @@ class SleepSessionRowKtTest {
             }
         }
 
-        composeTestRule.onNode(hasText("Wed, 12 Jul")).assertExists().assertIsDisplayed()
+        composeTestRule.onNode(hasText("Wed, 9 Aug")).assertExists().assertIsDisplayed()
         composeTestRule.onRoot().printToLog("currentLabelExists")
     }
 

@@ -31,8 +31,6 @@ import androidx.navigation.NavController
 import com.example.ahealthychallenge.R
 import com.example.ahealthychallenge.presentation.component.CircularProgressBar
 import com.example.ahealthychallenge.presentation.navigation.Screen
-import com.example.ahealthychallenge.presentation.theme.HealthConnectBlue
-import com.example.ahealthychallenge.presentation.theme.HealthConnectGreen
 import com.example.ahealthychallenge.presentation.utils.NavigationType
 import com.himanshoe.charty.common.axis.AxisConfig
 import com.himanshoe.charty.line.LineChart
@@ -136,16 +134,16 @@ fun CompactHomeScreen(
                                     .align(Alignment.CenterHorizontally)
                                     .padding(bottom = 50.dp)
                                     .weight(1f),
-                                color = HealthConnectBlue,
+                                color = MaterialTheme.colors.primary,
                                 lineData = lineData,
                                 axisConfig = AxisConfig(
                                     showAxis = true,
                                     showUnitLabels = true,
                                     isAxisDashed = true,
                                     showXLabels = true,
-                                    textColor = HealthConnectBlue,
-                                    xAxisColor = HealthConnectBlue,
-                                    yAxisColor = HealthConnectGreen
+                                    textColor = MaterialTheme.colors.primary,
+                                    xAxisColor = MaterialTheme.colors.primary,
+                                    yAxisColor = MaterialTheme.colors.primary
                                 )
                             )
                         }
@@ -161,7 +159,7 @@ fun CompactHomeScreen(
                     Text(
                         text = "Workout to add some statistics!",
                         modifier = Modifier.align(Alignment.CenterHorizontally),
-                        color = HealthConnectBlue
+                        color = MaterialTheme.colors.primary
                     )
                     LineChart(
                         modifier = Modifier
@@ -169,16 +167,16 @@ fun CompactHomeScreen(
                             .align(Alignment.CenterHorizontally)
                             .padding(bottom = 50.dp)
                             .weight(1f),
-                        color = HealthConnectBlue,
+                        color = MaterialTheme.colors.primary,
                         lineData = listOf(LineData(0, 0F)),
                         axisConfig = AxisConfig(
                             showAxis = true,
                             showUnitLabels = true,
                             isAxisDashed = true,
                             showXLabels = true,
-                            textColor = HealthConnectBlue,
-                            xAxisColor = HealthConnectBlue,
-                            yAxisColor = HealthConnectGreen
+                            textColor = MaterialTheme.colors.primary,
+                            xAxisColor = MaterialTheme.colors.primary,
+                            yAxisColor = MaterialTheme.colors.primary
                         )
                     )
                 }
@@ -195,7 +193,7 @@ fun CompactHomeScreen(
                         .weight(1f),
                     elevation = 10.dp,
                     contentColor = MaterialTheme.colors.onPrimary,
-                    backgroundColor = HealthConnectBlue
+                    backgroundColor = MaterialTheme.colors.primary
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -221,7 +219,7 @@ fun CompactHomeScreen(
                         .weight(1f),
                     elevation = 10.dp,
                     contentColor = MaterialTheme.colors.onPrimary,
-                    backgroundColor = HealthConnectBlue
+                    backgroundColor = MaterialTheme.colors.primary
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -309,16 +307,16 @@ fun ExpendedAndMediumHomeScreen(
                                     .align(Alignment.CenterHorizontally)
                                     .padding(bottom = 50.dp)
                                     .weight(1f),
-                                color = HealthConnectBlue,
+                                color = MaterialTheme.colors.primary,
                                 lineData = lineData,
                                 axisConfig = AxisConfig(
                                     showAxis = true,
                                     showUnitLabels = true,
                                     isAxisDashed = true,
                                     showXLabels = true,
-                                    textColor = HealthConnectBlue,
-                                    xAxisColor = HealthConnectBlue,
-                                    yAxisColor = HealthConnectGreen
+                                    textColor = MaterialTheme.colors.primary,
+                                    xAxisColor = MaterialTheme.colors.primary,
+                                    yAxisColor = MaterialTheme.colors.primary
                                 )
                             )
                         }
@@ -345,7 +343,7 @@ fun ExpendedAndMediumHomeScreen(
                             Text(
                                 text = "Workout to add some statistics!",
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                                color = HealthConnectBlue
+                                color = MaterialTheme.colors.primary
                             )
                             LineChart(
                                 modifier = Modifier
@@ -353,16 +351,16 @@ fun ExpendedAndMediumHomeScreen(
                                     .align(Alignment.CenterHorizontally)
                                     .padding(bottom = 50.dp)
                                     .weight(1f),
-                                color = HealthConnectBlue,
+                                color = MaterialTheme.colors.primary,
                                 lineData = listOf(LineData(0, 0F)),
                                 axisConfig = AxisConfig(
                                     showAxis = true,
                                     showUnitLabels = true,
                                     isAxisDashed = true,
                                     showXLabels = true,
-                                    textColor = HealthConnectBlue,
-                                    xAxisColor = HealthConnectBlue,
-                                    yAxisColor = HealthConnectGreen
+                                    textColor = MaterialTheme.colors.primary,
+                                    xAxisColor = MaterialTheme.colors.primary,
+                                    yAxisColor = MaterialTheme.colors.primary
                                 )
                             )
                         }
@@ -381,7 +379,7 @@ fun ExpendedAndMediumHomeScreen(
                         .weight(1f),
                     elevation = 10.dp,
                     contentColor = MaterialTheme.colors.onPrimary,
-                    backgroundColor = HealthConnectBlue
+                    backgroundColor = MaterialTheme.colors.primary
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -407,7 +405,7 @@ fun ExpendedAndMediumHomeScreen(
                         .weight(1f),
                     elevation = 10.dp,
                     contentColor = MaterialTheme.colors.onPrimary,
-                    backgroundColor = HealthConnectBlue
+                    backgroundColor = MaterialTheme.colors.primary
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -489,16 +487,16 @@ fun ExpendedHomeScreen(
                                 .align(Alignment.CenterHorizontally)
                                 .padding(bottom = 50.dp)
                                 .weight(1f),
-                            color = HealthConnectBlue,
+                            color = MaterialTheme.colors.primary,
                             lineData = lineData,
                             axisConfig = AxisConfig(
                                 showAxis = true,
                                 showUnitLabels = true,
                                 isAxisDashed = true,
                                 showXLabels = true,
-                                textColor = HealthConnectBlue,
-                                xAxisColor = HealthConnectBlue,
-                                yAxisColor = HealthConnectGreen
+                                textColor = MaterialTheme.colors.primary,
+                                xAxisColor = MaterialTheme.colors.primary,
+                                yAxisColor = MaterialTheme.colors.primary
                             )
                         )
                     }
@@ -530,7 +528,7 @@ fun ExpendedHomeScreen(
                         },
                     elevation = 10.dp,
                     contentColor = MaterialTheme.colors.onPrimary,
-                    backgroundColor = HealthConnectBlue
+                    backgroundColor = MaterialTheme.colors.primary
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -551,7 +549,7 @@ fun ExpendedHomeScreen(
                         .weight(1f),
                     elevation = 10.dp,
                     contentColor = MaterialTheme.colors.onPrimary,
-                    backgroundColor = HealthConnectBlue
+                    backgroundColor = MaterialTheme.colors.primary
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,

@@ -7,7 +7,10 @@ import com.example.ahealthychallenge.databinding.ActivityResetPasswordBinding
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 
-class ResetPasswordActivity : ComponentActivity() {
+class ResetPasswordActivity : ComponentActivity(), ToastHelper {
+
+    //var for test only
+    var toastHelper: ToastHelper? = null
 
     private lateinit var auth: FirebaseAuth
     private lateinit var email: TextInputEditText
@@ -23,12 +26,19 @@ class ResetPasswordActivity : ComponentActivity() {
         binding.btnReset.setOnClickListener{
             auth.sendPasswordResetEmail(email.text.toString())
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Password sent !", Toast.LENGTH_LONG).show()
+                    showToast("New password sent !")
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Unable to send new password !", Toast.LENGTH_LONG).show()
             }
 
         }
+    }
+
+    override fun showToast(message: String) {
+        //for test only
+        toastHelper?.showToast(message)
+
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

@@ -27,7 +27,8 @@ class FriendsActivity : ComponentActivity() {
     private lateinit var friendRecyclerView2: RecyclerView
     private lateinit var friendArrayList: ArrayList<Friend>
     private lateinit var friendArrayList2: ArrayList<Friend>
-    private var username: String = ""
+    var username: String = ""
+    var user: String? = ""
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var progressBar: ProgressBar
 
@@ -91,7 +92,10 @@ class FriendsActivity : ComponentActivity() {
         friendRecyclerView.adapter?.notifyDataSetChanged()
         friendRecyclerView2.adapter?.notifyDataSetChanged()
 
-        val user = FirebaseAuth.getInstance().currentUser?.uid
+        val us = FirebaseAuth.getInstance().currentUser?.uid
+        if(us != null){
+            user = us
+        }
         database.child(user!!).get().addOnSuccessListener {
             if(it.exists()){
                 username = it.value.toString()

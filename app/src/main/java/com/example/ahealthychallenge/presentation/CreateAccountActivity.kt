@@ -9,7 +9,11 @@ import com.example.ahealthychallenge.presentation.utils.FirebaseUtils.firebaseAu
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 
-class CreateAccountActivity : ComponentActivity() {
+class CreateAccountActivity : ComponentActivity(), ToastHelper {
+
+    //var for test only
+    var toastHelper: ToastHelper? = null
+
     lateinit var userEmail: String
     lateinit var userPassword: String
     lateinit var createAccountInputsArray: Array<TextInputEditText>
@@ -53,7 +57,7 @@ class CreateAccountActivity : ComponentActivity() {
                 }
             }
         } else {
-            Toast.makeText(this, "passwords are not matching !", Toast.LENGTH_LONG).show()
+           showToast("passwords are not matching !")
         }
         return identical
     }
@@ -64,7 +68,7 @@ class CreateAccountActivity : ComponentActivity() {
             length = true
         }
         else if (password.text!!.length  <=5  && identicalPassword()){
-            Toast.makeText(this, "password is too short !", Toast.LENGTH_LONG).show()
+            showToast("password is too short !")
         }
 
         return length
@@ -82,7 +86,7 @@ class CreateAccountActivity : ComponentActivity() {
                     if (task.isSuccessful) {
                         sendEmailVerification()
                     } else {
-                        Toast.makeText(this, "failed to Authenticate !", Toast.LENGTH_LONG).show()
+                        showToast("failed to Authenticate !")
                     }
                 }
         }
@@ -100,12 +104,19 @@ class CreateAccountActivity : ComponentActivity() {
         //send email verification
         firebaseUser!!.sendEmailVerification()
             .addOnSuccessListener {
-                Toast.makeText(this, "Check your email for verification !", Toast.LENGTH_SHORT).show()
+               showToast("Check your email for verification !")
                 startActivity(Intent(this, SignInActivity::class.java))
                 finish()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Failed to send verification due to " + e.message, Toast.LENGTH_SHORT).show()
             }
+    }
+
+    override fun showToast(message: String) {
+        //for test only
+        toastHelper?.showToast(message)
+
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

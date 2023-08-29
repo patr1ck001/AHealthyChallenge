@@ -50,164 +50,172 @@ fun LeaderBoardScreenDetails(
                 .padding(start = 16.dp),
         ) {
 
+            Spacer(modifier = Modifier.height(30.dp))
             Column(
                 modifier = Modifier.weight(1f),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Card(
-                        elevation = 10.dp,
-                        shape = CircleShape,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_step),
-                            contentDescription = null,
-                            tint = MaterialTheme.colors.primary,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .padding(8.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(30.dp))
-                    Column(
+                if (userPointsSheet.pointsWalking != 0) {
+                    Row(
                         modifier = Modifier
-                            .align(Alignment.CenterVertically)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Walking",
-                            color = Color.Gray,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = "${userPointsSheet.pointsWalking}",
-                            color = MaterialTheme.colors.primary,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
+                        Card(
+                            elevation = 10.dp,
+                            shape = CircleShape,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_step),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.primary,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .padding(8.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(30.dp))
 
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Text(
+                                text = "Walking",
+                                color = Color.Gray,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = "${userPointsSheet.pointsWalking}",
+                                color = MaterialTheme.colors.primary,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(30.dp))
                 }
-                Spacer(modifier = Modifier.height(30.dp))
 
-                // number of friends row
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Card(
-                        elevation = 10.dp,
-                        shape = CircleShape,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_runner),
-                            contentDescription = null,
-                            tint = MaterialTheme.colors.primary,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .padding(8.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(30.dp))
-                    Column(
+                if (userPointsSheet.pointRunning != 0) {
+                    Row(
                         modifier = Modifier
-                            .align(Alignment.CenterVertically)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Running",
-                            color = Color.Gray,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = "${userPointsSheet.pointRunning}",
-                            color = MaterialTheme.colors.primary,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        Card(
+                            elevation = 10.dp,
+                            shape = CircleShape,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_runner),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.primary,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .padding(8.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(30.dp))
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Text(
+                                text = "Running",
+                                color = Color.Gray,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = "${userPointsSheet.pointRunning}",
+                                color = MaterialTheme.colors.primary,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
+                    Spacer(modifier = Modifier.height(30.dp))
                 }
-                Spacer(modifier = Modifier.height(30.dp))
 
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Card(
-                        elevation = 10.dp,
-                        shape = CircleShape,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_biking),
-                            contentDescription = null,
-                            tint = MaterialTheme.colors.primary,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .padding(8.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(30.dp))
-                    Column(
+                if (userPointsSheet.pointsCycling != 0) {
+                    Row(
                         modifier = Modifier
-                            .align(Alignment.CenterVertically)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Biking",
-                            color = Color.Gray,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = "${userPointsSheet.pointsCycling}",
-                            color = MaterialTheme.colors.primary,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        Card(
+                            elevation = 10.dp,
+                            shape = CircleShape,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_biking),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.primary,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .padding(8.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(30.dp))
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Text(
+                                text = "Biking",
+                                color = Color.Gray,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = "${userPointsSheet.pointsCycling}",
+                                color = MaterialTheme.colors.primary,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
+                    Spacer(modifier = Modifier.height(30.dp))
                 }
-                Spacer(modifier = Modifier.height(30.dp))
-                // Position row
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Card(
-                        elevation = 10.dp,
-                        shape = CircleShape,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_workout),
-                            contentDescription = null,
-                            tint = MaterialTheme.colors.primary,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .padding(8.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(30.dp))
-                    Column(
+
+                if (userPointsSheet.pointsWorkout != 0) {
+                    Row(
                         modifier = Modifier
-                            .align(Alignment.CenterVertically)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Workout",
-                            color = Color.Gray,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = "${userPointsSheet.pointsWorkout}",
-                            color = MaterialTheme.colors.primary,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        Card(
+                            elevation = 10.dp,
+                            shape = CircleShape,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_workout),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.primary,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .padding(8.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(30.dp))
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Text(
+                                text = "Workout",
+                                color = Color.Gray,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = "${userPointsSheet.pointsWorkout}",
+                                color = MaterialTheme.colors.primary,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
                 }
             }

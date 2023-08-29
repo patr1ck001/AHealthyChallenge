@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableFloatState
@@ -152,7 +153,7 @@ fun CompactPointStatScreen(
                             Text(
                                 text = "Walking",
                                 textAlign = TextAlign.Center,
-                                color = HealthConnectBlue
+                                color = MaterialTheme.colors.primary
                             )
                         }
                     }
@@ -169,7 +170,7 @@ fun CompactPointStatScreen(
                             Text(
                                 text = "Running",
                                 textAlign = TextAlign.Center,
-                                color = HealthConnectBlue
+                                color = MaterialTheme.colors.primary
                             )
                         }
                     }
@@ -185,7 +186,7 @@ fun CompactPointStatScreen(
                             Text(
                                 text = "Biking",
                                 textAlign = TextAlign.Center,
-                                color = HealthConnectBlue
+                                color = MaterialTheme.colors.primary
                             )
                         }
                     }
@@ -201,7 +202,7 @@ fun CompactPointStatScreen(
                             Text(
                                 text = "Workout",
                                 textAlign = TextAlign.Center,
-                                color = HealthConnectBlue
+                                color = MaterialTheme.colors.primary
                             )
                         }
                     }
@@ -283,8 +284,8 @@ fun CompactPointStatScreen(
                             showUnitLabels = true,
                             isAxisDashed = true,
                             showXLabels = true,
-                            textColor = HealthConnectBlue,
-                            xAxisColor = HealthConnectBlue,
+                            textColor = MaterialTheme.colors.primary,
+                            xAxisColor = MaterialTheme.colors.primary,
                             yAxisColor = HealthConnectGreen
                         )
                     )
@@ -315,8 +316,8 @@ fun CompactPointStatScreen(
                             showUnitLabels = true,
                             isAxisDashed = true,
                             showXLabels = true,
-                            textColor = HealthConnectBlue,
-                            xAxisColor = HealthConnectBlue,
+                            textColor = MaterialTheme.colors.primary,
+                            xAxisColor = MaterialTheme.colors.primary,
                             yAxisColor = HealthConnectGreen
                         )
                     )
@@ -348,8 +349,8 @@ fun CompactPointStatScreen(
                             showUnitLabels = true,
                             isAxisDashed = true,
                             showXLabels = true,
-                            textColor = HealthConnectBlue,
-                            xAxisColor = HealthConnectBlue,
+                            textColor = MaterialTheme.colors.primary,
+                            xAxisColor = MaterialTheme.colors.primary,
                             yAxisColor = HealthConnectGreen
                         )
                     )
@@ -380,8 +381,8 @@ fun CompactPointStatScreen(
                             showUnitLabels = true,
                             isAxisDashed = true,
                             showXLabels = true,
-                            textColor = HealthConnectBlue,
-                            xAxisColor = HealthConnectBlue,
+                            textColor = MaterialTheme.colors.primary,
+                            xAxisColor = MaterialTheme.colors.primary,
                             yAxisColor = HealthConnectGreen
                         )
                     )
@@ -450,7 +451,7 @@ fun ExpendedPointStatScreen(
                                     Text(
                                         text = "Walking",
                                         textAlign = TextAlign.Center,
-                                        color = HealthConnectBlue
+                                        color = MaterialTheme.colors.primary
                                     )
                                 }
 
@@ -467,7 +468,7 @@ fun ExpendedPointStatScreen(
                                     Text(
                                         text = "Running",
                                         textAlign = TextAlign.Center,
-                                        color = HealthConnectBlue
+                                        color = MaterialTheme.colors.primary
                                     )
                                 }
                             }
@@ -482,7 +483,7 @@ fun ExpendedPointStatScreen(
                                     Text(
                                         text = "Biking",
                                         textAlign = TextAlign.Center,
-                                        color = HealthConnectBlue
+                                        color = MaterialTheme.colors.primary
                                     )
                                 }
                             }
@@ -496,7 +497,7 @@ fun ExpendedPointStatScreen(
                                     Text(
                                         text = "Workout",
                                         textAlign = TextAlign.Center,
-                                        color = HealthConnectBlue
+                                        color = MaterialTheme.colors.primary
                                     )
                                 }
                             }
@@ -611,9 +612,9 @@ fun ExpendedPointStatScreen(
                                 showUnitLabels = true,
                                 isAxisDashed = true,
                                 showXLabels = true,
-                                textColor = HealthConnectBlue,
-                                xAxisColor = HealthConnectBlue,
-                                yAxisColor = HealthConnectGreen
+                                textColor = MaterialTheme.colors.primary,
+                                xAxisColor = MaterialTheme.colors.primary,
+                                yAxisColor = MaterialTheme.colors.primary
                             )
                         )
                         Spacer(modifier = Modifier.height(10.dp))
@@ -643,9 +644,9 @@ fun ExpendedPointStatScreen(
                                 showUnitLabels = true,
                                 isAxisDashed = true,
                                 showXLabels = true,
-                                textColor = HealthConnectBlue,
-                                xAxisColor = HealthConnectBlue,
-                                yAxisColor = HealthConnectGreen
+                                textColor = MaterialTheme.colors.primary,
+                                xAxisColor = MaterialTheme.colors.primary,
+                                yAxisColor = MaterialTheme.colors.primary
                             )
                         )
                         Spacer(modifier = Modifier.height(10.dp))
@@ -675,9 +676,9 @@ fun ExpendedPointStatScreen(
                                 showUnitLabels = true,
                                 isAxisDashed = true,
                                 showXLabels = true,
-                                textColor = HealthConnectBlue,
-                                xAxisColor = HealthConnectBlue,
-                                yAxisColor = HealthConnectGreen
+                                textColor = MaterialTheme.colors.primary,
+                                xAxisColor = MaterialTheme.colors.primary,
+                                yAxisColor = MaterialTheme.colors.primary
                             )
                         )
                         Spacer(modifier = Modifier.height(10.dp))
@@ -707,9 +708,9 @@ fun ExpendedPointStatScreen(
                                 showUnitLabels = true,
                                 isAxisDashed = true,
                                 showXLabels = true,
-                                textColor = HealthConnectBlue,
-                                xAxisColor = HealthConnectBlue,
-                                yAxisColor = HealthConnectGreen
+                                textColor = MaterialTheme.colors.primary,
+                                xAxisColor = MaterialTheme.colors.primary,
+                                yAxisColor = MaterialTheme.colors.primary
                             )
                         )
                         Spacer(modifier = Modifier.height(10.dp))

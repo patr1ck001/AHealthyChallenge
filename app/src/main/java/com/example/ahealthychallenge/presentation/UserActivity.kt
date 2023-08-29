@@ -21,7 +21,10 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 
-class UserActivity: ComponentActivity() {
+class UserActivity: ComponentActivity(), ToastHelper  {
+
+    //var for test only
+    var toastHelper: ToastHelper? = null
 
     private lateinit var auth: FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
@@ -55,31 +58,37 @@ class UserActivity: ComponentActivity() {
             val lastName = binding.lastName.text.toString()
             val username = binding.userName.text.toString()
 
-            databaseReference.child(username).get().addOnSuccessListener { it ->
-                if(it.exists()) {
-                    Toast.makeText(this, "Username already exists !", Toast.LENGTH_LONG).show()
-                }
-                else{
-                    val user = User(firstName, lastName, username, uid)
+            if(firstName.isEmpty() || lastName.isEmpty() || username.isEmpty()){
+                showToast("Fill all fields")
+            }
+            else{
+                databaseReference.child(username).get().addOnSuccessListener { it ->
+                    if(it.exists()) {
+                        showToast("Username already exists !")
+                    }
+                    else{
+                        val user = User(firstName, lastName, username, uid)
 
-                    if(uid != null){
+                        if(uid != null){
 
-                        databaseReference.child(uid).setValue(username)
-                        databaseReference.child(username).setValue(user).addOnCompleteListener {
+                            databaseReference.child(uid).setValue(username)
+                            databaseReference.child(username).setValue(user).addOnCompleteListener {
 
-                            if(it.isSuccessful){
-                                leaderboardRef.child(username).child("pointsSheet").setValue(
-                                    UserPointsSheet()
-                                )
-                                updateProfilePic(username)
-                                startActivity(Intent(this, HomeActivity::class.java))
-                            }else{
-                                Toast.makeText(this, "failed to update profile !", Toast.LENGTH_LONG).show()
+                                if(it.isSuccessful){
+                                    leaderboardRef.child(username).child("pointsSheet").setValue(
+                                        UserPointsSheet()
+                                    )
+                                    updateProfilePic(username)
+                                    startActivity(Intent(this, HomeActivity::class.java))
+                                }else{
+                                    Toast.makeText(this, "failed to update profile !", Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                     }
                 }
             }
+
         }
     }
 
@@ -107,20 +116,27 @@ class UserActivity: ComponentActivity() {
         if(!flag) {
             imageUri = Uri.parse("android.resource://$packageName/${R.drawable.ic_profile_circle}")
             storageReference.putFile(imageUri).addOnCompleteListener {
-                Toast.makeText(this, "Profile successfully updated !", Toast.LENGTH_LONG).show()
+                showToast("Profile successfully updated !")
             }.addOnFailureListener {
                 Toast.makeText(this, "failed to upload the image !", Toast.LENGTH_LONG).show()
             }
         }
         else{
             storageReference.putBytes(fileInBytes).addOnCompleteListener {
-                Toast.makeText(this, "Profile successfully updated !", Toast.LENGTH_LONG).show()
+               showToast("Profile successfully updated !")
             }.addOnFailureListener {
                 Toast.makeText(this, "failed to upload the image !", Toast.LENGTH_LONG).show()
             }
         }
 
 
+    }
+
+    override fun showToast(message: String) {
+        //for test only
+        toastHelper?.showToast(message)
+
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
 }

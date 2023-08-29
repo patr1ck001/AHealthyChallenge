@@ -21,7 +21,10 @@ import com.google.firebase.storage.FirebaseStorage
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 
-class SearchUserActivity : ComponentActivity() {
+class SearchUserActivity : ComponentActivity(), ToastHelper {
+
+    //var for test only
+    var toastHelper: ToastHelper? = null
 
     private lateinit var searchText: EditText
     private lateinit var searchBtn: ImageButton
@@ -29,8 +32,8 @@ class SearchUserActivity : ComponentActivity() {
     private lateinit var name: TextView
     private lateinit var requestBtn: Button
     private lateinit var refuseBtn: Button
-    private lateinit var currentUsername: String
     private lateinit var friendUsername: String
+    var currentUsername: String = ""
     private lateinit var firebaseRef: DatabaseReference
     private lateinit var leaderboardRef: DatabaseReference
     private lateinit var firebase: DatabaseReference
@@ -60,11 +63,14 @@ class SearchUserActivity : ComponentActivity() {
 
         progressBar.visibility = View.GONE
 
-        firebase.child(user!!).get().addOnSuccessListener { it ->
-            if (it.exists()) {
-                currentUsername = it.value.toString()
+        if(user != null){
+            firebase.child(user).get().addOnSuccessListener { it ->
+                if (it.exists()) {
+                    currentUsername = it.value.toString()
+                }
             }
         }
+
 
         refuseBtn.setOnClickListener{
             cancelRequest()
@@ -125,7 +131,7 @@ class SearchUserActivity : ComponentActivity() {
                         progressBar.visibility = View.GONE
 
                     }else{
-                        Toast.makeText(this, "username not founded !", Toast.LENGTH_LONG).show()
+                        showToast("username not founded !")
                     }
                 }
             }
@@ -301,6 +307,13 @@ class SearchUserActivity : ComponentActivity() {
            .setNegativeButton("No") {dialog, which -> }
            .setPositiveButton("Yes") {dialog, which -> cancelRequest()
                Toast.makeText(this, "Friend deleted !", Toast.LENGTH_LONG).show() } .show()
+    }
+
+    override fun showToast(message: String) {
+        //for test only
+        toastHelper?.showToast(message)
+
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
 }

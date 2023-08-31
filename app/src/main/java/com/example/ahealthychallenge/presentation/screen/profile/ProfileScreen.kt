@@ -359,7 +359,7 @@ fun ExpendedAndMediumProfileScreen(
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = "${currentUser.username}",
-                    color = HealthConnectBlue,
+                    color = MaterialTheme.colors.primary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.CenterHorizontally)

@@ -557,7 +557,7 @@ fun ExpendedPointStatScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
-                            text = "Points per exercise type",
+                            text = stringResource(R.string.points_this_month),
                             fontSize = 16.sp,
                             modifier = Modifier
                                 .fillMaxWidth()

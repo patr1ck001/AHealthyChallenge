@@ -204,6 +204,7 @@ fun HealthConnectApp(
                 scaffoldState = scaffoldState,
                 scope = scope,
                 navController = navController,
+                currentRoute = currentRoute,
                 displayFeatures =  calculateDisplayFeatures(activity)
             )
         }

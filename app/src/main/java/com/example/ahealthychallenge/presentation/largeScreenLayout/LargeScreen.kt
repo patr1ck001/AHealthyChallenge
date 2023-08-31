@@ -1,21 +1,45 @@
 package com.example.ahealthychallenge.presentation.largeScreenLayout
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.window.layout.DisplayFeature
+import com.example.ahealthychallenge.R
+import com.example.ahealthychallenge.data.HealthConnectAvailability
 import com.example.ahealthychallenge.data.HealthConnectManager
+import com.example.ahealthychallenge.presentation.FriendsActivity
+import com.example.ahealthychallenge.presentation.navigation.Drawer
+import com.example.ahealthychallenge.presentation.navigation.HealthConnectNavigation
 import com.example.ahealthychallenge.presentation.navigation.Screen
 import com.example.ahealthychallenge.presentation.navigation.UID_NAV_ARGUMENT
 import com.example.ahealthychallenge.presentation.screen.SettingsScreen
@@ -45,14 +69,19 @@ import com.google.accompanist.adaptive.TwoPane
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun LargeScreen(
     healthConnectManager: HealthConnectManager,
     scaffoldState: ScaffoldState,
     navController: NavHostController,
+    currentRoute: String?,
     scope: CoroutineScope,
     displayFeatures: List<DisplayFeature>
 ) {
+    val context = LocalContext.current
+    val icon = R.drawable.group_svgrepo_com
+
     Row() {
         val paneStrategy = HorizontalTwoPaneStrategy(
             splitFraction = 1f / 4f,
@@ -66,12 +95,49 @@ fun LargeScreen(
                 )
             },
             second = {
+                Scaffold(
+                    scaffoldState = scaffoldState,
+                    modifier = Modifier.statusBarsPadding(),
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                val titleId = when (currentRoute) {
+                                    Screen.ExerciseSessions.route -> Screen.ExerciseSessions.titleId
+                                    Screen.SleepSessions.route -> Screen.SleepSessions.titleId
+                                    Screen.InputReadings.route -> Screen.InputReadings.titleId
+                                    Screen.DifferentialChanges.route -> Screen.DifferentialChanges.titleId
+                                    else -> R.string.app_name
+                                }
+                                Text(stringResource(titleId))
+                            },
+
+                            actions = {
+                                IconButton(onClick = {
+                                    val intent = Intent(context, FriendsActivity::class.java)
+                                    context.startActivity(intent)
+                                }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = icon),
+                                        stringResource(id = R.string.add_friend),
+                                        modifier = Modifier.height(45.dp),
+                                        tint = Color.White
+                                    )
+                                }
+                            }
+                        )
+                    },
+                    snackbarHost = {
+                        SnackbarHost(it) { data -> Snackbar(snackbarData = data) }
+                    }
+                ) {
                      Nav(
                          scaffoldState = scaffoldState,
                          navController = navController,
                          healthConnectManager = healthConnectManager,
                          scope = scope
                      )
+                }
             },
             strategy = paneStrategy,
             displayFeatures = displayFeatures
